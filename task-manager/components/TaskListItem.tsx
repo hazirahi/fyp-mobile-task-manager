@@ -1,10 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import { Task } from './TaskList';
+import { Task } from "@/provider/TaskListProvider";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Swipeable } from "react-native-gesture-handler";
-
-import { useTaskList } from "@/provider/TaskListProvider";
 
 const RightActions = ({onDelete} : {onDelete: () => void;}) => {
     return (

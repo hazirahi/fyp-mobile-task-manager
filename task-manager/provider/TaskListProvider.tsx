@@ -1,17 +1,23 @@
 import { supabase } from "@/config/initSupabase";
 import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
 import { useAuth } from '@/provider/AuthProvider';
-import { Task } from "@/components/TaskList";
 
-// export type Task = {
-//     task_name: string
-//     task_description: string | null
-// }
+import { NewTask } from "@/components/AddTaskBottomSheet";
+
+export type Task = {
+    id: number
+    user_id: string
+    task_name: string
+    task_description: string
+    isCompleted: boolean
+    created_at: Date | null
+}
 
 type TaskListItem = {
     tasks: Task[];
     getTasks: () => void;
-    addTask: (task: Task) => void;
+    // addTask: (task: Task) => void;
+    addTask: (task_name: Task['task_name'], task_description: Task['task_description']) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
 };
@@ -28,10 +34,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const [taskList, setTaskList] = useState<Task[]>([]);
 
-    // useEffect(() => {
-    //     getTasks();
-    // },[user]);
-
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
@@ -43,11 +45,11 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
-    const addTask = async (task:Task) => {
-        if (task) {
+    const addTask = async (task_name: Task['task_name'], task_description: Task['task_description']) => {
+        // if (task) {
             const { data: tasklist, error } = await supabase
                 .from('tasks')
-                .insert({ task_name: task.task_name, task_description: task.task_description, user_id: user!.id })
+                .insert({ task_name: task_name, task_description: task_description, user_id: user!.id })
                 .select('*')
                 .single()
             if(error)
@@ -55,7 +57,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             else {
                 setTaskList([tasklist!, ...taskList])
             }
-        }
+        //}
     }
 
     // onPress, complete task

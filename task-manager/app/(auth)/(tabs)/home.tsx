@@ -23,29 +23,6 @@ export default function Home (){
     const [taskList, setTaskList] = useState<Array<Task>>([]);
     const { tasks } = useTaskList();
 
-    // console.log('home: ', taskList)
-
-    // useEffect(() => {
-    //     supabase.auth.getSession().then(({data: {session}}) => {
-    //         setSession(session);
-    //     });
-    // }, []);
-
-    // useEffect(() => {
-    //     getTasks();
-    // },[user]);
-
-    // const getTasks = async () => {
-    //     const {data: taskList} = await supabase
-    //         .from('tasks')
-    //         .select ('*')
-    //         .order('created_at', {ascending:false})
-    //     if (taskList) {
-    //         setTaskList(taskList!);
-    //     }
-    // }
-    // console.log('home: ', tasks);
-
     return (
         <View style={styles.container}>
             <View>

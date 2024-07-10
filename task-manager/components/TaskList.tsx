@@ -14,15 +14,6 @@ import TaskListItem from './TaskListItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTaskList } from '@/provider/TaskListProvider';
 
-export type Task = {
-    id: number
-    user_id: string
-    task_name: string
-    task_description: string
-    isCompleted: boolean
-    created_at: Date | null
-}
-
 export default function TaskList() {
     const { user } = useAuth();
     const { tasks, getTasks, onCheckPressed, onDelete } = useTaskList();

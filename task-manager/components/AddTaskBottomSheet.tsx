@@ -1,15 +1,21 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-import BottomSheet, { BottomSheetBackdrop, TouchableOpacity } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect, useContext } from 'react';
 import { TextInput } from 'react-native-gesture-handler';
 
 import { useTaskList, Task } from '@/provider/TaskListProvider';
+import { useAuth } from '@/provider/AuthProvider';
 
 export type Ref = BottomSheet;
 
+export type NewTask ={
+    task_name: string
+    task_description: string
+}
+
 type AddTask = {
-    onAdd: (newTask: Task) => void;
+    onAdd: (newTask: {task_name: Task['task_name'], task_description: Task['task_description']}) => void;
 }
 
 const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
@@ -26,6 +32,8 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
         (props:any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []
     );
 
+    const { user } = useAuth();
+
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
     const { addTask } = useTaskList();
@@ -35,15 +43,11 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             task_name: newTaskTitle,
             task_description: newTaskDesc
         });
-        // task = {
-        //     task_name: newTaskTitle,
-        //     task_description: newTaskDesc
-        // }
-        // if(!task) {
-        //     return;
-        // }
         console.log('addnewtask ', newTaskTitle);
-        addTask({task_name: newTaskTitle, task_description: newTaskDesc});
+        addTask(
+            newTaskTitle, 
+            newTaskDesc
+        );
     };
 
 
@@ -58,14 +62,14 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             backgroundStyle={{backgroundColor: 'lightgray'}}
         >
             <View style={{flex:1}}>
-                <TextInput 
-                    style={styles.input}
+                <BottomSheetTextInput 
+                    style={[styles.input, styles.title]}
                     placeholder='add a task'
                     onChangeText={(text) => setNewTaskTitle(text)}
                     value={newTaskTitle}
                 />
-                <TextInput
-                    style={{fontSize: 20}}
+                <BottomSheetTextInput
+                    style={[styles.input, styles.desc]}
                     placeholder='add description'
                     onChangeText={setNewTaskDesc}
                     value={newTaskDesc}
@@ -74,12 +78,6 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     style={styles.addButton}
                     onPress={() => {
                         addNewTask();
-                        // addTask(
-                        //     onAdd({
-                        //         task_name: newTaskTitle,
-                        //         task_description: newTaskDesc
-                        //     });
-                        // );
                         setNewTaskTitle('');
                         setNewTaskDesc('');
                         innerRef.current?.close();
@@ -96,12 +94,19 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
 
 const styles = StyleSheet.create({
     input: {
-        padding: 20,
-        lineHeight:40,
-        fontSize: 30,
-        fontWeight: '600',
-        color: 'dimgray'
+        paddingLeft: 20,
+        backgroundColor: 'dimgray'
 	},
+    title: {
+        paddingTop: 25,
+        fontSize: 35,
+        fontWeight: '600',
+        color: 'black'
+    },
+    desc: {
+        fontSize: 18,
+        paddingBottom: 20
+    },
     addButton: {
         alignSelf: 'center',
         backgroundColor: '#3141D6',
