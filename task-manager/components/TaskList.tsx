@@ -1,53 +1,54 @@
 import { supabase } from '@/config/initSupabase';
 import { useAuth } from '@/provider/AuthProvider';
-import { Session } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-import { View, Text, Alert, StyleSheet } from 'react-native';
 
-import { FlatList } from 'react-native-gesture-handler';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { View, Text, Alert, StyleSheet } from 'react-native';
+import { FlatList, TextInput } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import 'react-native-url-polyfill/auto';
 
-type Task = {
+import { Button } from 'react-native';
+
+import TaskListItem from './TaskListItem';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTaskList } from '@/provider/TaskListProvider';
+
+export type Task = {
     id: number
     user_id: string
     task_name: string
     task_description: string
     isCompleted: boolean
-    created_at: Date
+    created_at: Date | null
 }
 
 export default function TaskList() {
+    const { user } = useAuth();
+    const { tasks, getTasks, onCheckPressed, onDelete } = useTaskList();
+
     const [loading, setLoading] = useState(true);
-    const [session, setSession] = useState<Session | null>(null);
 
     const [name, setName] = useState('');
 
-    const [taskList, setTaskList] = useState<Array<Task>>([]);
-    const [task, setTask] = useState('');
-
     useEffect(() => {
-        supabase.auth.getSession().then(({data: {session}}) => {
-            setSession(session);
-        });
-    }, []);
+        if (!user) return;
 
-    useEffect(() => {
-        if (session) getProfile();
-    }, [session]);
-
-    useEffect(() => {
+        getProfile();
         getTasks();
-    },[]);
+    }, [user]);
 
+
+    // get user's name
     async function getProfile(){
         try{
             setLoading(true)
-            if (!session?.user) throw new Error('no user on session');
+            if (!user) throw new Error('no user on session');
 
             const { data, error, status } = await supabase
                 .from('users')
                 .select(`name`)
-                .eq('id', session?.user.id)
+                .eq('id', user.id)
                 .single()
             if (error && status !== 406){
                 throw error
@@ -64,47 +65,53 @@ export default function TaskList() {
         }
     }
 
-    const getTasks = async () => {
-        // const { data: taskList } = await supabase
-        //     .from<Task>('tasks')
-        //     .select('*')
-        //     .order('id', {ascending:false})
-        // setTaskList(taskList!)
-
-        let {data} = await supabase
-            .from('tasks')
-            .select ('*')
-            .order('created_at', {ascending:false})
-        setTaskList(data || []);
-    }
-
     return (
-        <View>
+        <SafeAreaView style={styles.container}>
             <Text style={styles.header}>Hello, {name}</Text>
-            <View style={styles.tasklistContainer}>
-                <FlatList
-                    scrollEnabled={true}
-                    data={taskList}
-                    keyExtractor={(item) => `${item.id}`}
-                    renderItem={({ item: task }) => (
-                        <Text>{task.task_name}</Text>
-                    )}
-                />
+            <View style={styles.bottomContainer}>
+                <Text style={styles.header}>Today's tasks</Text>
+                <View style={styles.tasklistContainer}>
+                    <FlatList
+                        style={styles.tasklist}
+                        scrollEnabled={true}
+                        data={tasks}
+                        keyExtractor={(item) => `${item.id}`}
+                        contentContainerStyle={{gap:15}}
+                        renderItem={({ item: task }) => (
+                            <TaskListItem 
+                                task={task}
+                                onCheckPressed={() => onCheckPressed(task)}
+                                onDelete={() => onDelete(task)}
+                            />
+                        )}
+                    />
+                </View>
             </View>
-        </View>
-    )
-}
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
+    container: {
+    },
     header: {
         fontWeight: 'bold',
         fontSize: 30,
         paddingTop: 20,
         paddingBottom: 5
     },
+    bottomContainer: {
+        
+    },
     tasklistContainer: {
-        backgroundColor: 'gray',
+        // backgroundColor: 'gray',
+        justifyContent: 'center',
+        paddingTop: 10
+    },
+    tasklist: {
+        padding: 20,
+        paddingVertical: 30,
         borderRadius: 20,
-        padding: 20
-    }
+        backgroundColor: 'lightgray'
+    },
 })

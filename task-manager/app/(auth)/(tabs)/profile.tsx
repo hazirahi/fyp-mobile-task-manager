@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
+
 import { supabase } from "@/config/initSupabase";
-import { Session } from '@supabase/supabase-js';
+import { useAuth } from '@/provider/AuthProvider';
 
 import Avatar from '@/components/Avatar';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,34 +11,26 @@ import { Ionicons } from '@expo/vector-icons';
 //https://supabase.com/docs/guides/getting-started/tutorials/with-expo-react-native?queryGroups=auth-store&auth-store=secure-store
 
 export default function Account (){
+    const { user } = useAuth();
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
 
-    const [session, setSession] = useState<Session | null>(null);
-
     useEffect(() => {
-        supabase.auth.getSession().then(({data: {session}}) => {
-            setSession(session);
-        });
-
-    }, []);
-
-    useEffect(() => {
-        if (session) getProfile();
-    }, [session]);
+        if (user) getProfile();
+    }, [user]);
 
     async function getProfile(){
         try{
             setLoading(true)
-            if (!session?.user) throw new Error('no user on session');
+            if (!user) throw new Error('no user on session');
 
             const { data, error, status } = await supabase
                 .from('users')
                 .select(`name, email, avatar_url`)
-                .eq('id', session?.user.id)
+                .eq('id', user.id)
                 .single()
             if (error && status !== 406){
                 throw error
@@ -67,16 +60,16 @@ export default function Account (){
     }) {
         try {
             setLoading(true);
-            if(!session?.user) throw new Error('no user on the session')
+            if(!user) throw new Error('no user on the session')
             
             const updates = {
-                id: session?.user.id,
+                id: user.id,
                 name,
                 email,
                 avatar_url,
             }
             
-            console.log(session.user.email);
+            console.log(user.email);
             const {error} = await supabase.from('users').upsert(updates);
 
             if (error){
@@ -110,7 +103,7 @@ export default function Account (){
                 <TextInput placeholder='Your Name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
             </View>
             <View style={{paddingTop: 5}}>
-                <TextInput placeholder={session?.user.email} value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
             </View>
         </SafeAreaView>
     );

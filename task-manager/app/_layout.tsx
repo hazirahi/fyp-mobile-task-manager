@@ -1,6 +1,9 @@
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
+import TaskListProvider from '@/provider/TaskListProvider';
+
 import { Slot, useSegments, useRouter } from 'expo-router';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const InitialLayout = () => {
     const { session, initialized } = useAuth();
@@ -25,9 +28,14 @@ const InitialLayout = () => {
 
 const RootLayout = () => {
     return (
-        <AuthProvider>
-            <InitialLayout/>
-        </AuthProvider>
+        <GestureHandlerRootView>
+            <AuthProvider>
+                <TaskListProvider>
+                    <InitialLayout/>    
+                </TaskListProvider>
+            </AuthProvider>
+        </GestureHandlerRootView>
+        
     );
 };
 
