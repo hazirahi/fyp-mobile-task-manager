@@ -3,20 +3,17 @@ import { useAuth } from '@/provider/AuthProvider';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { View, Text, Alert, StyleSheet } from 'react-native';
-import { FlatList, TextInput } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import 'react-native-url-polyfill/auto';
 
-import { Button } from 'react-native';
-
 import TaskListItem from './TaskListItem';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTaskList } from '@/provider/TaskListProvider';
+import ModuleList from './ModuleList';
 
 export default function TaskList() {
     const { user } = useAuth();
-    const { tasks, getTasks, onCheckPressed, onDelete } = useTaskList();
+    const { tasks, getModule, getTasks, onCheckPressed, onDelete } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
@@ -26,6 +23,7 @@ export default function TaskList() {
         if (!user) return;
 
         getProfile();
+        getModule();
         getTasks();
     }, [user]);
 
@@ -57,10 +55,17 @@ export default function TaskList() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.header}>Hello, {name}</Text>
+        <View style={styles.container}>  
+            {/* <Text>tasklist</Text>
+            
+            <View>
+                <Text style={styles.header}>Hello, {name}</Text>
+                <View style={styles.tasklistContainer}>
+                    <ModuleList/>
+                </View>
+            </View> */}
             <View style={styles.bottomContainer}>
-                <Text style={styles.header}>Today's tasks</Text>
+                {/* <Text style={styles.header}>Today's tasks</Text> */}
                 <View style={styles.tasklistContainer}>
                     <FlatList
                         style={styles.tasklist}
@@ -68,6 +73,14 @@ export default function TaskList() {
                         data={tasks}
                         keyExtractor={(item) => `${item.id}`}
                         contentContainerStyle={{gap:15}}
+                        ListHeaderComponent={
+                            <View>
+                                <Text style={styles.header}>Hello, {name}</Text>
+                                <ModuleList/>
+                                <Text style={styles.header}>Today's tasks</Text>
+                            </View>
+                            
+                        }
                         renderItem={({ item: task }) => (
                             <TaskListItem 
                                 task={task}
@@ -78,7 +91,7 @@ export default function TaskList() {
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -92,7 +105,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5
     },
     bottomContainer: {
-        
+        // height: '60%'
     },
     tasklistContainer: {
         // backgroundColor: 'gray',
@@ -100,9 +113,9 @@ const styles = StyleSheet.create({
         paddingTop: 10
     },
     tasklist: {
-        padding: 20,
-        paddingVertical: 30,
-        borderRadius: 20,
-        backgroundColor: 'lightgray'
+        // padding: 20,
+        // paddingVertical: 30,
+        // borderRadius: 20,
+        // backgroundColor: 'lightgray'
     },
 })

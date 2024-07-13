@@ -1,8 +1,6 @@
 import { supabase } from "@/config/initSupabase";
-import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useAuth } from '@/provider/AuthProvider';
-
-import { NewTask } from "@/components/AddTaskBottomSheet";
 
 export type Task = {
     id: number
@@ -11,20 +9,42 @@ export type Task = {
     task_description: string
     isCompleted: boolean
     created_at: Date | null
+    module_id: number | null
+}
+
+export type Module = {
+    id: number
+    module_title: string
+    colour: string
+    module_description: string
+    user_id: string
 }
 
 type TaskListItem = {
     tasks: Task[];
+    modules: Module[];
+    getModule: () => void;
     getTasks: () => void;
-    // addTask: (task: Task) => void;
-    addTask: (task_name: Task['task_name'], task_description: Task['task_description']) => void;
+    addModule: (
+        module_title: Module['module_title'],
+        module_description: Module['module_description'],
+        colour: Module['colour']
+    ) => void;
+    addTask: (
+        task_name: Task['task_name'],
+        task_description: Task['task_description'],
+        module_id: Task['module_id']
+    ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
 };
 
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
+    modules: [],
+    getModule: () => {},
     getTasks: () => {},
+    addModule: () => {},
     addTask: () => {},
     onCheckPressed: () => {},
     onDelete: () => {}
@@ -33,23 +53,77 @@ const TaskListContext = createContext<TaskListItem>({
 const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const [taskList, setTaskList] = useState<Task[]>([]);
+    const [moduleList, setModuleList] = useState<Module[]>([])
+
+    // task with module
+    // const getModule = async () => {
+    //     const { data:moduleList } = await supabase
+    //         .from('tasks')
+    //         .select(`
+    //             task_name,
+    //             task_description,
+    //             modules (
+    //                 module_title
+    //             )
+    //         `)
+    //     console.log('module: ', moduleList);
+    //     // setModuleList(moduleList!);
+    // }
+
+    const getModule = async () => {
+        const { data: moduleList } = await supabase
+            .from('modules')
+            .select('*')
+        if (moduleList)
+            setModuleList(moduleList!);
+    }
 
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
-            .select ('*')
+            .select ('*, modules(*)')
             .order('created_at', {ascending:false})
         if (taskList) {
             setTaskList(taskList!);
-            // console.log('provider: ', taskList)
+            // console.log('provider: ', taskList);
         }
     }
 
-    const addTask = async (task_name: Task['task_name'], task_description: Task['task_description']) => {
+    const addModule = async (
+        module_title: Module['module_title'],
+        module_description: Module['module_description'],
+        colour: Module['colour']
+    ) => {
+        const { data: modulelist, error } = await supabase
+            .from('modules')
+            .insert({
+                module_title: module_title,
+                module_description: module_description,
+                colour: colour,
+                user_id: user!.id
+            })
+            .select('*')
+            .single()
+        if(error)
+            console.log(error.message)
+        else
+            setModuleList([modulelist!, ...moduleList])
+    }
+
+    const addTask = async (
+        task_name: Task['task_name'],
+        task_description: Task['task_description'],
+        module_id: Task['module_id']
+    ) => {
         // if (task) {
             const { data: tasklist, error } = await supabase
                 .from('tasks')
-                .insert({ task_name: task_name, task_description: task_description, user_id: user!.id })
+                .insert({ 
+                    task_name: task_name,
+                    task_description: task_description,
+                    user_id: user!.id,
+                    module_id: module_id
+                })
                 .select('*')
                 .single()
             if(error)
@@ -118,7 +192,10 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
+            modules: moduleList,
+            getModule,
             getTasks,
+            addModule,
             addTask,
             onCheckPressed,
             onDelete

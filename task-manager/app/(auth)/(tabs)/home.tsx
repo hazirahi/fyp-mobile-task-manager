@@ -3,7 +3,7 @@ import { Session } from '@supabase/supabase-js';
 import { useAuth } from '@/provider/AuthProvider';
 
 import TaskList from "@/components/TaskList";
-import { View, Text, Alert, StyleSheet } from "react-native";
+import { View, Text, Alert, StyleSheet, SectionList } from "react-native";
 import { useEffect, useState, useRef, useMemo } from 'react';
 
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
@@ -12,6 +12,22 @@ import { Ionicons } from '@expo/vector-icons';
 
 import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
 import { Task, useTaskList } from '@/provider/TaskListProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import TaskListItem from '@/components/TaskListItem';
+import { ScrollView } from 'react-native-gesture-handler';
+import ModuleList from '@/components/ModuleList';
+
+const sections = [
+    {
+        type: 'overview',
+        title: 'Hello'
+    },
+    {
+        type: 'dailyTasks',
+        title: 'dailytasks',
+        data: TaskListItem
+    }
+]
 
 export default function Home (){
     const { user } = useAuth();
@@ -21,10 +37,49 @@ export default function Home (){
     const handleOpenPress = () => bottomSheetRef.current?.expand();
 
     const [taskList, setTaskList] = useState<Array<Task>>([]);
-    const { tasks } = useTaskList();
+    const { tasks, getModule, getTasks, onCheckPressed, onDelete } = useTaskList();
+
+    const [loading, setLoading] = useState(true);
+
+    const [name, setName] = useState('');
+
+    useEffect(() => {
+        if (!user) return;
+
+        getProfile();
+        getModule();
+        getTasks();
+    }, [user]);
+
+
+    // get user's name
+    async function getProfile(){
+        try{
+            setLoading(true)
+            if (!user) throw new Error('no user on session');
+
+            const { data, error, status } = await supabase
+                .from('users')
+                .select(`name`)
+                .eq('id', user.id)
+                .single()
+            if (error && status !== 406){
+                throw error
+            }
+            if (data){
+                setName(data.name)
+            }
+        } catch (error){
+            if (error instanceof Error){
+                Alert.alert(error.message)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View>
                 <TaskList/>
             </View>
@@ -35,7 +90,19 @@ export default function Home (){
                     setTaskList(tasks => [...tasks, newTask])
                 }
             />
-        </View>
+        </SafeAreaView>
+        // <SafeAreaView style={styles.container}>
+        //     <ScrollView>
+        //         <View>
+        //             <Text style={styles.header}>Hello, {name}</Text>
+        //             <ModuleList/>
+        //         </View>
+        //         <View>
+        //             <Text style={styles.header}>Today's tasks</Text>
+        //             <TaskList/>
+        //         </View>
+        //     </ScrollView>
+        // </SafeAreaView>
     );
 }
 
@@ -43,6 +110,12 @@ const styles = StyleSheet.create({
     container: {
         flex:1,
         paddingHorizontal: 20
+    },
+    header: {
+        fontWeight: 'bold',
+        fontSize: 30,
+        paddingTop: 20,
+        paddingBottom: 20
     },
     addTaskBTN: {
         position: 'absolute',
