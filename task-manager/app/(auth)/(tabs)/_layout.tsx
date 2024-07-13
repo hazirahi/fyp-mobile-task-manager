@@ -46,13 +46,14 @@ const TabLayout = () => {
         //   headerShown: false,
         }}
       />
-      {/* <Tabs.Screen
-        name="addModule"
+      <Tabs.Screen
+        name="[id]"
         options={{
           href: null,
+          tabBarShowLabel: false,
           headerShown: false,
         }}
-      /> */}
+      />
     </Tabs>
     
   );

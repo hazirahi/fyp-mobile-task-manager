@@ -35,23 +35,9 @@ export default function ModuleList () {
                 )}
                 ListFooterComponent={
                     <View>
-                        {/* <Modal
-                        style={{paddingTop:100}}
-                            animationType="slide"
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                Alert.alert('modal closed');
-                                setModalVisible(!modalVisible)
-;                            }}
-                        >
-                            <TouchableOpacity onPress={() => {setModalVisible(!modalVisible)}} style={{alignSelf: 'center', paddingTop: 100}}>
-                                <Text>go bakc</Text>
-                            </TouchableOpacity>
-                        </Modal> */}
                         <TouchableOpacity
                             style={styles.addContainer}
                             onPress={()=>router.navigate('(modals)/addModule')}
-                            // onPress={() => setModalVisible(!modalVisible)}
                         >
                             <MaterialIcons name="add" size={65} color="lightgray" style={{alignSelf: 'center'}} />
                         </TouchableOpacity>
