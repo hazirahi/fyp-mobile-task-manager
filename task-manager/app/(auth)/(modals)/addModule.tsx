@@ -129,13 +129,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 20,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 6.27,
+        // shadowColor: '#000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 5,
+        // },
+        // shadowOpacity: 0.34,
+        // shadowRadius: 6.27,
     
         elevation: 10,
       },

@@ -10,6 +10,7 @@ export type Task = {
     isCompleted: boolean
     created_at: Date | null
     module_id: number | null
+    category_id: number | null
 }
 
 export type Module = {
@@ -20,11 +21,29 @@ export type Module = {
     user_id: string
 }
 
+export type Category = {
+    id: number
+    category_name: string
+    user_id: string
+}
+
+// export type TaskSection = {
+//     task_id: number
+//     task_name: string
+//     task_description: string
+//     section_id: number
+//     section_name: string
+// }
+
 type TaskListItem = {
     tasks: Task[];
     modules: Module[];
+    categories: Category[];
+    // taskSections: Task[];
     getModule: () => void;
+    getCategory: () => void;
     getTasks: () => void;
+    // getTaskSection: () => void;
     addModule: (
         module_title: Module['module_title'],
         module_description: Module['module_description'],
@@ -33,7 +52,8 @@ type TaskListItem = {
     addTask: (
         task_name: Task['task_name'],
         task_description: Task['task_description'],
-        module_id: Task['module_id']
+        module_id: Task['module_id'],
+        category_id: Task['category_id']
     ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
@@ -42,8 +62,12 @@ type TaskListItem = {
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
     modules: [],
+    categories: [],
+    // taskSections: [],
     getModule: () => {},
+    getCategory: () => {},
     getTasks: () => {},
+    // getTaskSection: () => {},
     addModule: () => {},
     addTask: () => {},
     onCheckPressed: () => {},
@@ -53,41 +77,69 @@ const TaskListContext = createContext<TaskListItem>({
 const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const [taskList, setTaskList] = useState<Task[]>([]);
-    const [moduleList, setModuleList] = useState<Module[]>([])
+    const [moduleList, setModuleList] = useState<Module[]>([]);
+    const [categoryList, setCategoryList] = useState<Category[]>([]);
 
-    // task with module
-    // const getModule = async () => {
-    //     const { data:moduleList } = await supabase
-    //         .from('tasks')
-    //         .select(`
-    //             task_name,
-    //             task_description,
-    //             modules (
-    //                 module_title
-    //             )
-    //         `)
-    //     console.log('module: ', moduleList);
-    //     // setModuleList(moduleList!);
-    // }
+    // const [taskSectionList, setTaskSectionList] = useState<Task[]>([]);
+
 
     const getModule = async () => {
         const { data: moduleList } = await supabase
             .from('modules')
             .select('*')
+            .order('id')
         if (moduleList)
             setModuleList(moduleList!);
+    }
+
+    const getCategory = async () => {
+        const {data: categoryList} = await supabase
+            .from('categories')
+            .select('*')
+        if (categoryList)
+            setCategoryList(categoryList!);
     }
 
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
-            .select ('*, modules(*)')
+            .select (`
+                *,
+                modules(
+                    module_title
+                ),
+                categories(
+                    category_name
+                )
+            `)
             .order('created_at', {ascending:false})
         if (taskList) {
             setTaskList(taskList!);
             // console.log('provider: ', taskList);
         }
     }
+
+    
+    // task with section
+    // const getTaskSection = async () => {
+    //     const { data: taskSectionList } = await supabase
+    //         .from('tasks')
+    //         .select(`
+    //             *,
+    //             modules(
+    //                 module_title
+    //             ),
+    //             sections(
+    //                 section_name
+    //             )
+    //         `)
+    //         .eq('section_id', 3)
+    //         .order('created_at', {ascending:false})
+    //     if (taskSectionList) {
+    //         setTaskSectionList(taskSectionList!);
+    //         // console.log('section: ', taskSectionList);
+    //     }
+    // }
 
     const addModule = async (
         module_title: Module['module_title'],
@@ -113,7 +165,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const addTask = async (
         task_name: Task['task_name'],
         task_description: Task['task_description'],
-        module_id: Task['module_id']
+        module_id: Task['module_id'],
+        category_id: Task['category_id']
     ) => {
         // if (task) {
             const { data: tasklist, error } = await supabase
@@ -122,7 +175,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     task_name: task_name,
                     task_description: task_description,
                     user_id: user!.id,
-                    module_id: module_id
+                    module_id: module_id,
+                    category_id: category_id
                 })
                 .select('*')
                 .single()
@@ -193,8 +247,12 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         <TaskListContext.Provider value={{
             tasks: taskList,
             modules: moduleList,
+            categories: categoryList,
+            // taskSections: taskSectionList,
             getModule,
+            getCategory,
             getTasks,
+            // getTaskSection,
             addModule,
             addTask,
             onCheckPressed,

@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
+import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState } from 'react';
 
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { useTaskList, Task, Module } from '@/provider/TaskListProvider';
+import { useTaskList, Task } from '@/provider/TaskListProvider';
 
 export type Ref = BottomSheet;
 
@@ -13,7 +13,8 @@ type AddTask = {
         newTask: {
             task_name: Task['task_name'],
             task_description: Task['task_description'],
-            module_id: Task['module_id']
+            module_id: Task['module_id'],
+            category_id: Task['category_id']
         }
     ) => void;
 }
@@ -32,25 +33,27 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
         (props:any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []
     );
 
-    const { addTask } = useTaskList();
-    const { modules } = useTaskList();
+    const { addTask, modules, categories } = useTaskList();
 
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
     
     const [taskModule, setTaskModule] = useState<number | null>(null);
+    const [taskCategory, setTaskCategory] = useState<number | null>(null);
 
     const addNewTask = () => {
         onAdd({
             task_name: newTaskTitle,
             task_description: newTaskDesc,
-            module_id: taskModule
+            module_id: taskModule,
+            category_id: taskCategory
         });
-        console.log('addnewtask ', taskModule);
+        console.log('addnewtask ', taskCategory);
         addTask(
             newTaskTitle, 
             newTaskDesc,
-            taskModule
+            taskModule,
+            taskCategory
         );
     };
 
@@ -87,6 +90,18 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                         placeholder='Module'
                         onChange={item => {
                             setTaskModule(item.id);
+                        }}
+                    />
+                </View>
+                <View>
+                    <Dropdown
+                    style={styles.dropdown}
+                        data={categories}
+                        labelField='category_name'
+                        valueField='id'
+                        placeholder='Category'
+                        onChange={item => {
+                            setTaskCategory(item.id);
                         }}
                     />
                 </View>

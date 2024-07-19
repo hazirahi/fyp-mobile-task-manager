@@ -1,10 +1,9 @@
 import { supabase } from '@/config/initSupabase';
 import { useAuth } from '@/provider/AuthProvider';
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, Alert, StyleSheet } from 'react-native';
-import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlatList } from 'react-native-gesture-handler';
 import 'react-native-url-polyfill/auto';
 
 import TaskListItem from './TaskListItem';
@@ -13,7 +12,7 @@ import ModuleList from './ModuleList';
 
 export default function TaskList() {
     const { user } = useAuth();
-    const { tasks, getModule, getTasks, onCheckPressed, onDelete } = useTaskList();
+    const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
@@ -24,6 +23,7 @@ export default function TaskList() {
 
         getProfile();
         getModule();
+        getCategory();
         getTasks();
     }, [user]);
 
