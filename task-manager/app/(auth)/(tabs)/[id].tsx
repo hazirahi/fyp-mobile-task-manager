@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, SectionList } from "react-native";
+import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, Module } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -11,13 +11,44 @@ import BottomSheet from "@gorhom/bottom-sheet";
 
 import TaskListItem from "@/components/TaskListItem";
 import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
-import { useTaskList, Task } from "@/provider/TaskListProvider";
+import { useTaskList, Task, ModuleCat, Category } from "@/provider/TaskListProvider";
 
-//UPDATE SO THAT THIS SCREEN UPDATES IF A TASK IS ADDED IN THE MODULE SCREEN
+const getCatNames = async (categoryIds: number[]) => {
+    const {data: categories, error} = await supabase
+        .from('categories')
+        .select('id, category_name')
+        .in('id', categoryIds)
+    if (error)
+        throw error
+    if (!categories)
+        return {};
+
+    return categories.reduce((acc: { [id: number]: string}, category) => {
+        acc[category.id] = category.category_name;
+        return acc;
+    }, {});
+}
+
+// const getModuleTasks = async (taskIds: number[]) => {
+//     const {data: moduletasks, error} = await supabase
+//         .from('tasks')
+//         .select('*')
+//         .in('id', taskIds);
+//     if (error)
+//         throw error;
+//     if (!moduletasks)
+//         return {};
+
+//     return moduletasks.reduce((acc: { [id: number]: string }, task) => {
+//         acc[task.id] = task.task_name;
+//         return acc;
+//     }, {});
+// };
+
 
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
-    const { onCheckPressed, onDelete, getTasks } = useTaskList();
+    const { onCheckPressed, onDelete, getTasks, tasks} = useTaskList();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const handleOpenPress = () => bottomSheetRef.current?.expand();
@@ -29,35 +60,81 @@ const ModuleDetail = () => {
 
     const [taskCategoryList, setTaskCategoryList] = useState<any[]>([]);
 
-    useEffect(() => {
-        console.log(id)
-        id&&getModuleInfo();
-        id&&getModuleDetail();
-        getTasks();
-    }, [id])
+    const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
+    const [catNames, setCatNames] = useState({});
+    const [taskNames,setTaskNames] = useState<{ [id: number]: string }>({});
 
-    const getModuleDetail = async () => {
-        const { data: modules, error } = await supabase
-            .from('modules')
-            .select(`
-                *, 
-                tasks(*, categories(*))
-            `)
-            .eq('id', id)
-        if (modules){
+    
+    
+
+    useEffect(() => {
+        console.log(id);
+        id&&getModuleInfo();
+        getModuleCat();
+        // id&&getModuleDetail();
+        // getTasks();
+    }, [id]);
+
+    useEffect(() => {
+        const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id)));
+        getCatNames(categoryIds).then((catNames) => setCatNames(catNames));
+
+        const taskIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.task_id)));
+        // getModuleTasks(taskIds).then((taskNames) => setTaskNames(taskNames));
+    },[moduleCatList]);
+
+    const getModuleCat = async () => {
+        const {data: moduleCatList} = await supabase
+            .from('module_categories')
+            .select(`*, categories(*), tasks(*)`)
+            .eq('module_id', id)
+        if (moduleCatList)
+            setModuleCatList(moduleCatList!);
+    }
+
+    
+
+    // console.log('modulecatlist: ', moduleCatList);
+
+    const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
+        title: catName,
+        data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
+    }));
+
+    const renderItem: SectionListRenderItem<ModuleCat> = ({ item }) => {
+        const task = tasks.find((t) => t.id === item.task_id);
+        if (!task)
+            return null;
+
+        const taskwithModuleId: Task = { ...task, module_id: item.module_id};
+        return (
+            <TaskListItem 
+                task={taskwithModuleId} 
+                onCheckPressed={() => onCheckPressed(taskwithModuleId)}
+                onDelete={() => onDelete(taskwithModuleId)}
+            />
+        );
+    };
+
+    // const getModuleDetail = async () => {
+    //     const { data: modules, error } = await supabase
+    //         .from('modules')
+    //         .select('*')
+    //         .eq('id', id)
+    //     if (modules){
             
-            const { data: categories } = await supabase.from('categories').select('*, tasks(*)');
-            const { data: tasks } = await supabase.from('tasks').select('*, categories(*), modules(*)').eq('module_id', id);
+    //         const { data: categories } = await supabase.from('categories').select('*');
+    //         const { data: tasks } = await supabase.from('tasks').select('*').eq('module_id', id);
 
            
-            const catGrouped: any = categories?.map((category: any) => {
-                const items = tasks?.filter((task: any) => category.id === task.category_id);
-                return {...category, data: items}
-            })
-            setTaskCategoryList(catGrouped);
-            
-        }
-    }
+    //         const catGrouped: any = categories?.map((category: any) => {
+    //             const items = tasks?.filter((task: Task) => category.id === task.category_id);
+    //             return {...category, data: items}
+    //         })
+    //         setTaskCategoryList(catGrouped);
+    //         console.log(taskCategoryList);
+    //     }
+    // }
 
     const getModuleInfo = async () => {
         const { data: modules, error } = await supabase
@@ -87,19 +164,22 @@ const ModuleDetail = () => {
                 <View>
                     <SectionList
                         contentContainerStyle={{gap: 15}}
-                        sections={taskCategoryList}
-                        renderItem={({ item: task }) => (
-                            // <TouchableOpacity>
-                            //     <Text >{task.task_name}</Text>
-                            // </TouchableOpacity>
-                            <TaskListItem 
-                                    task={task}
-                                    onCheckPressed={() => onCheckPressed(task)}
-                                    onDelete={() => onDelete(task)}
-                            />
-                        )}
+                        sections={sections}
+                        renderItem={renderItem
+                        //     ({ item: task }) => (
+                        //     // <TouchableOpacity>
+                        //     //     <Text >{taskNames[task.task_id]}</Text>
+                        //     // </TouchableOpacity>
+                        //     // <TaskListItem 
+                        //     //         task={task}
+                        //     //         onCheckPressed={() => onCheckPressed(task)}
+                        //     //         onDelete={() => onDelete(task)}
+                        //     // />
+                        // )
+                        
+                        }
                         renderSectionHeader={({section: category}) => (
-                            <Text style={styles.header}>{category.category_name}</Text>
+                            <Text style={styles.header}>{category.title}</Text>
                         )}
                         // renderSectionFooter={}
                     />

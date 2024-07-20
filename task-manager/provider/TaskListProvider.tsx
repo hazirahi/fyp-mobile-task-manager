@@ -10,7 +10,6 @@ export type Task = {
     isCompleted: boolean
     created_at: Date | null
     module_id: number | null
-    category_id: number | null
 }
 
 export type Module = {
@@ -27,6 +26,14 @@ export type Category = {
     user_id: string
 }
 
+export type ModuleCat = {
+    id: number
+    module_id: number
+    category_id: number
+    task_id: number
+    user_id: string
+}
+
 // export type TaskSection = {
 //     task_id: number
 //     task_name: string
@@ -39,9 +46,11 @@ type TaskListItem = {
     tasks: Task[];
     modules: Module[];
     categories: Category[];
+    // moduleCat: ModuleCat[];
     // taskSections: Task[];
     getModule: () => void;
     getCategory: () => void;
+    // getModuleCat: () => void;
     getTasks: () => void;
     // getTaskSection: () => void;
     addModule: (
@@ -52,8 +61,7 @@ type TaskListItem = {
     addTask: (
         task_name: Task['task_name'],
         task_description: Task['task_description'],
-        module_id: Task['module_id'],
-        category_id: Task['category_id']
+        module_id: Task['module_id']
     ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
@@ -63,11 +71,11 @@ const TaskListContext = createContext<TaskListItem>({
     tasks: [],
     modules: [],
     categories: [],
-    // taskSections: [],
+    // moduleCat: [],
     getModule: () => {},
     getCategory: () => {},
+    // getModuleCat: () => {},
     getTasks: () => {},
-    // getTaskSection: () => {},
     addModule: () => {},
     addTask: () => {},
     onCheckPressed: () => {},
@@ -78,9 +86,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const [taskList, setTaskList] = useState<Task[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
+    // const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
-
-    // const [taskSectionList, setTaskSectionList] = useState<Task[]>([]);
 
 
     const getModule = async () => {
@@ -100,6 +107,15 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setCategoryList(categoryList!);
     }
 
+    // const getModuleCat = async () => {
+    //     const {data: moduleCatList} = await supabase
+    //         .from('module_categories')
+    //         .select('*')
+    //         .eq('module_id', 'module.id')
+    //     if (moduleCatList)
+    //         setModuleCatList(moduleCatList!);
+    // }
+
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
@@ -107,9 +123,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                 *,
                 modules(
                     module_title
-                ),
-                categories(
-                    category_name
                 )
             `)
             .order('created_at', {ascending:false})
@@ -165,8 +178,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const addTask = async (
         task_name: Task['task_name'],
         task_description: Task['task_description'],
-        module_id: Task['module_id'],
-        category_id: Task['category_id']
+        module_id: Task['module_id']
     ) => {
         // if (task) {
             const { data: tasklist, error } = await supabase
@@ -175,15 +187,35 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     task_name: task_name,
                     task_description: task_description,
                     user_id: user!.id,
-                    module_id: module_id,
-                    category_id: category_id
+                    module_id: module_id
                 })
                 .select('*')
                 .single()
             if(error)
                 console.log(error.message)
             else {
-                setTaskList([tasklist!, ...taskList])
+                //get category_id associated w module_id
+                const { data: module, error: moduleError } = await supabase
+                    .from('module_categories')
+                    .select('category_id')
+                    .eq('module_id', module_id)
+                    .single()
+                if(moduleError)
+                    console.log(moduleError.message)
+                else{
+                    //insert into table
+                    await supabase
+                        .from('module_categories')
+                        .insert({
+                            module_id: module_id,
+                            category_id: module.category_id
+                        })
+                        .select('*')
+                        .single()
+                        
+                    setTaskList([tasklist!, ...taskList])
+                }
+                
             }
         //}
     }
@@ -214,7 +246,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             .single()
         
         setTaskList(taskList.map((x) => (x.id === task.id ? data! : x)))
-
+        console.log('oncheckpressed: ', task);
         if (error) {
             throw error;
         }
@@ -248,9 +280,10 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             tasks: taskList,
             modules: moduleList,
             categories: categoryList,
-            // taskSections: taskSectionList,
+            // moduleCat: moduleCatList,
             getModule,
             getCategory,
+            // getModuleCat,
             getTasks,
             // getTaskSection,
             addModule,

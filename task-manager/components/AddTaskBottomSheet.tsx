@@ -14,7 +14,7 @@ type AddTask = {
             task_name: Task['task_name'],
             task_description: Task['task_description'],
             module_id: Task['module_id'],
-            category_id: Task['category_id']
+            category_id: any
         }
     ) => void;
 }
@@ -49,12 +49,16 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             category_id: taskCategory
         });
         console.log('addnewtask ', taskCategory);
-        addTask(
-            newTaskTitle, 
-            newTaskDesc,
-            taskModule,
-            taskCategory
-        );
+        // addTask(
+        //     newTaskTitle, 
+        //     newTaskDesc,
+        //     taskModule,
+        //     // taskCategory
+        // );
+        const addTask = (id: number, task_name: string, task_description: string, moduleId: number, categoryId: number) => {
+            const task = {id, task_name, task_description, moduleId};
+            const taskCategory = { taskId: task.id, categoryId};
+        }
     };
 
     return (
