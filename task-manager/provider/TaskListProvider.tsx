@@ -34,6 +34,10 @@ export type ModuleCat = {
     user_id: string
 }
 
+export type TaskCat = Task & {
+    category_id: Category['id']
+}
+
 // export type TaskSection = {
 //     task_id: number
 //     task_name: string
@@ -43,7 +47,7 @@ export type ModuleCat = {
 // }
 
 type TaskListItem = {
-    tasks: Task[];
+    tasks: TaskCat[];
     modules: Module[];
     categories: Category[];
     // moduleCat: ModuleCat[];
@@ -59,9 +63,11 @@ type TaskListItem = {
         colour: Module['colour']
     ) => void;
     addTask: (
-        task_name: Task['task_name'],
-        task_description: Task['task_description'],
-        module_id: Task['module_id']
+        task_name: TaskCat['task_name'],
+        task_description: TaskCat['task_description'],
+        module_id: TaskCat['module_id'],
+        category_id: TaskCat['category_id']
+        // task_name: string, task_description: string, moduleId: number, categoryId: number
     ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
@@ -84,9 +90,8 @@ const TaskListContext = createContext<TaskListItem>({
 
 const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
-    const [taskList, setTaskList] = useState<Task[]>([]);
+    const [taskList, setTaskList] = useState<TaskCat[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
-    // const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
 
 
@@ -119,12 +124,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
-            .select (`
-                *,
-                modules(
-                    module_title
-                )
-            `)
+            .select ('*')
             .order('created_at', {ascending:false})
         if (taskList) {
             setTaskList(taskList!);
@@ -175,50 +175,52 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setModuleList([modulelist!, ...moduleList])
     }
 
-    const addTask = async (
-        task_name: Task['task_name'],
-        task_description: Task['task_description'],
-        module_id: Task['module_id']
-    ) => {
-        // if (task) {
-            const { data: tasklist, error } = await supabase
-                .from('tasks')
-                .insert({ 
-                    task_name: task_name,
-                    task_description: task_description,
-                    user_id: user!.id,
-                    module_id: module_id
-                })
-                .select('*')
-                .single()
-            if(error)
-                console.log(error.message)
-            else {
-                //get category_id associated w module_id
-                const { data: module, error: moduleError } = await supabase
-                    .from('module_categories')
-                    .select('category_id')
-                    .eq('module_id', module_id)
-                    .single()
-                if(moduleError)
-                    console.log(moduleError.message)
-                else{
-                    //insert into table
-                    await supabase
-                        .from('module_categories')
-                        .insert({
-                            module_id: module_id,
-                            category_id: module.category_id
-                        })
-                        .select('*')
-                        .single()
+    // const addTask = async (
+    //     // task_name: Task['task_name'],
+    //     // task_description: Task['task_description'],
+    //     // module_id: Task['module_id']
+    //     task_name: string, task_description: string, moduleId: number, categoryId: number
+    // ) => {
+    //     // if (task) {
+    //         const { data: tasklist, error } = await supabase
+    //             .from('tasks')
+    //             .insert({ 
+    //                 task_name: task_name,
+    //                 task_description: task_description,
+    //                 user_id: user!.id,
+    //                 module_id: moduleId,
+    //             })
+    //             .select('*')
+    //             .single()
+    //         if(error)
+    //             console.log(error.message)
+    //         else {
+    //             //get category_id associated w module_id
+    //             const { data: module, error: moduleError } = await supabase
+    //                 .from('module_categories')
+    //                 .select('category_id')
+    //                 .eq('module_id', moduleId)
+    //                 .single()
+    //             if(moduleError)
+    //                 console.log(moduleError.message)
+    //             else{
+    //                 //insert into table
+    //                 await supabase
+    //                     .from('module_categories')
+    //                     .insert({
+    //                         module_id: moduleId,
+    //                         category_id: categoryId,
+    //                         task_id: tasklist!.id
+    //                     })
+    //                     .select('*')
+    //                     .single()
                         
-                    setTaskList([tasklist!, ...taskList])
-                }
+    //                 setTaskList([tasklist!, ...taskList])
+    //             }
                 
-            }
-        //}
-    }
+    //         }
+    //     //}
+    // }
 
     // onPress, complete task
     // async function onCheckPressed({id, isCompleted}: {id: number, isCompleted: boolean}){
@@ -236,6 +238,54 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     //         throw error;
     //     }
     // }
+
+    const addTask = async (
+        task_name: TaskCat['task_name'],
+        task_description: TaskCat['task_description'],
+        moduleId: TaskCat['module_id'],
+        categoryId: TaskCat['category_id']
+    ) => {
+        try {
+            console.log('adding task: ', task_name);
+            const { data: tasklist, error } = await supabase
+                .from('tasks')
+                .insert({ 
+                    task_name: task_name,
+                    task_description: task_description,
+                    user_id: user!.id,
+                    module_id: moduleId,
+                })
+                .select('*')
+                .single()
+            if(error)
+                console.log(error.message)
+            else {
+                console.log('tasklist: ', tasklist);
+                const taskId = tasklist.id;
+                console.log('catid: ', categoryId, moduleId, taskId);
+                const { data: taskcat, error: taskcatError } = await supabase
+                    .from('module_categories')
+                    .insert({
+                        category_id: categoryId,
+                        module_id: moduleId,
+                        task_id: taskId,
+                        user_id: user!.id
+                    })
+                    .select('*')
+                    .single()
+                if(taskcatError)
+                    console.log(taskcatError.message)
+                else{
+                    console.log('taskcat: ', tasklist.task_name);
+                    setTaskList([tasklist, ...taskList]);
+                    
+                }
+            
+            }
+        } catch (error: any) {
+            console.log(error.message)
+        }
+    }
 
     async function onCheckPressed(task:Task){
         const { data, error } = await supabase

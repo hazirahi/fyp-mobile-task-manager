@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import { Task } from "@/provider/TaskListProvider";
+import { TaskCat } from "@/provider/TaskListProvider";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Swipeable } from "react-native-gesture-handler";
 
@@ -24,13 +24,12 @@ const RightActions = ({onDelete} : {onDelete: () => void;}) => {
 };
 
 type TaskListItem = {
-    task: Task;
+    task: TaskCat;
     onCheckPressed: () => void;
     onDelete: () => void;
 }
 
 const TaskListItem = ({task, onCheckPressed, onDelete}: TaskListItem) => {
-
     return (
         <Swipeable
             renderRightActions={() => (

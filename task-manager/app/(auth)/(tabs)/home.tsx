@@ -9,22 +9,23 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import 'react-native-url-polyfill/auto';
 import { Ionicons } from '@expo/vector-icons';
 
-import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
-import { Task, useTaskList } from '@/provider/TaskListProvider';
+import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
+import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TaskListItem from '@/components/TaskListItem';
 
-const categories = [
-    {
-        type: 'overview',
-        title: 'Hello'
-    },
-    {
-        type: 'dailyTasks',
-        title: 'dailytasks',
-        data: TaskListItem
-    }
-]
+
+// const categories = [
+//     {
+//         type: 'overview',
+//         title: 'Hello'
+//     },
+//     {
+//         type: 'dailyTasks',
+//         title: 'dailytasks',
+//         data: TaskListItem
+//     }
+// ]
 
 export default function Home (){
     const { user } = useAuth();
@@ -32,12 +33,18 @@ export default function Home (){
     const bottomSheetRef = useRef<BottomSheet>(null);
     const handleOpenPress = () => bottomSheetRef.current?.expand();
 
-    const [taskList, setTaskList] = useState<Array<Task>>([]);
+    const [taskList, setTaskList] = useState<TaskCat[]>([]);
     const { getModule, getCategory, getTasks } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
+
+    let taskIdCounter = 0;
+
+    const generateTaskId = () => {
+        return ++taskIdCounter;
+    }
 
     useEffect(() => {
         if (!user) return;
@@ -83,23 +90,21 @@ export default function Home (){
             <Ionicons name='add-circle' size={80} color='#7BBF45' onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
-                onAdd={(newTask: Task) => 
-                    setTaskList(tasks => [...tasks, newTask])
+                onAdd={(newTask) => 
+                    // setTaskList(tasks => [...tasks, newTask])
+                    setTaskList(tasks => [...tasks, {
+                        id: generateTaskId(),
+                        user_id: user!.id,
+                        task_name: newTask.task_name,
+                        task_description: newTask.task_description,
+                        isCompleted: false,
+                        created_at: new Date(),
+                        module_id: newTask.module_id,
+                        category_id: newTask.category_id
+                    }])
                 }
             />
         </SafeAreaView>
-        // <SafeAreaView style={styles.container}>
-        //     <ScrollView>
-        //         <View>
-        //             <Text style={styles.header}>Hello, {name}</Text>
-        //             <ModuleList/>
-        //         </View>
-        //         <View>
-        //             <Text style={styles.header}>Today's tasks</Text>
-        //             <TaskList/>
-        //         </View>
-        //     </ScrollView>
-        // </SafeAreaView>
     );
 }
 

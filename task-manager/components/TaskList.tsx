@@ -23,7 +23,7 @@ export default function TaskList() {
 
         getProfile();
         getModule();
-        getCategory();
+        // getCategory();
         getTasks();
     }, [user]);
 
@@ -53,6 +53,7 @@ export default function TaskList() {
             setLoading(false)
         }
     }
+    // console.log('TaskList.tsx: ', tasks);
 
     return (
         <View style={styles.container}>  

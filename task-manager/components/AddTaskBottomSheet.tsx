@@ -1,20 +1,22 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { useTaskList, Task } from '@/provider/TaskListProvider';
+import { useTaskList, Task, Category, TaskCat } from '@/provider/TaskListProvider';
+import { supabase } from '@/config/initSupabase';
+import { useAuth } from '@/provider/AuthProvider';
 
 export type Ref = BottomSheet;
 
-type AddTask = {
+export type AddTask = {
     onAdd: (
         newTask: {
-            task_name: Task['task_name'],
-            task_description: Task['task_description'],
-            module_id: Task['module_id'],
-            category_id: any
+            task_name: TaskCat['task_name'],
+            task_description: TaskCat['task_description'],
+            module_id: TaskCat['module_id'],
+            category_id: TaskCat['category_id']
         }
     ) => void;
 }
@@ -33,13 +35,20 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
         (props:any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []
     );
 
-    const { addTask, modules, categories } = useTaskList();
+    const { modules, categories, addTask } = useTaskList();
+    const { user } = useAuth();
 
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
     
-    const [taskModule, setTaskModule] = useState<number | null>(null);
-    const [taskCategory, setTaskCategory] = useState<number | null>(null);
+    const [taskModule, setTaskModule] = useState<number>(0);
+    const [taskCategory, setTaskCategory] = useState<number>(0);
+    
+    const [taskList, setTaskList] = useState<TaskCat[]>([]);
+
+    useEffect(() => {
+        console.log('tasklist (useeffect): ', taskList);
+    }, [taskList]);
 
     const addNewTask = () => {
         onAdd({
@@ -48,18 +57,89 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             module_id: taskModule,
             category_id: taskCategory
         });
-        console.log('addnewtask ', taskCategory);
-        // addTask(
-        //     newTaskTitle, 
-        //     newTaskDesc,
-        //     taskModule,
-        //     // taskCategory
-        // );
-        const addTask = (id: number, task_name: string, task_description: string, moduleId: number, categoryId: number) => {
-            const task = {id, task_name, task_description, moduleId};
-            const taskCategory = { taskId: task.id, categoryId};
-        }
-    };
+        console.log(newTaskTitle, newTaskDesc, taskModule, taskCategory)
+
+        addTask(
+            newTaskTitle, newTaskDesc, taskModule, taskCategory
+        )
+
+        setNewTaskTitle('');
+        setNewTaskDesc('');
+        setTaskModule(0);
+        innerRef.current?.close();
+
+    }
+
+    // const addTask = async (
+    //     task_name: TaskCat['task_name'],
+    //     task_description: TaskCat['task_description'],
+    //     moduleId: TaskCat['module_id'],
+    //     categoryId: TaskCat['category_id']
+    // ) => {
+    //     try {
+    //         const { data: tasklist, error } = await supabase
+    //             .from('tasks')
+    //             .insert({ 
+    //                 task_name: task_name,
+    //                 task_description: task_description,
+    //                 user_id: user!.id,
+    //                 module_id: moduleId,
+    //             })
+    //             .select('*')
+    //             .single()
+    //         if(error)
+    //             console.log(error.message)
+    //         else {
+    //             console.log('tasklist: ', tasklist);
+    //             const taskId = tasklist.id;
+    //             console.log('catid: ', categoryId, moduleId, taskId);
+    //             const { data: taskcat, error: taskcatError } = await supabase
+    //                 .from('module_categories')
+    //                 .insert({
+    //                     category_id: categoryId,
+    //                     module_id: moduleId,
+    //                     task_id: taskId,
+    //                     user_id: user!.id
+    //                 })
+    //                 .select('*')
+    //                 .single()
+    //             if(taskcatError)
+    //                 console.log(taskcatError.message)
+    //             else{
+    //                 console.log('taskcat: ', taskcat);
+    //                 setTaskList([taskcat, ...taskList]);
+    //             }
+            
+    //         }
+    //     } catch (error: any) {
+    //         console.log(error.message)
+    //     }
+    // }
+
+    // const addNewTask = () => {
+    //     onAdd({
+    //         task_name: newTaskTitle,
+    //         task_description: newTaskDesc,
+    //         module_id: taskModule,
+    //         category_id: taskCategory
+    //     });
+    //     console.log('addnewtask ', taskCategory);
+    //     addTask(
+    //         newTaskTitle, 
+    //         newTaskDesc,
+    //         taskModule,
+    //         taskCategory
+    //     );
+        // const addTask = async (id: number, task_name: string, task_description: string, moduleId: number, categoryId: number) => {
+        //     // const task = {id, task_name, task_description, moduleId};
+        //     // const taskCategory = { taskId: task.id, categoryId};
+
+        //     const {}
+
+
+        // }
+
+    //};
 
     return (
         <BottomSheet
@@ -116,10 +196,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     style={styles.addButton}
                     onPress={() => {
                         addNewTask();
-                        setNewTaskTitle('');
-                        setNewTaskDesc('');
-                        setTaskModule(null);
-                        innerRef.current?.close();
+                        
                     }}
 
                 >

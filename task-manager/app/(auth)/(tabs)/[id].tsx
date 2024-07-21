@@ -11,7 +11,9 @@ import BottomSheet from "@gorhom/bottom-sheet";
 
 import TaskListItem from "@/components/TaskListItem";
 import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
-import { useTaskList, Task, ModuleCat, Category } from "@/provider/TaskListProvider";
+
+import { useTaskList, TaskCat, ModuleCat, Category } from "@/provider/TaskListProvider";
+import { useAuth } from "@/provider/AuthProvider";
 
 const getCatNames = async (categoryIds: number[]) => {
     const {data: categories, error} = await supabase
@@ -49,10 +51,15 @@ const getCatNames = async (categoryIds: number[]) => {
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const { onCheckPressed, onDelete, getTasks, tasks} = useTaskList();
+    const { user } = useAuth();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const handleOpenPress = () => bottomSheetRef.current?.expand();
-    const [taskList, setTaskList] = useState<Array<Task>>([]);
+    const [taskList, setTaskList] = useState<TaskCat[]>([]);
+
+    const handleTaskAdded = (newTask: TaskCat) => {
+        setTaskList([...taskList, newTask]);
+    };
 
     const [ moduleTitle, setModuleTitle ] = useState('');
     const [ moduleDesc, setModuleDesc ] = useState('');
@@ -64,6 +71,11 @@ const ModuleDetail = () => {
     const [catNames, setCatNames] = useState({});
     const [taskNames,setTaskNames] = useState<{ [id: number]: string }>({});
 
+    let taskIdCounter = 0;
+
+    const generateTaskId = () => {
+        return ++taskIdCounter;
+    }
     
     
 
@@ -106,7 +118,7 @@ const ModuleDetail = () => {
         if (!task)
             return null;
 
-        const taskwithModuleId: Task = { ...task, module_id: item.module_id};
+        const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id};
         return (
             <TaskListItem 
                 task={taskwithModuleId} 
@@ -165,19 +177,7 @@ const ModuleDetail = () => {
                     <SectionList
                         contentContainerStyle={{gap: 15}}
                         sections={sections}
-                        renderItem={renderItem
-                        //     ({ item: task }) => (
-                        //     // <TouchableOpacity>
-                        //     //     <Text >{taskNames[task.task_id]}</Text>
-                        //     // </TouchableOpacity>
-                        //     // <TaskListItem 
-                        //     //         task={task}
-                        //     //         onCheckPressed={() => onCheckPressed(task)}
-                        //     //         onDelete={() => onDelete(task)}
-                        //     // />
-                        // )
-                        
-                        }
+                        renderItem={renderItem}
                         renderSectionHeader={({section: category}) => (
                             <Text style={styles.header}>{category.title}</Text>
                         )}
@@ -193,13 +193,23 @@ const ModuleDetail = () => {
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            {/* <Ionicons name='add-circle' size={80} color='#7BBF45' onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            <Ionicons name='add-circle' size={80} color='#7BBF45' onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
-                onAdd={(newTask: Task) => 
-                    setTaskList(tasks => [...tasks, newTask])
+                onAdd={(newTask) => 
+                    // setTaskList(tasks => [...tasks, newTask])
+                    handleTaskAdded({
+                        id: generateTaskId(),
+                        user_id: user!.id,
+                        task_name: newTask.task_name,
+                        task_description: newTask.task_description,
+                        isCompleted: false,
+                        created_at: new Date(),
+                        module_id: newTask.module_id,
+                        category_id: newTask.category_id
+                    })
                 }
-            /> */}
+            />
         </>
     )
 }
