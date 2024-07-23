@@ -62,6 +62,9 @@ type TaskListItem = {
         module_description: Module['module_description'],
         colour: Module['colour']
     ) => void;
+    addCategory: (
+        category_name: Category['category_name']
+    ) => void;
     addTask: (
         task_name: TaskCat['task_name'],
         task_description: TaskCat['task_description'],
@@ -83,6 +86,7 @@ const TaskListContext = createContext<TaskListItem>({
     // getModuleCat: () => {},
     getTasks: () => {},
     addModule: () => {},
+    addCategory: () => {},
     addTask: () => {},
     onCheckPressed: () => {},
     onDelete: () => {}
@@ -173,6 +177,23 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             console.log(error.message)
         else
             setModuleList([modulelist!, ...moduleList])
+    }
+
+    const addCategory = async (
+        category_name: Category['category_name']   
+    ) => {
+        const { data: categorylist, error } = await supabase
+            .from('categories')
+            .insert({
+                category_name: category_name,
+                user_id : user!.id
+            })
+            .select('*')
+            .single()
+        if (error)
+            console.log(error.message)
+        else
+            setCategoryList([categorylist!, ...categoryList])
     }
 
     // const addTask = async (
@@ -287,6 +308,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
+    // check task
     async function onCheckPressed(task:Task){
         const { data, error } = await supabase
             .from('tasks')
@@ -303,17 +325,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     }
 
     // delete task
-    // async function onDelete(id: string){
-    //     const { error } = await supabase
-    //         .from('tasks')
-    //         .delete()
-    //         .eq('id', id)
-    //     if (error) 
-    //         console.log('error', error)
-    //     else
-    //         setTaskList(taskList.filter((x) => x.id !== Number(id)))
-    // }
-
     async function onDelete(task:Task){
         const { error } = await supabase
             .from('tasks')
@@ -337,6 +348,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             getTasks,
             // getTaskSection,
             addModule,
+            addCategory,
             addTask,
             onCheckPressed,
             onDelete

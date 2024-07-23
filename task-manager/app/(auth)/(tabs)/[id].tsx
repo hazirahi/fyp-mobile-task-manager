@@ -104,10 +104,6 @@ const ModuleDetail = () => {
             setModuleCatList(moduleCatList!);
     }
 
-    
-
-    // console.log('modulecatlist: ', moduleCatList);
-
     const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
         title: catName,
         data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
@@ -161,6 +157,7 @@ const ModuleDetail = () => {
         }
     }
 
+    
     return (
         <>
             <SafeAreaView style={{paddingHorizontal: 20}}>
@@ -186,7 +183,7 @@ const ModuleDetail = () => {
                 </View>
                 <View>
                     <TouchableOpacity 
-                        onPress={()=>router.navigate('(modals)/addCategory')}
+                        onPress={()=>router.push('(modals)/addCategory')}
                         style={{backgroundColor: 'lightpink', borderRadius: 20, padding: 10, alignItems: 'center'}}
                     >
                         <Text>add category</Text>
