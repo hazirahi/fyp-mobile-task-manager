@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, Module } from "react-native";
+import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, Module, FlatList, ListRenderItem } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -14,6 +14,7 @@ import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
 
 import { useTaskList, TaskCat, ModuleCat, Category } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
+import CategoryList from "@/components/CategoryList";
 
 const getCatNames = async (categoryIds: number[]) => {
     const {data: categories, error} = await supabase
@@ -50,7 +51,7 @@ const getCatNames = async (categoryIds: number[]) => {
 
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
-    const { onCheckPressed, onDelete, getTasks, tasks} = useTaskList();
+    const { onCheckPressed, onDelete, tasks} = useTaskList();
     const { user } = useAuth();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
@@ -61,15 +62,18 @@ const ModuleDetail = () => {
         setTaskList([...taskList, newTask]);
     };
 
+    // const [layoutType, setLayoutType] = useState('vertical');
+
+    // const handleLayoutChange = () => {
+    //     setLayoutType(layoutType === 'vertical' ? 'horizontal' : 'vertical');
+    // }
+
     const [ moduleTitle, setModuleTitle ] = useState('');
     const [ moduleDesc, setModuleDesc ] = useState('');
     const [ moduleColour, setModuleColour ] = useState('');
 
-    const [taskCategoryList, setTaskCategoryList] = useState<any[]>([]);
-
     const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
-    const [catNames, setCatNames] = useState({});
-    const [taskNames,setTaskNames] = useState<{ [id: number]: string }>({});
+    const [catNames, setCatNames] = useState<{[id:number]:string}>({});
 
     let taskIdCounter = 0;
 
@@ -77,8 +81,6 @@ const ModuleDetail = () => {
         return ++taskIdCounter;
     }
     
-    
-
     useEffect(() => {
         console.log(id);
         id&&getModuleInfo();
@@ -109,6 +111,7 @@ const ModuleDetail = () => {
         data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
     }));
 
+
     const renderItem: SectionListRenderItem<ModuleCat> = ({ item }) => {
         const task = tasks.find((t) => t.id === item.task_id);
         if (!task)
@@ -123,6 +126,7 @@ const ModuleDetail = () => {
             />
         );
     };
+
 
     // const getModuleDetail = async () => {
     //     const { data: modules, error } = await supabase
@@ -163,11 +167,20 @@ const ModuleDetail = () => {
             <SafeAreaView style={{paddingHorizontal: 20}}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View>
+                        {/* change to text input so that users can edit module */}
                         <Text style={styles.header}>{moduleTitle}</Text>
                         <Text style={styles.description}>{moduleDesc}</Text>
                     </View>
                     <TouchableOpacity>
                         <FontAwesome name="circle" size={70} color={moduleColour} />
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    {/* <TouchableOpacity onPress={handleLayoutChange}>
+                        <Text>horizontal</Text>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity>
+                        <Text>Notes</Text>
                     </TouchableOpacity>
                 </View>
                 <View>
@@ -181,6 +194,11 @@ const ModuleDetail = () => {
                         // renderSectionFooter={}
                     />
                 </View>
+                {/* <CategoryList
+                    moduleCatList={moduleCatList}
+                    catNames={catNames}
+                    tasks={tasks}
+                /> */}
                 <View>
                     <TouchableOpacity 
                         onPress={()=>router.push('(modals)/addCategory')}

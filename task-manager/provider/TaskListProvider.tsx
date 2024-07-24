@@ -38,6 +38,19 @@ export type TaskCat = Task & {
     category_id: Category['id']
 }
 
+export type Note = {
+    id: number
+    note_title: string
+    note_text: string
+    module_id: number
+    user_id: string
+
+}
+
+export type NoteMod = Note & {
+    modules: Module[];
+}
+
 // export type TaskSection = {
 //     task_id: number
 //     task_name: string
@@ -50,12 +63,14 @@ type TaskListItem = {
     tasks: TaskCat[];
     modules: Module[];
     categories: Category[];
+    notes: NoteMod[];
     // moduleCat: ModuleCat[];
     // taskSections: Task[];
     getModule: () => void;
     getCategory: () => void;
     // getModuleCat: () => void;
     getTasks: () => void;
+    getNotes: () => void;
     // getTaskSection: () => void;
     addModule: (
         module_title: Module['module_title'],
@@ -80,11 +95,13 @@ const TaskListContext = createContext<TaskListItem>({
     tasks: [],
     modules: [],
     categories: [],
+    notes: [],
     // moduleCat: [],
     getModule: () => {},
     getCategory: () => {},
     // getModuleCat: () => {},
     getTasks: () => {},
+    getNotes: () => {},
     addModule: () => {},
     addCategory: () => {},
     addTask: () => {},
@@ -97,6 +114,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
+    const [noteList, setNoteList] = useState<NoteMod[]>([]);
 
 
     const getModule = async () => {
@@ -134,6 +152,16 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setTaskList(taskList!);
             // console.log('provider: ', taskList);
         }
+    }
+
+    const getNotes = async () => {
+        const { data: noteList, error } = await supabase
+            .from('notes')
+            .select('*, modules(*)')
+        if (error)
+            console.log(error.message)
+        else
+            setNoteList(noteList!);
     }
 
     
@@ -341,11 +369,13 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             tasks: taskList,
             modules: moduleList,
             categories: categoryList,
+            notes: noteList,
             // moduleCat: moduleCatList,
             getModule,
             getCategory,
             // getModuleCat,
             getTasks,
+            getNotes,
             // getTaskSection,
             addModule,
             addCategory,

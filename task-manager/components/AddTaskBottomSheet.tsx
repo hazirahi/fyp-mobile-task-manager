@@ -47,7 +47,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
 
     useEffect(() => {
-        console.log('tasklist (useeffect): ', taskList);
+        // console.log('tasklist (useeffect): ', taskList);
     }, [taskList]);
 
     const addNewTask = () => {

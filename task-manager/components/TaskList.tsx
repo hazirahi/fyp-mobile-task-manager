@@ -56,17 +56,8 @@ export default function TaskList() {
     // console.log('TaskList.tsx: ', tasks);
 
     return (
-        <View style={styles.container}>  
-            {/* <Text>tasklist</Text>
-            
-            <View>
-                <Text style={styles.header}>Hello, {name}</Text>
-                <View style={styles.tasklistContainer}>
-                    <ModuleList/>
-                </View>
-            </View> */}
+        <View style={styles.container}>
             <View style={styles.bottomContainer}>
-                {/* <Text style={styles.header}>Today's tasks</Text> */}
                 <View style={styles.tasklistContainer}>
                     <FlatList
                         style={styles.tasklist}
