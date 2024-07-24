@@ -1,20 +1,19 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, Module, FlatList, ListRenderItem } from "react-native";
+import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { router, useLocalSearchParams } from "expo-router";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "@/config/initSupabase";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import TaskListItem from "@/components/TaskListItem";
 import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
 
-import { useTaskList, TaskCat, ModuleCat, Category } from "@/provider/TaskListProvider";
+import { useTaskList, TaskCat, ModuleCat } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
-import CategoryList from "@/components/CategoryList";
 
 const getCatNames = async (categoryIds: number[]) => {
     const {data: categories, error} = await supabase
@@ -51,6 +50,7 @@ const getCatNames = async (categoryIds: number[]) => {
 
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
+    const [loading, setLoading] = useState(true);
     const { onCheckPressed, onDelete, tasks} = useTaskList();
     const { user } = useAuth();
 
@@ -85,8 +85,6 @@ const ModuleDetail = () => {
         console.log(id);
         id&&getModuleInfo();
         getModuleCat();
-        // id&&getModuleDetail();
-        // getTasks();
     }, [id]);
 
     useEffect(() => {
@@ -161,25 +159,71 @@ const ModuleDetail = () => {
         }
     }
 
-    
+    async function updateModule({
+        moduleTitle,
+        moduleDesc,
+        moduleColour
+    } : {
+        moduleTitle: string
+        moduleDesc: string
+        moduleColour: string
+    }) {
+        try {
+            setLoading(true);
+            if (!user)
+                throw new Error('no user on session')
+            const updates = {
+                user_id: user.id,
+                id: id,
+                module_title: moduleTitle,
+                module_description: moduleDesc,
+                colour: moduleColour
+            }
+            
+            console.log(updates)
+            
+            const { error } = await supabase
+                .from('modules')
+                .upsert(updates)
+            if (error)
+                throw error
+        } catch (error) {
+            if (error instanceof Error)
+                alert(error.message)
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <SafeAreaView style={{paddingHorizontal: 20}}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View>
-                        {/* change to text input so that users can edit module */}
-                        <Text style={styles.header}>{moduleTitle}</Text>
-                        <Text style={styles.description}>{moduleDesc}</Text>
+                        <TextInput 
+                            placeholder="module title" 
+                            value={moduleTitle || ''}
+                            onChangeText={(text) => setModuleTitle(text)}
+                            style={styles.header}
+                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
+                        />
+                        <TextInput 
+                            placeholder="module desc"
+                            value={moduleDesc || ''} 
+                            onChangeText={(text) => setModuleDesc(text)} 
+                            style={styles.description} 
+                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
+                        />
                     </View>
                     <TouchableOpacity>
                         <FontAwesome name="circle" size={70} color={moduleColour} />
                     </TouchableOpacity>
                 </View>
-                <View>
+                <View style={{paddingVertical: 5}}>
                     {/* <TouchableOpacity onPress={handleLayoutChange}>
                         <Text>horizontal</Text>
                     </TouchableOpacity> */}
-                    <TouchableOpacity>
+                    <TouchableOpacity style={styles.navBTN}>
                         <Text>Notes</Text>
                     </TouchableOpacity>
                 </View>
@@ -199,7 +243,7 @@ const ModuleDetail = () => {
                     catNames={catNames}
                     tasks={tasks}
                 /> */}
-                <View>
+                <View style={{paddingTop:10}}>
                     <TouchableOpacity 
                         onPress={()=>router.push('(modals)/addCategory')}
                         style={{backgroundColor: 'lightpink', borderRadius: 20, padding: 10, alignItems: 'center'}}
@@ -212,7 +256,6 @@ const ModuleDetail = () => {
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newTask) => 
-                    // setTaskList(tasks => [...tasks, newTask])
                     handleTaskAdded({
                         id: generateTaskId(),
                         user_id: user!.id,
@@ -239,6 +282,12 @@ const styles = StyleSheet.create ({
     description: {
         fontSize: 20,
         paddingBottom: 10
+    },
+    navBTN: {
+        borderColor: 'black',
+        borderWidth: 1.5,
+        borderRadius: 20,
+        padding: 10
     },
     addTaskBTN: {
         position: 'absolute',

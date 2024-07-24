@@ -87,6 +87,11 @@ type TaskListItem = {
         category_id: TaskCat['category_id']
         // task_name: string, task_description: string, moduleId: number, categoryId: number
     ) => void;
+    addNote: (
+        note_title: Note['note_title'],
+        note_text: Note['note_text'],
+        module_id: Note['module_id']
+    ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
 };
@@ -105,6 +110,7 @@ const TaskListContext = createContext<TaskListItem>({
     addModule: () => {},
     addCategory: () => {},
     addTask: () => {},
+    addNote: () => {},
     onCheckPressed: () => {},
     onDelete: () => {}
 });
@@ -336,6 +342,28 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
+    //add note
+    const addNote = async (
+        note_title: Note['note_title'],
+        note_text: Note['note_text'],
+        module_id: Note['module_id']
+    ) => {
+        const { data: notelist, error } = await supabase
+            .from('notes')
+            .insert({
+                note_title: note_title,
+                note_text: note_text,
+                module_id: module_id,
+                user_id: user!.id
+            })
+            .select('*')
+            .single()
+        if (error)
+            console.log(error.message)
+        else
+            setNoteList([notelist!, ...noteList]);
+    }
+
     // check task
     async function onCheckPressed(task:Task){
         const { data, error } = await supabase
@@ -380,6 +408,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             addModule,
             addCategory,
             addTask,
+            addNote,
             onCheckPressed,
             onDelete
         }}>

@@ -2,10 +2,6 @@ import { View, Text, StyleSheet, FlatList, ListRenderItem } from "react-native";
 
 import { ModuleCat, TaskCat, useTaskList } from "@/provider/TaskListProvider";
 import TaskListItem from "./TaskListItem";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Swipeable } from "react-native-gesture-handler";
-import { supabase } from "@/config/initSupabase";
-import { useEffect, useState } from "react";
 
 interface Props {
     moduleCatList: ModuleCat[];

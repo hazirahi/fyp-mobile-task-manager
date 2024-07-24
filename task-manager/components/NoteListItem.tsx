@@ -18,11 +18,10 @@ const NoteListItem = ({note}: NoteListItem) => {
                 <Text numberOfLines={6}>{note.note_text}</Text>
                 {noteModule.map((module) => (
                     module && (
-                        <View key={module.id}>
+                        <View key={module.id} style={{position: 'absolute', bottom: 15, right: 20}}>
                             <Text style={styles.module}>{module.module_title}</Text>
                         </View>
                     )
-                
                 ))}
             </TouchableOpacity>
         </View>
@@ -44,14 +43,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         color: 'white',
-        paddingBottom: 10
+        paddingBottom: 5
     },
     module: {
-        textAlign: 'right',
         fontWeight: 'bold',
         fontSize: 16,
-        color: 'white',
-        paddingTop: 15
+        color: 'white'
     }
 })
 

@@ -4,8 +4,8 @@ import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { useTaskList, Task, Category, TaskCat } from '@/provider/TaskListProvider';
-import { supabase } from '@/config/initSupabase';
+import { useTaskList, TaskCat } from '@/provider/TaskListProvider';
+
 import { useAuth } from '@/provider/AuthProvider';
 
 export type Ref = BottomSheet;
@@ -149,7 +149,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
-            backgroundStyle={{backgroundColor: 'lightgray'}}
+            backgroundStyle={{backgroundColor: 'dimgray'}}
             keyboardBehavior='fillParent'
         >
             <View style={{flex:1}}>
@@ -165,7 +165,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     onChangeText={setNewTaskDesc}
                     value={newTaskDesc}
                 />
-                <View style={{paddingHorizontal: 20}}>
+                <View style={{paddingHorizontal: 20, flexDirection:'row', gap: 10}}>
                     <Dropdown
                         style={styles.dropdown}
                         data={modules}
@@ -176,8 +176,6 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                             setTaskModule(item.id);
                         }}
                     />
-                </View>
-                <View>
                     <Dropdown
                     style={styles.dropdown}
                         data={categories}
@@ -190,7 +188,6 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     />
                 </View>
             </View> 
-            
             <View style={{padding: 20}}>
                 <TouchableOpacity
                     style={styles.addButton}
@@ -198,7 +195,6 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                         addNewTask();
                         
                     }}
-
                 >
                     <Text style={{padding: 10, paddingHorizontal: 25, color: 'white'}}>Add Task</Text>
                 </TouchableOpacity>
@@ -209,8 +205,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
 
 const styles = StyleSheet.create({
     input: {
-        paddingLeft: 20,
-        backgroundColor: 'dimgray'
+        paddingLeft: 20
 	},
     title: {
         paddingTop: 25,
@@ -223,7 +218,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     dropdown: {
-        backgroundColor: 'red',
+        backgroundColor: '#ef8518',
         padding: 10,
         borderRadius: 20,
         width: '40%',
