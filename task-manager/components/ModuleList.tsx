@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'lightgray'
     },
     header: {
-        fontWeight: 'bold',
+        fontWeight: '600',
         fontSize: 23,
         paddingTop: 20,
         paddingBottom: 15

@@ -27,9 +27,10 @@ type TaskListItem = {
     task: TaskCat;
     onCheckPressed: () => void;
     onDelete: () => void;
+    onTaskPressed: () => void;
 }
 
-const TaskListItem = ({task, onCheckPressed, onDelete}: TaskListItem) => {
+const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListItem) => {
     return (
         <Swipeable
             renderRightActions={() => (
@@ -38,13 +39,14 @@ const TaskListItem = ({task, onCheckPressed, onDelete}: TaskListItem) => {
         >
             <View style={styles.taskContainer}>
                 <Text
+                    onPress={onTaskPressed}
                     style={[styles.taskTitle, {
                         textDecorationLine: task.isCompleted
                         ? 'line-through'
                         : 'none',
                         color: task.isCompleted
-                        ? '#B8BBD3'
-                        : 'white',
+                        ? 'dimgray'
+                        : 'black',
                     },]}
                 >
                     {task.task_name}
@@ -59,9 +61,10 @@ const TaskListItem = ({task, onCheckPressed, onDelete}: TaskListItem) => {
                     size={24}
                     color={
                         task.isCompleted
-                        ? '#B8BBD3'
-                        : 'white'
+                        ? '#dimgray'
+                        : 'dimgray'
                     }
+                    
                 />
             </View>
         </Swipeable>
@@ -72,15 +75,15 @@ const styles = StyleSheet.create({
     taskContainer: {
         padding:15,
         paddingVertical: 20,
-        backgroundColor: 'gray',
-        borderRadius: 15,
+        backgroundColor: 'lightgray',
+        // borderWidth: 1,
+        borderRadius: 22,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
     taskTitle: {
-        color: 'black',
         fontSize: 17,
-        fontWeight: 600
+        fontWeight: '400'
     }
 })
 

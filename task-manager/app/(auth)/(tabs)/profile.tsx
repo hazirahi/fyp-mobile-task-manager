@@ -86,10 +86,22 @@ export default function Account (){
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={{backgroundColor: 'lightpink', padding: 15, paddingBottom: 50, borderRadius: 20}}>
+                <View>
+                    <Avatar 
+                        size={130}
+                        url={avatarUrl}
+                        onUpload={(url:string) => {
+                            setAvatarUrl(url)
+                            updateProfile({ name, email, avatar_url: url})
+                        }}
+                    />
+                </View>
+            </View>
             <TouchableOpacity style={styles.settingsBTN}>
                 <Ionicons name="settings" size={35} color="black" />
             </TouchableOpacity>
-            <View style={styles.profileimg}>
+            {/* <View style={styles.profileimg}>
                 <Avatar 
                     size={130}
                     url={avatarUrl}
@@ -104,7 +116,7 @@ export default function Account (){
             </View>
             <View style={{paddingTop: 5}}>
                 <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
-            </View>
+            </View> */}
         </SafeAreaView>
     );
 }

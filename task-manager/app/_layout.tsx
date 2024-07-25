@@ -1,9 +1,12 @@
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
 import TaskListProvider from '@/provider/TaskListProvider';
+import { useFonts } from 'expo-font';
 
-import { Slot, useSegments, useRouter } from 'expo-router';
+import { Slot, useSegments, useRouter, SplashScreen } from 'expo-router';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
     const { session, initialized } = useAuth();
@@ -27,6 +30,19 @@ const InitialLayout = () => {
 };
 
 const RootLayout = () => {
+    const [loaded, error] = useFonts({
+        'PlayfairDisplay': require('../assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf'),
+    });
+
+    useEffect(() => {
+        if (loaded || error) {
+            SplashScreen.hideAsync();
+        }
+    }, [loaded, error]);
+
+    if (!loaded && !error) {
+        return null;
+    }
     return (
         <GestureHandlerRootView>
             <AuthProvider>

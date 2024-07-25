@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 30,
         paddingTop: 20,
-        paddingBottom: 20
+        paddingBottom: 20,
+        fontFamily: 'PlayfairDisplay'
     },
     addNoteBTN: {
         position: 'absolute',

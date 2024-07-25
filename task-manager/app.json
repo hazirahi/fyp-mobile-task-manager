@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -28,7 +28,12 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-font", {
+          "fonts" : ["./assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

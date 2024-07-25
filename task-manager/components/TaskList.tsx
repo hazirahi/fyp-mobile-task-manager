@@ -10,13 +10,16 @@ import TaskListItem from './TaskListItem';
 import { useTaskList } from '@/provider/TaskListProvider';
 import ModuleList from './ModuleList';
 
+
 export default function TaskList() {
     const { user } = useAuth();
-    const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete } = useTaskList();
+    const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
-
+    
     const [name, setName] = useState('');
+
+    const date = new Date().toDateString();
 
     useEffect(() => {
         if (!user) return;
@@ -53,7 +56,7 @@ export default function TaskList() {
             setLoading(false)
         }
     }
-    // console.log('TaskList.tsx: ', tasks);
+    
 
     return (
         <View style={styles.container}>
@@ -67,9 +70,10 @@ export default function TaskList() {
                         contentContainerStyle={{gap:15}}
                         ListHeaderComponent={
                             <View>
-                                <Text style={styles.header}>Hello, {name}</Text>
+                                <Text style={[styles.header, {fontFamily: 'PlayfairDisplay', fontSize: 40, paddingTop: 10}]}>Hello, {name}</Text>
+                                <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text>
                                 <ModuleList/>
-                                <Text style={styles.header}>Today's tasks</Text>
+                                <Text style={[styles.header, {fontSize: 30}]}>Today's tasks</Text>
                             </View>
                             
                         }
@@ -78,6 +82,7 @@ export default function TaskList() {
                                 task={task}
                                 onCheckPressed={() => onCheckPressed(task)}
                                 onDelete={() => onDelete(task)}
+                                onTaskPressed={() => onTaskPressed(task)}
                             />
                         )}
                     />
@@ -85,14 +90,14 @@ export default function TaskList() {
             </View>
         </View>
     );
+
 };
 
 const styles = StyleSheet.create({
     container: {
     },
     header: {
-        fontWeight: 'bold',
-        fontSize: 30,
+        fontWeight: '600',
         paddingTop: 20,
         paddingBottom: 5
     },

@@ -94,6 +94,7 @@ type TaskListItem = {
     ) => void;
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
+    onTaskPressed: (task: Task) => void;
 };
 
 const TaskListContext = createContext<TaskListItem>({
@@ -112,7 +113,8 @@ const TaskListContext = createContext<TaskListItem>({
     addTask: () => {},
     addNote: () => {},
     onCheckPressed: () => {},
-    onDelete: () => {}
+    onDelete: () => {},
+    onTaskPressed: () => {}
 });
 
 const TaskListProvider = ({ children }: PropsWithChildren) => {
@@ -392,6 +394,11 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setTaskList(taskList.filter((x) => x.id !== Number(task.id)))
     }
 
+    //edit task
+    async function onTaskPressed(task:Task){
+        console.log('ontaskpressed')
+    }
+
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
@@ -410,7 +417,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             addTask,
             addNote,
             onCheckPressed,
-            onDelete
+            onDelete,
+            onTaskPressed
         }}>
             {children}
         </TaskListContext.Provider>
