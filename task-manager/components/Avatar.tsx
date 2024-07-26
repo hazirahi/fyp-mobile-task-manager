@@ -114,11 +114,12 @@ const styles = StyleSheet.create({
       maxWidth: '100%'
     },
     image: {
-        width: 120,
-        height: 140,
-      objectFit: 'cover',
-      paddingTop: 0,
-    //   borderRadius: 200 / 2
+        // width: 115,
+        // height: 150,
+        objectFit: 'cover',
+        paddingTop: 0,
+        borderWidth:1,
+        borderRadius: 200 / 2
     },
     noImage: {
       backgroundColor: '#333',

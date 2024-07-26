@@ -8,6 +8,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Notes() {
     const { user } = useAuth();
@@ -33,13 +34,17 @@ export default function Notes() {
 
     return(
         <SafeAreaView style={styles.container}>
-            <View>
+            <LinearGradient
+                colors={['#A6F511', '#D5FF61', '#F6FF78', '#FFFFFF']}
+                style={styles.background}
+            />
+            <View style={{paddingHorizontal: 20}}>
                 <Text style={styles.header}>Notes</Text>
             </View>
             <View>
                 <NoteList/>
             </View>
-            <Ionicons name='add-circle' size={80} color={'lightblue'} onPress={handleOpenPress} style={styles.addNoteBTN} />
+            <Ionicons name='add-circle' size={80} color={'#0084FF'} onPress={handleOpenPress} style={styles.addNoteBTN} />
             <AddNoteBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newNote) =>
@@ -60,14 +65,21 @@ export default function Notes() {
 const styles = StyleSheet.create({
     container: {
         flex:1,
-        paddingHorizontal: 20
+        backgroundColor: 'white'
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 730
     },
     header: {
-        fontWeight: 'bold',
-        fontSize: 30,
-        paddingTop: 20,
+        fontSize: 50,
+        fontWeight: '600',
+        paddingTop: 10,
         paddingBottom: 20,
-        fontFamily: 'PlayfairDisplay'
+        fontFamily: 'EBGaramond'
     },
     addNoteBTN: {
         position: 'absolute',

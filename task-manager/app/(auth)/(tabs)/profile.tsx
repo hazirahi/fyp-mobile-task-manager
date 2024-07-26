@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 
 import { supabase } from "@/config/initSupabase";
 import { useAuth } from '@/provider/AuthProvider';
-
 import Avatar from '@/components/Avatar';
+
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 //https://supabase.com/docs/guides/getting-started/tutorials/with-expo-react-native?queryGroups=auth-store&auth-store=secure-store
 
@@ -86,8 +87,8 @@ export default function Account (){
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{backgroundColor: 'lightpink', padding: 15, paddingBottom: 50, borderRadius: 20}}>
-                <View>
+            {/* <View style={{backgroundColor: 'lightpink', padding: 15, paddingBottom: 20, borderRadius: 10, flexDirection: 'row'}}>
+                <View >
                     <Avatar 
                         size={130}
                         url={avatarUrl}
@@ -97,33 +98,85 @@ export default function Account (){
                         }}
                     />
                 </View>
-            </View>
-            <TouchableOpacity style={styles.settingsBTN}>
-                <Ionicons name="settings" size={35} color="black" />
-            </TouchableOpacity>
-            {/* <View style={styles.profileimg}>
-                <Avatar 
-                    size={130}
-                    url={avatarUrl}
-                    onUpload={(url:string) => {
-                        setAvatarUrl(url)
-                        updateProfile({ name, email, avatar_url: url})
-                    }}
-                />
-            </View>
-            <View style={{paddingTop: 20}}>
-                <TextInput placeholder='Your Name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
-            </View>
-            <View style={{paddingTop: 5}}>
-                <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                <View style={{paddingHorizontal: 20, paddingTop: 70}}>
+                    <View style={{flexDirection: 'row', paddingTop: 25}}>
+                        <View style={{paddingRight: 15}}>
+                            <View>
+                                <Text style={{fontSize: 10}}>NAME</Text>
+                                <Text style={{fontWeight:500, fontSize:14}}>{name}</Text>
+                            </View>
+                            <View>
+                                <Text style={{fontSize: 10}}>SCHOOL</Text>
+                                <Text style={{fontWeight:500, fontSize:14}}>insert school</Text>
+                            </View>
+                        </View>
+                        <View>
+                            <View>
+                                <Text style={{fontSize: 10}}>DATE OF BIRTH</Text>
+                                <Text style={{fontWeight:500, fontSize:14}}>insert dob</Text>
+                            </View>
+                            <View>
+                                <Text style={{fontSize: 10}}>IDK</Text>
+                                <Text style={{fontWeight:500, fontSize:14}}>insert idk</Text>
+                            </View>
+                        </View>
+                    </View>
+                    
+                    
+                </View>
+                
             </View> */}
+            <LinearGradient 
+                colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
+                style={styles.background}
+            />
+            {/* <TouchableOpacity style={styles.settingsBTN}>
+                <Ionicons name="settings" size={35} color="black" />
+            </TouchableOpacity> */}
+            <View style={{paddingTop: 30, paddingHorizontal: 20, alignItems: 'center'}}>
+                <View style={styles.card}>
+                    <View style={styles.profileimg}>
+                        <Avatar 
+                            size={130}
+                            url={avatarUrl}
+                            onUpload={(url:string) => {
+                                setAvatarUrl(url)
+                                updateProfile({ name, email, avatar_url: url})
+                            }}
+                        />
+                    </View>
+                    <View style={{paddingTop: 20}}>
+                        <TextInput placeholder='Your Name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                    </View>
+                    <View style={{paddingTop: 5}}>
+                        <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                    </View>
+                </View>
+            </View>
+            
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 40,
+        flex:1,
+        backgroundColor: 'white'
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 730
+    },
+    card: {
+        backgroundColor: '#A6F511',
+        padding: 20,
+        height: 250,
+        width: 180,
+        borderRadius: 10,
+        borderWidth: 1
     },
     settingsBTN: {
         position: 'absolute',
@@ -135,7 +188,6 @@ const styles = StyleSheet.create({
     },
     input: {
         alignSelf: 'center',
-        color: 'black',
-        backgroundColor: 'gray'
+        color: 'black'
     },
 })

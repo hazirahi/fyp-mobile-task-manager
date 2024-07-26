@@ -68,7 +68,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
-            backgroundStyle={{backgroundColor: 'dimgray'}}
+            backgroundStyle={{backgroundColor: 'white'}}
             keyboardBehavior='fillParent'
         >
             <View style={{flex:1, paddingHorizontal: 20}}>
@@ -77,12 +77,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     placeholder='note title'
                     onChangeText={(text) => setNewNoteTitle(text)}
                     value={newNoteTitle}
-                />
-                <BottomSheetTextInput
-                    style={styles.content}
-                    placeholder='add something here...'
-                    onChangeText={(text) => setNewNoteContent(text)}
-                    value={newNoteContent}
+                    multiline= {true}
                 />
                 <View>
                     <Dropdown
@@ -96,6 +91,14 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                         }}
                     />
                 </View>
+                <BottomSheetTextInput
+                    style={styles.content}
+                    placeholder='add something here...'
+                    onChangeText={(text) => setNewNoteContent(text)}
+                    value={newNoteContent}
+                    multiline= {true}
+                />
+                
             </View>
             <View style={{padding: 20}}>
                 <TouchableOpacity
@@ -115,25 +118,28 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
 
 const styles = StyleSheet.create({
     title: {
-        paddingTop: 25,
+        paddingTop: 40,
         fontSize: 35,
         fontWeight: '600',
-        color: 'black'
+        color: 'black',
+        paddingBottom: 15
     },
     content: {
         fontSize: 18,
-        paddingBottom: 20
+        paddingTop: 30
     },
     dropdown: {
-        backgroundColor: '#ef8518',
+        backgroundColor: '#8CDCF9',
         padding: 10,
         borderRadius: 20,
         width: '40%',
-        paddingLeft: 15
+        paddingLeft: 15,
+        borderWidth: 1,
+        borderColor: '#0084FF'
     },
     addButton: {
         alignSelf: 'center',
-        backgroundColor: '#3141D6',
+        backgroundColor: '#0084FF',
         borderRadius: 20
     },
 });

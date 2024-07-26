@@ -31,7 +31,7 @@ const InitialLayout = () => {
 
 const RootLayout = () => {
     const [loaded, error] = useFonts({
-        'PlayfairDisplay': require('../assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf'),
+        'EBGaramond' : require('../assets/fonts/EBGaramond-Italic-VariableFont_wght.ttf')
     });
 
     useEffect(() => {

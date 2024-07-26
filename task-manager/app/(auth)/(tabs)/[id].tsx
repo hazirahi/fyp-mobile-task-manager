@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { supabase } from "@/config/initSupabase";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -51,7 +52,7 @@ const getCatNames = async (categoryIds: number[]) => {
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const [loading, setLoading] = useState(true);
-    const { onCheckPressed, onDelete, tasks} = useTaskList();
+    const { onCheckPressed, onDelete, tasks, onTaskPressed} = useTaskList();
     const { user } = useAuth();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
@@ -121,6 +122,7 @@ const ModuleDetail = () => {
                 task={taskwithModuleId} 
                 onCheckPressed={() => onCheckPressed(taskwithModuleId)}
                 onDelete={() => onDelete(taskwithModuleId)}
+                onTaskPressed={()=> onTaskPressed(taskwithModuleId)}
             />
         );
     };
@@ -197,7 +199,11 @@ const ModuleDetail = () => {
 
     return (
         <>
-            <SafeAreaView style={{paddingHorizontal: 20}}>
+            <SafeAreaView style={{paddingHorizontal: 20, backgroundColor: 'white', height: '100%'}}>
+                <LinearGradient 
+                    colors={[moduleColour,'#FFFFFF']}
+                    style={styles.background}
+                />
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View>
                         <TextInput 
@@ -215,9 +221,13 @@ const ModuleDetail = () => {
                             onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
                         />
                     </View>
-                    <TouchableOpacity>
-                        <FontAwesome name="circle" size={70} color={moduleColour} />
-                    </TouchableOpacity>
+                    <View style={{paddingTop: 10}}>
+                        <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
+                    </View>
+                    
+                        
+                        {/* <FontAwesome name="circle" size={70} color={moduleColour} /> */}
+                    
                 </View>
                 <View style={{paddingVertical: 5}}>
                     {/* <TouchableOpacity onPress={handleLayoutChange}>
@@ -238,21 +248,16 @@ const ModuleDetail = () => {
                         // renderSectionFooter={}
                     />
                 </View>
-                {/* <CategoryList
-                    moduleCatList={moduleCatList}
-                    catNames={catNames}
-                    tasks={tasks}
-                /> */}
                 <View style={{paddingTop:10}}>
                     <TouchableOpacity 
                         onPress={()=>router.push('(modals)/addCategory')}
-                        style={{backgroundColor: 'lightpink', borderRadius: 20, padding: 10, alignItems: 'center'}}
+                        style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
                     >
                         <Text>add category</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <Ionicons name='add-circle' size={80} color='#7BBF45' onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            <Ionicons name='add-circle' size={80} color={moduleColour} onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newTask) => 
@@ -273,6 +278,13 @@ const ModuleDetail = () => {
 }
 
 const styles = StyleSheet.create ({
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 730
+    },
     header: {
         fontWeight: 'bold',
         fontSize: 30,
@@ -285,9 +297,16 @@ const styles = StyleSheet.create ({
     },
     navBTN: {
         borderColor: 'black',
-        borderWidth: 1.5,
+        borderWidth: 1,
         borderRadius: 20,
         padding: 10
+    },
+    moduleColour: {
+        paddingTop: 20,
+        borderRadius: 200/2,
+        height: 70,
+        width: 70,
+        borderWidth: 1
     },
     addTaskBTN: {
         position: 'absolute',

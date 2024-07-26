@@ -1,18 +1,20 @@
 import { supabase } from '@/config/initSupabase';
+import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
 import { useAuth } from '@/provider/AuthProvider';
 
-import TaskList from "@/components/TaskList";
-import { View, Alert, StyleSheet } from "react-native";
+
+import { View, Alert, StyleSheet, SafeAreaView } from "react-native";
 import { useEffect, useState, useRef } from 'react';
-
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import 'react-native-url-polyfill/auto';
-import { Ionicons } from '@expo/vector-icons';
 
+import BottomSheet from '@gorhom/bottom-sheet';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import TaskList from "@/components/TaskList";
 import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
-import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import TaskListItem from '@/components/TaskListItem';
+
+
 
 
 // const categories = [
@@ -84,10 +86,14 @@ export default function Home (){
 
     return (
         <SafeAreaView style={styles.container}>
-            <View>
+            <LinearGradient 
+                colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
+                style={styles.background}
+            />
+            <View style={{paddingHorizontal: 20}}>
                 <TaskList/>
             </View>
-            <Ionicons name='add-circle' size={80} color='#7BBF45' onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newTask) => 
@@ -111,7 +117,14 @@ export default function Home (){
 const styles = StyleSheet.create({
     container: {
         flex:1,
-        paddingHorizontal: 20
+        backgroundColor: 'white'
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 730
     },
     header: {
         fontWeight: 'bold',

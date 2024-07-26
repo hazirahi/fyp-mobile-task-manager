@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { TaskCat } from "@/provider/TaskListProvider";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Swipeable } from "react-native-gesture-handler";
+import { LinearGradient } from "expo-linear-gradient";
 
 const RightActions = ({onDelete} : {onDelete: () => void;}) => {
     return (
@@ -32,12 +33,18 @@ type TaskListItem = {
 
 const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListItem) => {
     return (
+        
         <Swipeable
             renderRightActions={() => (
                 <RightActions onDelete={onDelete}/>
             )}
         >
-            <View style={styles.taskContainer}>
+        <LinearGradient
+            colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
+            style={styles.taskContainer}
+        >
+            <View style={{flexDirection: 'row',
+        justifyContent: 'space-between',}}>
                 <Text
                     onPress={onTaskPressed}
                     style={[styles.taskTitle, {
@@ -45,7 +52,7 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
                         ? 'line-through'
                         : 'none',
                         color: task.isCompleted
-                        ? 'dimgray'
+                        ? '#00CC44'
                         : 'black',
                     },]}
                 >
@@ -61,25 +68,27 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
                     size={24}
                     color={
                         task.isCompleted
-                        ? '#dimgray'
-                        : 'dimgray'
+                        ? '#00CC44'
+                        : 'black'
                     }
                     
                 />
             </View>
+            </LinearGradient>
         </Swipeable>
+        
     );
 };
 
 const styles = StyleSheet.create({
     taskContainer: {
         padding:15,
-        paddingVertical: 20,
-        backgroundColor: 'lightgray',
-        // borderWidth: 1,
-        borderRadius: 22,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        paddingVertical: 17,
+        // backgroundColor: '#8CDCF9',
+        borderWidth: 1,
+        borderRadius: 17,
+        
+        // borderColor: '#0084FF'
     },
     taskTitle: {
         fontSize: 17,

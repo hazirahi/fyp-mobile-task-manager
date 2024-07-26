@@ -31,7 +31,9 @@
       "expo-secure-store",
       [
         "expo-font", {
-          "fonts" : ["./assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf"]
+          "fonts" : [
+            "./assets/fonts/EBGaramond-Italic-VariableFont_wght.ttf"
+          ]
         }
       ]
     ],

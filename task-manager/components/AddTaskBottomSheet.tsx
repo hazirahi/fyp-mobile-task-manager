@@ -149,7 +149,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
-            backgroundStyle={{backgroundColor: 'dimgray'}}
+            backgroundStyle={{backgroundColor: 'white'}}
             keyboardBehavior='fillParent'
         >
             <View style={{flex:1}}>
@@ -218,16 +218,20 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     dropdown: {
-        backgroundColor: '#ef8518',
+        backgroundColor: '#8CDCF9',
         padding: 10,
         borderRadius: 20,
         width: '40%',
-        paddingLeft: 15
+        paddingLeft: 15,
+        borderWidth: 1,
+        borderColor: '#0084FF'
     },
     addButton: {
         alignSelf: 'center',
-        backgroundColor: '#3141D6',
-        borderRadius: 20
+        backgroundColor: '#0084FF',
+        borderRadius: 20,
+        // borderWidth: 1,
+        // borderColor: 'black'
     },
 });
 

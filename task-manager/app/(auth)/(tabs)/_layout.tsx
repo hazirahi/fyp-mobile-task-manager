@@ -30,6 +30,7 @@ const TabLayout = () => {
   return (
     <Tabs
       initialRouteName='home'
+      screenOptions={{tabBarActiveTintColor: '#0084FF'}}
     >
       <Tabs.Screen
         name="timer"
@@ -79,11 +80,13 @@ const TabLayout = () => {
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
           headerRight: () => (
-            <TouchableOpacity onPress={signOut} style={{paddingRight: 10}}>
-              <Ionicons name="log-out-outline" size={30} color={'black'} />
+            <TouchableOpacity onPress={signOut} style={{paddingRight: 20}}>
+              <Ionicons name="settings" size={30} color={'black'} />
             </TouchableOpacity>
           ),
-        //   headerShown: false,
+          //  headerShown: false,
+          headerTransparent: true,
+          headerTitle: ''
         }}
       />
       <Tabs.Screen

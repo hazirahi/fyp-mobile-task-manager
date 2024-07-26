@@ -59,7 +59,7 @@ export default function TaskList() {
     
 
     return (
-        <View style={styles.container}>
+        <View>
             <View style={styles.bottomContainer}>
                 <View style={styles.tasklistContainer}>
                     <FlatList
@@ -70,8 +70,8 @@ export default function TaskList() {
                         contentContainerStyle={{gap:15}}
                         ListHeaderComponent={
                             <View>
-                                <Text style={[styles.header, {fontFamily: 'PlayfairDisplay', fontSize: 40, paddingTop: 10}]}>Hello, {name}</Text>
-                                <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text>
+                                <Text style={styles.greeting}>Hello, {name}</Text>
+                                {/* <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text> */}
                                 <ModuleList/>
                                 <Text style={[styles.header, {fontSize: 30}]}>Today's tasks</Text>
                             </View>
@@ -94,7 +94,10 @@ export default function TaskList() {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    greeting: {
+        fontFamily: 'EBGaramond',
+        fontSize: 50,
+        fontWeight: '600'
     },
     header: {
         fontWeight: '600',
