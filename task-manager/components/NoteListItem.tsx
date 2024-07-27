@@ -2,22 +2,30 @@ import { NoteMod } from "@/provider/TaskListProvider";
 import { Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { useState } from "react";
+import EditNote from "@/app/(auth)/(modals)/editNote";
 
 type NoteListItem = {
     note: NoteMod;
 }
 
 const NoteListItem = ({note}: NoteListItem) => {
-    // console.log(note.modules)
     const noteModule = Array.isArray(note.modules) ? note.modules : [note.modules];
+
+    // const navigation = useNavigation();
+
+    const handleEditPress = () => {
+       
+    }
+    
     return (
         <View>
             <LinearGradient
                 colors={['#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
                 style={{borderRadius: 20, borderWidth: 1}}
             >
-            <TouchableOpacity style={styles.container} onPress={()=>router.navigate('/(modals)/editNote')}>
+            <TouchableOpacity style={styles.container} onPress={() => router.navigate({pathname: 'editNote', params: {noteId: note.id}})}>
                 <Text style={styles.text}>{note.note_title}</Text>
                 <Text numberOfLines={6} style={{fontWeight: '400'}}>{note.note_text}</Text>
                 {noteModule.map((module) => (

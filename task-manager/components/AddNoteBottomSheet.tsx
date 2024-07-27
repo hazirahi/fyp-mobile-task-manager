@@ -122,17 +122,17 @@ const styles = StyleSheet.create({
         fontSize: 35,
         fontWeight: '600',
         color: 'black',
-        paddingBottom: 15
+        paddingBottom: 10
     },
     content: {
         fontSize: 18,
-        paddingTop: 30
+        paddingTop: 20
     },
     dropdown: {
         backgroundColor: '#8CDCF9',
-        padding: 10,
+        padding: 5,
         borderRadius: 20,
-        width: '40%',
+        width: '30%',
         paddingLeft: 15,
         borderWidth: 1,
         borderColor: '#0084FF'

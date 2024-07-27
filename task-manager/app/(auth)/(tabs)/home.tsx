@@ -14,21 +14,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import TaskList from "@/components/TaskList";
 import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
 
-
-
-
-// const categories = [
-//     {
-//         type: 'overview',
-//         title: 'Hello'
-//     },
-//     {
-//         type: 'dailyTasks',
-//         title: 'dailytasks',
-//         data: TaskListItem
-//     }
-// ]
-
 export default function Home (){
     const { user } = useAuth();
 
