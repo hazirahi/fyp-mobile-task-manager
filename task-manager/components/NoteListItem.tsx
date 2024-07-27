@@ -2,6 +2,7 @@ import { NoteMod } from "@/provider/TaskListProvider";
 import { Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 
 type NoteListItem = {
     note: NoteMod;
@@ -16,7 +17,7 @@ const NoteListItem = ({note}: NoteListItem) => {
                 colors={['#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
                 style={{borderRadius: 20, borderWidth: 1}}
             >
-            <TouchableOpacity style={styles.container}>
+            <TouchableOpacity style={styles.container} onPress={()=>router.navigate('/(modals)/editNote')}>
                 <Text style={styles.text}>{note.note_title}</Text>
                 <Text numberOfLines={6} style={{fontWeight: '400'}}>{note.note_text}</Text>
                 {noteModule.map((module) => (

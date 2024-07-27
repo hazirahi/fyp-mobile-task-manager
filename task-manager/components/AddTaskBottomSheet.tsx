@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
@@ -158,12 +158,14 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     placeholder='add a task'
                     onChangeText={(text) => setNewTaskTitle(text)}
                     value={newTaskTitle}
+                    multiline={true}
                 />
                 <BottomSheetTextInput
                     style={[styles.input, styles.desc]}
                     placeholder='add description'
                     onChangeText={setNewTaskDesc}
                     value={newTaskDesc}
+                    multiline={true}
                 />
                 <View style={{paddingHorizontal: 20, flexDirection:'row', gap: 10}}>
                     <Dropdown
@@ -193,7 +195,7 @@ const AddTaskBottomSheet = forwardRef<Ref, AddTask>(({onAdd}: AddTask, ref) => {
                     style={styles.addButton}
                     onPress={() => {
                         addNewTask();
-                        
+                        Keyboard.dismiss();
                     }}
                 >
                     <Text style={{padding: 10, paddingHorizontal: 25, color: 'white'}}>Add Task</Text>

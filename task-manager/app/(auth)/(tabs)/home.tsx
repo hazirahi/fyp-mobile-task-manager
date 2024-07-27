@@ -3,7 +3,7 @@ import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
 import { useAuth } from '@/provider/AuthProvider';
 
 
-import { View, Alert, StyleSheet, SafeAreaView } from "react-native";
+import { View, Alert, StyleSheet, SafeAreaView, Text } from "react-native";
 import { useEffect, useState, useRef } from 'react';
 import 'react-native-url-polyfill/auto';
 
@@ -91,6 +91,7 @@ export default function Home (){
                 style={styles.background}
             />
             <View style={{paddingHorizontal: 20}}>
+                {/* <Text style={styles.greeting}>Hello, {name}</Text> */}
                 <TaskList/>
             </View>
             <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
@@ -125,6 +126,12 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         height: 730
+    },
+    greeting: {
+        fontFamily: 'EBGaramond',
+        fontSize: 50,
+        fontWeight: '600',
+        paddingTop: 10
     },
     header: {
         fontWeight: 'bold',

@@ -9,6 +9,7 @@ import 'react-native-url-polyfill/auto';
 import TaskListItem from './TaskListItem';
 import { useTaskList } from '@/provider/TaskListProvider';
 import ModuleList from './ModuleList';
+import CircleProgress from './CircleProgress';
 
 
 export default function TaskList() {
@@ -47,6 +48,7 @@ export default function TaskList() {
             }
             if (data){
                 setName(data.name)
+                // console.log(name)
             }
         } catch (error){
             if (error instanceof Error){
@@ -71,6 +73,7 @@ export default function TaskList() {
                         ListHeaderComponent={
                             <View>
                                 <Text style={styles.greeting}>Hello, {name}</Text>
+                                <CircleProgress/>
                                 {/* <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text> */}
                                 <ModuleList/>
                                 <Text style={[styles.header, {fontSize: 30}]}>Today's tasks</Text>
@@ -97,7 +100,8 @@ const styles = StyleSheet.create({
     greeting: {
         fontFamily: 'EBGaramond',
         fontSize: 50,
-        fontWeight: '600'
+        fontWeight: '600',
+        paddingBottom: 10
     },
     header: {
         fontWeight: '600',
