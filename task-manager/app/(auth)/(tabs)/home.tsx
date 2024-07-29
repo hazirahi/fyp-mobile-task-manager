@@ -3,15 +3,18 @@ import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
 import { useAuth } from '@/provider/AuthProvider';
 
 
-import { View, Alert, StyleSheet, SafeAreaView, Text } from "react-native";
+import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import { useEffect, useState, useRef } from 'react';
 import 'react-native-url-polyfill/auto';
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import ModuleList from '@/components/ModuleList';
+import CircleProgress from '@/components/CircleProgress';
+import { router } from 'expo-router';
 
-import TaskList from "@/components/TaskList";
+import TaskListItem from '@/components/TaskListItem';
 // import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
 
 export default function Home (){
@@ -21,7 +24,7 @@ export default function Home (){
     const handleOpenPress = () => bottomSheetRef.current?.expand();
 
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
-    const { getModule, getCategory, getTasks } = useTaskList();
+    const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
@@ -75,27 +78,39 @@ export default function Home (){
                 colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
                 style={styles.background}
             />
-            <View style={{paddingHorizontal: 20}}>
-                {/* <Text style={styles.greeting}>Hello, {name}</Text> */}
-                <TaskList/>
-            </View>
-            {/* <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
-            <AddTaskBottomSheet
-                ref={bottomSheetRef}
-                onAdd={(newTask) => 
-                    // setTaskList(tasks => [...tasks, newTask])
-                    setTaskList(tasks => [...tasks, {
-                        id: generateTaskId(),
-                        user_id: user!.id,
-                        task_name: newTask.task_name,
-                        task_description: newTask.task_description,
-                        isCompleted: false,
-                        created_at: new Date(),
-                        module_id: newTask.module_id,
-                        category_id: newTask.category_id
-                    }])
+            <FlatList
+                style={{paddingHorizontal: 20}}
+                scrollEnabled={true}
+                data={tasks}
+                keyExtractor={(item) => `${item.id}`}
+                contentContainerStyle={{gap:15}}
+                ListHeaderComponent={
+                    <View>
+                        <View>
+                            <Text style={styles.greeting}>Hello, {name}</Text>
+                            <CircleProgress/>
+                            <ModuleList/> 
+                        </View>
+                        <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
+                            <Text style={styles.header}>Today's tasks</Text>
+                            <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('addTask')}>
+                                <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                                    <Ionicons name="add" size={20} color="black" />
+                                    <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 }
-            /> */}
+                renderItem={({ item: task }) => (
+                    <TaskListItem 
+                        task={task}
+                        onCheckPressed={() => onCheckPressed(task)}
+                        onDelete={() => onDelete(task)}
+                        onTaskPressed={() => onTaskPressed(task)}
+                    />
+                )}
+            />
         </SafeAreaView>
     );
 }
@@ -103,7 +118,8 @@ export default function Home (){
 const styles = StyleSheet.create({
     container: {
         flex:1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingHorizontal: 20
     },
     background: {
         position: 'absolute',
@@ -116,17 +132,27 @@ const styles = StyleSheet.create({
         fontFamily: 'EBGaramond',
         fontSize: 50,
         fontWeight: '600',
-        paddingTop: 10
+        paddingBottom: 10
     },
     header: {
-        fontWeight: 'bold',
-        fontSize: 30,
-        paddingTop: 20,
-        paddingBottom: 20
+        fontWeight: '600',
+        fontSize: 30
     },
     addTaskBTN: {
-        position: 'absolute',
-        bottom: 10,
-        right: 2
-    }
+        alignSelf: 'center',
+        borderWidth: 1,
+        padding: 6,
+        borderRadius: 10,
+        backgroundColor: '#A6F511'
+    },
+    bottomContainer: {
+        // height: '60%'
+        paddingHorizontal: 20
+    },
+    tasklistContainer: {
+        // backgroundColor: 'gray',
+        justifyContent: 'center',
+        paddingTop: 10,
+        
+    },
 });

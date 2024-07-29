@@ -7,10 +7,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import 'react-native-url-polyfill/auto';
 
 import TaskListItem from './TaskListItem';
-import { useTaskList } from '@/provider/TaskListProvider';
-import ModuleList from './ModuleList';
 import CircleProgress from './CircleProgress';
+import ModuleList from './ModuleList';
+
+import { useTaskList } from '@/provider/TaskListProvider';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function TaskList() {
@@ -73,14 +75,18 @@ export default function TaskList() {
                         contentContainerStyle={{gap:15}}
                         ListHeaderComponent={
                             <View>
-                                <Text style={styles.greeting}>Hello, {name}</Text>
-                                <CircleProgress/>
-                                {/* <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text> */}
-                                <ModuleList/>
+                                <View>
+                                    <Text style={styles.greeting}>Hello, {name}</Text>
+                                    <CircleProgress/>
+                                    <ModuleList/> 
+                                </View>
                                 <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
                                     <Text style={styles.header}>Today's tasks</Text>
                                     <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('addTask')}>
-                                        <Text>Add Task</Text>
+                                        <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                                            <Ionicons name="add" size={20} color="black" />
+                                            <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text>
+                                        </View>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -116,12 +122,13 @@ const styles = StyleSheet.create({
     addTaskBTN: {
         alignSelf: 'center',
         borderWidth: 1,
-        padding: 10,
+        padding: 6,
         borderRadius: 10,
         backgroundColor: '#A6F511'
     },
     bottomContainer: {
         // height: '60%'
+        paddingHorizontal: 20
     },
     tasklistContainer: {
         // backgroundColor: 'gray',
