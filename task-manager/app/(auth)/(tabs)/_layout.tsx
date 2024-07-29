@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Link, Tabs } from 'expo-router';
+import { Link, router, Tabs } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 
 import { useAuth } from '@/provider/AuthProvider';

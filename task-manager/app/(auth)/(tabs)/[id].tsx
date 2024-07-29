@@ -11,7 +11,7 @@ import { supabase } from "@/config/initSupabase";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import TaskListItem from "@/components/TaskListItem";
-import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
+// import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
 
 import { useTaskList, TaskCat, ModuleCat } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
@@ -257,7 +257,7 @@ const ModuleDetail = () => {
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <Ionicons name='add-circle' size={80} color={moduleColour} onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            {/* <Ionicons name='add-circle' size={80} color={moduleColour} onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newTask) => 
@@ -272,7 +272,7 @@ const ModuleDetail = () => {
                         category_id: newTask.category_id
                     })
                 }
-            />
+            /> */}
         </>
     )
 }

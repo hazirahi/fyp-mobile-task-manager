@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import TaskList from "@/components/TaskList";
-import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
+// import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
 
 export default function Home (){
     const { user } = useAuth();
@@ -79,7 +79,7 @@ export default function Home (){
                 {/* <Text style={styles.greeting}>Hello, {name}</Text> */}
                 <TaskList/>
             </View>
-            <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            {/* <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newTask) => 
@@ -95,7 +95,7 @@ export default function Home (){
                         category_id: newTask.category_id
                     }])
                 }
-            />
+            /> */}
         </SafeAreaView>
     );
 }

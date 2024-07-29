@@ -2,7 +2,7 @@ import { supabase } from '@/config/initSupabase';
 import { useAuth } from '@/provider/AuthProvider';
 
 import { useEffect, useState } from 'react';
-import { View, Text, Alert, StyleSheet } from 'react-native';
+import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import 'react-native-url-polyfill/auto';
 
@@ -10,6 +10,7 @@ import TaskListItem from './TaskListItem';
 import { useTaskList } from '@/provider/TaskListProvider';
 import ModuleList from './ModuleList';
 import CircleProgress from './CircleProgress';
+import { router } from 'expo-router';
 
 
 export default function TaskList() {
@@ -76,7 +77,12 @@ export default function TaskList() {
                                 <CircleProgress/>
                                 {/* <Text style={{fontSize: 15, fontWeight: '600'}}>{date}</Text> */}
                                 <ModuleList/>
-                                <Text style={[styles.header, {fontSize: 30}]}>Today's tasks</Text>
+                                <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
+                                    <Text style={styles.header}>Today's tasks</Text>
+                                    <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('addTask')}>
+                                        <Text>Add Task</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             
                         }
@@ -105,8 +111,14 @@ const styles = StyleSheet.create({
     },
     header: {
         fontWeight: '600',
-        paddingTop: 20,
-        paddingBottom: 5
+        fontSize: 30
+    },
+    addTaskBTN: {
+        alignSelf: 'center',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: '#A6F511'
     },
     bottomContainer: {
         // height: '60%'
@@ -114,7 +126,8 @@ const styles = StyleSheet.create({
     tasklistContainer: {
         // backgroundColor: 'gray',
         justifyContent: 'center',
-        paddingTop: 10
+        paddingTop: 10,
+        
     },
     tasklist: {
         // padding: 20,

@@ -122,6 +122,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15
     },
     activeNavBTN: {
-        backgroundColor: '#16B4F8'
+        backgroundColor: '#8CDCF9'
     }
 });
