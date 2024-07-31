@@ -10,6 +10,7 @@ export type Task = {
     isCompleted: boolean
     created_at: Date | null
     module_id: number | null
+    due_date: Date
 }
 
 export type Module = {
@@ -84,7 +85,8 @@ type TaskListItem = {
         task_name: TaskCat['task_name'],
         task_description: TaskCat['task_description'],
         module_id: TaskCat['module_id'],
-        category_id: TaskCat['category_id']
+        category_id: TaskCat['category_id'],
+        start_date: Task['due_date']
         // task_name: string, task_description: string, moduleId: number, categoryId: number
     ) => void;
     addNote: (
@@ -300,10 +302,11 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         task_name: TaskCat['task_name'],
         task_description: TaskCat['task_description'],
         moduleId: TaskCat['module_id'],
-        categoryId: TaskCat['category_id']
+        categoryId: TaskCat['category_id'],
+        due_date: Task['due_date']
     ) => {
         try {
-            console.log('adding task: ', task_name);
+            console.log('adding task: ', task_name, ' due date: ', due_date);
             const { data: tasklist, error } = await supabase
                 .from('tasks')
                 .insert({ 
@@ -311,6 +314,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     task_description: task_description,
                     user_id: user!.id,
                     module_id: moduleId,
+                    due_date: due_date
                 })
                 .select('*')
                 .single()

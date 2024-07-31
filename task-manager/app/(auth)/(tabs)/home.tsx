@@ -20,9 +20,6 @@ import TaskListItem from '@/components/TaskListItem';
 export default function Home (){
     const { user } = useAuth();
 
-    const bottomSheetRef = useRef<BottomSheet>(null);
-    const handleOpenPress = () => bottomSheetRef.current?.expand();
-
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
     const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, TextInput } from "react-native";
+import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, TextInput, ListRenderItem, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -105,27 +105,27 @@ const ModuleDetail = () => {
             setModuleCatList(moduleCatList!);
     }
 
-    const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
-        title: catName,
-        data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
-    }));
+    // const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
+    //     title: catName,
+    //     data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
+    // }));
 
 
-    const renderItem: SectionListRenderItem<ModuleCat> = ({ item }) => {
-        const task = tasks.find((t) => t.id === item.task_id);
-        if (!task)
-            return null;
+    // const renderItem: SectionListRenderItem<ModuleCat> = ({ item }) => {
+    //     const task = tasks.find((t) => t.id === item.task_id);
+    //     if (!task)
+    //         return null;
 
-        const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id};
-        return (
-            <TaskListItem 
-                task={taskwithModuleId} 
-                onCheckPressed={() => onCheckPressed(taskwithModuleId)}
-                onDelete={() => onDelete(taskwithModuleId)}
-                onTaskPressed={()=> onTaskPressed(taskwithModuleId)}
-            />
-        );
-    };
+    //     const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id};
+    //     return (
+    //         <TaskListItem 
+    //             task={taskwithModuleId} 
+    //             onCheckPressed={() => onCheckPressed(taskwithModuleId)}
+    //             onDelete={() => onDelete(taskwithModuleId)}
+    //             onTaskPressed={()=> onTaskPressed(taskwithModuleId)}
+    //         />
+    //     );
+    // };
 
 
     // const getModuleDetail = async () => {
@@ -197,43 +197,89 @@ const ModuleDetail = () => {
         }
     }
 
+    interface moduleCatWithCatName extends ModuleCat{
+        category_name: string;
+    }
+
+    const data: moduleCatWithCatName[] = moduleCatList.map((moduleCat) => ({
+        ...moduleCat,
+        category_name: catNames[moduleCat.category_id],
+    }));
+
+    const renderItem: ListRenderItem<moduleCatWithCatName> = ({item, index}) => {
+        const task = tasks.find((t) => t.id === item.task_id);
+        if(!task) return null;
+
+        const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id };
+        const isFirstInCat = index === 0 || data[index-1].category_id !== item.category_id;
+
+        return (
+            <View>
+                {isFirstInCat && <Text style={styles.header}>{item.category_name}</Text>}
+                <TaskListItem
+                    task={taskwithModuleId}
+                    onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
+                    onDelete={()=>onDelete(taskwithModuleId)}
+                    onTaskPressed={()=>onTaskPressed(taskwithModuleId)}
+                />
+            </View>
+        )
+    }
+
     return (
         <>
-            <SafeAreaView style={{paddingHorizontal: 20, backgroundColor: 'white', height: '100%'}}>
+            <SafeAreaView style={styles.container}>
                 <LinearGradient 
                     colors={[moduleColour,'#FFFFFF']}
                     style={styles.background}
                 />
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <View>
-                        <TextInput 
-                            placeholder="module title" 
-                            value={moduleTitle || ''}
-                            onChangeText={(text) => setModuleTitle(text)}
-                            style={styles.header}
-                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
-                        />
-                        <TextInput 
-                            placeholder="module desc"
-                            value={moduleDesc || ''} 
-                            onChangeText={(text) => setModuleDesc(text)} 
-                            style={styles.description} 
-                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
-                        />
-                    </View>
-                    <View style={{paddingTop: 10}}>
-                        <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
-                    </View>
+                <FlatList
+                    style={{paddingHorizontal: 20}}
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={{gap:15}}
+                    ListHeaderComponent={
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View>
+                                <TextInput 
+                                    placeholder="module title" 
+                                    value={moduleTitle || ''}
+                                    onChangeText={(text) => setModuleTitle(text)}
+                                    style={styles.header}
+                                    onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
+                                />
+                                <TextInput 
+                                    placeholder="module desc"
+                                    value={moduleDesc || ''} 
+                                    onChangeText={(text) => setModuleDesc(text)} 
+                                    style={styles.description} 
+                                    onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
+                                />
+                            </View>
+                            <View style={{paddingTop: 10}}>
+                                <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
+                            </View>
+                        </View>
+                    }
+                    ListFooterComponent={
+                        <View style={{paddingTop:10}}>
+                            <TouchableOpacity 
+                                onPress={()=>router.push('(modals)/addCategory')}
+                                style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
+                            >
+                                <Text>add category</Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
                     
-                        
-                        {/* <FontAwesome name="circle" size={70} color={moduleColour} /> */}
-                    
-                </View>
-                <View style={{paddingVertical: 5}}>
+                />
+            </SafeAreaView>
+                {/* <View style={{paddingVertical: 5}}> */}
                     {/* <TouchableOpacity onPress={handleLayoutChange}>
                         <Text>horizontal</Text>
                     </TouchableOpacity> */}
-                    <TouchableOpacity style={styles.navBTN}>
+                    {/* <TouchableOpacity style={styles.navBTN}>
                         <Text>Notes</Text>
                     </TouchableOpacity>
                 </View>
@@ -245,18 +291,11 @@ const ModuleDetail = () => {
                         renderSectionHeader={({section: category}) => (
                             <Text style={styles.header}>{category.title}</Text>
                         )}
-                        // renderSectionFooter={}
+                        stickySectionHeadersEnabled={false}
                     />
                 </View>
-                <View style={{paddingTop:10}}>
-                    <TouchableOpacity 
-                        onPress={()=>router.push('(modals)/addCategory')}
-                        style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
-                    >
-                        <Text>add category</Text>
-                    </TouchableOpacity>
-                </View>
-            </SafeAreaView>
+                 */}
+            
             {/* <Ionicons name='add-circle' size={80} color={moduleColour} onPress={handleOpenPress} style={styles.addTaskBTN}/>
             <AddTaskBottomSheet
                 ref={bottomSheetRef}
@@ -278,6 +317,11 @@ const ModuleDetail = () => {
 }
 
 const styles = StyleSheet.create ({
+    container: {
+        flex:1,
+        backgroundColor: 'white',
+        // paddingHorizontal: 20
+    },
     background: {
         position: 'absolute',
         left: 0,
@@ -288,8 +332,8 @@ const styles = StyleSheet.create ({
     header: {
         fontWeight: 'bold',
         fontSize: 30,
-        paddingTop: 20,
-        paddingBottom: 5
+        paddingTop: 15,
+        paddingBottom: 10
     },
     description: {
         fontSize: 20,

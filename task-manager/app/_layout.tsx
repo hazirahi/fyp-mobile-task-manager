@@ -1,5 +1,6 @@
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
 import TaskListProvider from '@/provider/TaskListProvider';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useFonts } from 'expo-font';
 
 import { Slot, useSegments, useRouter, SplashScreen } from 'expo-router';
@@ -46,9 +47,11 @@ const RootLayout = () => {
     return (
         <GestureHandlerRootView>
             <AuthProvider>
-                <TaskListProvider>
-                    <InitialLayout/>    
-                </TaskListProvider>
+                <BottomSheetModalProvider>
+                    <TaskListProvider>
+                        <InitialLayout/>    
+                    </TaskListProvider>
+                </BottomSheetModalProvider>
             </AuthProvider>
         </GestureHandlerRootView>
         
