@@ -1,5 +1,6 @@
 import { supabase } from "@/config/initSupabase";
-import { Task, useTaskList } from "@/provider/TaskListProvider";
+import { Task } from "@/types/types";
+import { useTaskList } from "@/provider/TaskListProvider";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 

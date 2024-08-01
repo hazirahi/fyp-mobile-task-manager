@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, SectionList, SectionListData, SectionListRenderItem, TextInput, ListRenderItem, FlatList } from "react-native";
+import { Text, View, StyleSheet, TextInput, ListRenderItem, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -13,8 +13,9 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import TaskListItem from "@/components/TaskListItem";
 // import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
 
-import { useTaskList, TaskCat, ModuleCat } from "@/provider/TaskListProvider";
+import { useTaskList } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
+import { TaskCat, ModuleCat } from '@/types/types';
 
 const getCatNames = async (categoryIds: number[]) => {
     const {data: categories, error} = await supabase

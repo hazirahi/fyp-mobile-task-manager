@@ -2,7 +2,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
-import { Note, useTaskList } from '@/provider/TaskListProvider';
+import { Note } from '@/types/types';
+import { useTaskList } from '@/provider/TaskListProvider';
 import { Dropdown } from 'react-native-element-dropdown';
 
 export type Ref = BottomSheet;

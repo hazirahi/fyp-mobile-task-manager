@@ -1,6 +1,7 @@
 import { supabase } from "@/config/initSupabase";
 import { useAuth } from "@/provider/AuthProvider";
-import { NoteMod, useTaskList } from "@/provider/TaskListProvider";
+import { useTaskList } from "@/provider/TaskListProvider";
+import { NoteMod } from "@/types/types";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import { TaskCat } from "@/provider/TaskListProvider";
+import { TaskCat } from "@/types/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Swipeable } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";

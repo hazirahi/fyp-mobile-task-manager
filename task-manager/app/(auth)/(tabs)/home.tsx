@@ -1,20 +1,21 @@
 import { supabase } from '@/config/initSupabase';
-import { TaskCat, useTaskList } from '@/provider/TaskListProvider';
+import { useTaskList } from '@/provider/TaskListProvider';
 import { useAuth } from '@/provider/AuthProvider';
+import { TaskCat } from '@/types/types';
 
-
-import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, FlatList } from "react-native";
-import { useEffect, useState, useRef } from 'react';
-import 'react-native-url-polyfill/auto';
-
-import BottomSheet from '@gorhom/bottom-sheet';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import ModuleList from '@/components/ModuleList';
 import CircleProgress from '@/components/CircleProgress';
+import TaskListItem from '@/components/TaskListItem';
+
+import { useEffect, useState, useRef } from 'react';
+import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import 'react-native-url-polyfill/auto';
+
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
 import { router } from 'expo-router';
 
-import TaskListItem from '@/components/TaskListItem';
 // import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
 
 export default function Home (){

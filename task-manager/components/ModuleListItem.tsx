@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { Module } from "@/provider/TaskListProvider";
+import { Module } from "@/types/types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
 

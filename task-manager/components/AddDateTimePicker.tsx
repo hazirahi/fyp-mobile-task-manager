@@ -5,7 +5,7 @@ import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 
-import { Task } from "@/provider/TaskListProvider";
+import { Task } from "@/types/types";
 
 type Ref = BottomSheetModal;
 

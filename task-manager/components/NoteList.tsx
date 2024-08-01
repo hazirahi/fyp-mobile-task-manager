@@ -2,7 +2,8 @@ import { useAuth } from "@/provider/AuthProvider";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 
-import { Note, NoteMod, useTaskList } from "@/provider/TaskListProvider";
+import { NoteMod, Note } from "@/types/types";
+import { useTaskList } from "@/provider/TaskListProvider";
 import { supabase } from "@/config/initSupabase";
 import NoteListItem from "./NoteListItem";
 
