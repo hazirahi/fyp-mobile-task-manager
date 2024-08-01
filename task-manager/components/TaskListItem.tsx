@@ -18,7 +18,7 @@ const RightActions = ({onDelete} : {onDelete: () => void;}) => {
                 onPress={onDelete}
                 name="delete-empty"
                 size={24}
-                color="red"
+                color="#E51F1F"
             />
         </View>
     );
@@ -32,6 +32,40 @@ type TaskListItem = {
 }
 
 const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListItem) => {
+    const getBorderColour = () => {
+        switch (task.priority_id) {
+            // low
+            case 1:
+                return '#FFBB00';
+            // medium
+            case 2:
+                return '#FF8800';
+            // high
+            case 3:
+                return '#E51F1F';
+            // default
+            default:
+                return 'black';
+        }  
+    }
+
+    const getGradientColours = () => {
+        switch (task.priority_id) {
+            // low
+            case 1:
+                return ['#FFFFFF', '#FFF478', '#FFEE35', '#FFE100'];
+            // medium
+            case 2:
+                return ['#FFFFFF', '#FFBE56', '#FFBE56', '#FF9500'];
+            // high
+            case 3:
+                return ['#FFFFFF', '#FF859F', '#FF6171', '#F40000'];
+            // default
+            default:
+                return ['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511'];
+        }
+    }
+
     return (
         
         <Swipeable
@@ -40,21 +74,23 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
             )}
         >
         <LinearGradient
-            colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
-            style={styles.taskContainer}
+            colors={getGradientColours()}
+            // colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
+            // colors={['#FFFFFF', '#FF83F7', '#CB59F8', '#B03AFF']}
+            style={[styles.taskContainer, { borderColor: getBorderColour() }]}
         >
-            <View style={{flexDirection: 'row',
-        justifyContent: 'space-between',}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between',}}>
                 <Text
                     onPress={onTaskPressed}
                     style={[styles.taskTitle, {
                         textDecorationLine: task.isCompleted
                         ? 'line-through'
                         : 'none',
-                        color: task.isCompleted
-                        ? '#00CC44'
-                        : 'black',
-                    },]}
+                        // color: task.isCompleted
+                        // ? '#00CC44'
+                        // : 'black',
+                        color: 'black'
+                    }]}
                 >
                     {task.task_name}
                 </Text>
@@ -67,9 +103,10 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
                     }
                     size={24}
                     color={
-                        task.isCompleted
-                        ? '#00CC44'
-                        : 'black'
+                        // task.isCompleted
+                        // ? '#00CC44'
+                        // : 'black'
+                        'black'
                     }
                     
                 />
@@ -84,11 +121,8 @@ const styles = StyleSheet.create({
     taskContainer: {
         padding:15,
         paddingVertical: 17,
-        // backgroundColor: '#8CDCF9',
         borderWidth: 1,
         borderRadius: 17,
-        
-        // borderColor: '#0084FF'
     },
     taskTitle: {
         fontSize: 17,

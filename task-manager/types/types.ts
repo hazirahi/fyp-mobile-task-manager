@@ -7,6 +7,12 @@ export type Task = {
     created_at: Date | null
     module_id: number | null
     due_date: Date
+    priority_id: number | null
+}
+
+export type Priority = {
+    id: number
+    priority: string
 }
 
 export type Module = {

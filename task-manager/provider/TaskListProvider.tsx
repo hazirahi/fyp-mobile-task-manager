@@ -2,7 +2,7 @@ import { supabase } from "@/config/initSupabase";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useAuth } from '@/provider/AuthProvider';
 
-import { Task, TaskCat, Module, Category, Note, NoteMod } from "@/types/types";
+import { Task, TaskCat, Module, Category, Note, NoteMod, Priority } from "@/types/types";
 
 // export type TaskSection = {
 //     task_id: number
@@ -14,11 +14,13 @@ import { Task, TaskCat, Module, Category, Note, NoteMod } from "@/types/types";
 
 type TaskListItem = {
     tasks: TaskCat[];
+    priorities: Priority[];
     modules: Module[];
     categories: Category[];
     notes: NoteMod[];
     // moduleCat: ModuleCat[];
     // taskSections: Task[];
+    getPriority: () => void;
     getModule: () => void;
     getCategory: () => void;
     // getModuleCat: () => void;
@@ -38,8 +40,8 @@ type TaskListItem = {
         task_description: TaskCat['task_description'],
         module_id: TaskCat['module_id'],
         category_id: TaskCat['category_id'],
-        start_date: Task['due_date']
-        // task_name: string, task_description: string, moduleId: number, categoryId: number
+        start_date: TaskCat['due_date'],
+        priority: TaskCat['priority_id']
     ) => void;
     addNote: (
         note_title: Note['note_title'],
@@ -53,10 +55,12 @@ type TaskListItem = {
 
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
+    priorities: [],
     modules: [],
     categories: [],
     notes: [],
     // moduleCat: [],
+    getPriority: () => {},
     getModule: () => {},
     getCategory: () => {},
     // getModuleCat: () => {},
@@ -74,10 +78,20 @@ const TaskListContext = createContext<TaskListItem>({
 const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
+    const [priorityList, setPriorityList] = useState<Priority[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
     const [noteList, setNoteList] = useState<NoteMod[]>([]);
 
+    const getPriority = async () => {
+        const { data: priorityList, error } = await supabase
+            .from('priorities')
+            .select('*')
+        if (error)
+            console.log(error.message)
+        else
+            setPriorityList(priorityList!);
+    }
 
     const getModule = async () => {
         const { data: moduleList } = await supabase
@@ -255,7 +269,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         task_description: TaskCat['task_description'],
         moduleId: TaskCat['module_id'],
         categoryId: TaskCat['category_id'],
-        due_date: Task['due_date']
+        due_date: TaskCat['due_date'],
+        priority_id: TaskCat['priority_id']
     ) => {
         try {
             console.log('adding task: ', task_name, ' due date: ', due_date);
@@ -266,7 +281,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     task_description: task_description,
                     user_id: user!.id,
                     module_id: moduleId,
-                    due_date: due_date
+                    due_date: due_date,
+                    priority_id: priority_id
                 })
                 .select('*')
                 .single()
@@ -358,10 +374,12 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
+            priorities: priorityList,
             modules: moduleList,
             categories: categoryList,
             notes: noteList,
             // moduleCat: moduleCatList,
+            getPriority,
             getModule,
             getCategory,
             // getModuleCat,

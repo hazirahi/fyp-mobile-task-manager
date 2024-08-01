@@ -22,7 +22,7 @@ export default function Home (){
     const { user } = useAuth();
 
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
-    const { tasks, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
+    const { tasks, getPriority, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
@@ -38,6 +38,7 @@ export default function Home (){
         if (!user) return;
 
         getProfile();
+        getPriority();
         getModule();
         getCategory();
         getTasks();

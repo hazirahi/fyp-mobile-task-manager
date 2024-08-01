@@ -15,7 +15,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 
 export default function addTaskScreen () {
-    const { modules, categories, addTask } = useTaskList();
+    const { modules, categories, priorities, addTask } = useTaskList();
     const { user } = useAuth();
 
     const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -23,6 +23,7 @@ export default function addTaskScreen () {
     
     const [taskModule, setTaskModule] = useState<number>(0);
     const [taskCategory, setTaskCategory] = useState<number>(0);
+    const [taskPriority, setTaskPriority] = useState<number>(0);
 
     const [date, setDate] = useState(new Date());
     const [dueDate, setDueDate] = useState('Due Date');
@@ -38,18 +39,20 @@ export default function addTaskScreen () {
     const handleOpenPress = () => bottomSheetRef.current?.present();
 
     useEffect(() => {
-
+        // console.log('addTask priorities: ', priorities)
     }, [taskList]);
 
     const addNewTask = () => {
         addTask(
-            newTaskTitle, newTaskDesc, taskModule, taskCategory, date
+            newTaskTitle, newTaskDesc, taskModule, taskCategory, date, taskPriority
         )
 
         setNewTaskTitle('');
         setNewTaskDesc('');
         setTaskModule(0);
+        setTaskCategory(0);
         setDate(new Date());
+        setTaskPriority(0);
     }
 
     return (
@@ -102,10 +105,8 @@ export default function addTaskScreen () {
                         setTaskCategory(item.id);
                     }}
                 />
-                
-                
             </View>
-            <View style={{paddingHorizontal: 20, paddingTop: 10}}>
+            <View style={{paddingHorizontal: 20, paddingTop: 10, flexDirection: 'row'}}>
                 <TouchableOpacity
                     style={[styles.dropdown, {width: '36%'}]}
                     onPress={handleOpenPress}
@@ -117,6 +118,16 @@ export default function addTaskScreen () {
                     onAdd={(startDate) => {
                         handleDueDateChange(startDate);
                         bottomSheetRef.current?.close();
+                    }}
+                />
+                <Dropdown
+                    style={styles.dropdown}
+                    data={priorities}
+                    labelField={'priority'}
+                    valueField={'id'}
+                    placeholder="Priority"
+                    onChange={item=> {
+                        setTaskPriority(item.id);
                     }}
                 />
             </View>
