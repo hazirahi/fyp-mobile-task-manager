@@ -4,9 +4,10 @@
 // import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 // import { Dropdown } from 'react-native-element-dropdown';
 
-// import { useTaskList, TaskCat } from '@/provider/TaskListProvider';
+// import { useTaskList } from '@/provider/TaskListProvider';
 // import { useAuth } from '@/provider/AuthProvider';
-// import DateTimePicker from './DateTimePicker';
+
+// import { TaskCat } from '@/types/types';
 
 
 // export type Ref = BottomSheet;
@@ -61,7 +62,7 @@
 //         console.log(newTaskTitle, newTaskDesc, taskModule, taskCategory)
 
 //         addTask(
-//             newTaskTitle, newTaskDesc, taskModule, taskCategory
+//            // newTaskTitle, newTaskDesc, taskModule, taskCategory, 
 //         )
 
 //         setNewTaskTitle('');
@@ -191,7 +192,7 @@
 //                     />
 //                 </View>
 //                 <View>
-//                     <DateTimePicker/>
+//                     {/* <DateTimePicker/> */}
 //                 </View>
 //             </View> 
 //             <View style={{padding: 20}}>

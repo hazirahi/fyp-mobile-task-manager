@@ -89,7 +89,7 @@ export default function AddModule() {
             </View>  
             <View style={{flexDirection: 'row',justifyContent: 'space-between', position: 'absolute', bottom: 50, right: 30}}>
                 <View>
-                    <TouchableOpacity onPress={()=>router.navigate('(tabs)/home')} style={{backgroundColor: 'lightblue', borderRadius: 20, padding: 10, alignItems: 'center'}}>
+                    <TouchableOpacity onPress={()=>router.navigate('/home')} style={{backgroundColor: 'lightblue', borderRadius: 20, padding: 10, alignItems: 'center'}}>
                         <Text>go back</Text>
                     </TouchableOpacity>
                 </View>
@@ -100,7 +100,7 @@ export default function AddModule() {
                             setNewModuleTitle('');
                             setNewModuleDesc('');
                             setColour('');
-                            router.navigate('(tabs)/home')
+                            router.navigate('/home')
                             
                         }} style={{backgroundColor: 'lightgreen', borderRadius: 20, padding: 10, alignItems: 'center'}}>
                         <Text>add module</Text>

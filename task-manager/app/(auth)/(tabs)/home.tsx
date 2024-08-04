@@ -16,7 +16,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { router } from 'expo-router';
 
-// import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
+import BottomSheet from '@gorhom/bottom-sheet';
+//import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
 
 export default function Home (){
     const { user } = useAuth();
@@ -27,6 +28,9 @@ export default function Home (){
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
+    const handleOpenPress = () => bottomSheetRef.current?.expand();
 
     let taskIdCounter = 0;
 
@@ -72,27 +76,31 @@ export default function Home (){
     }
 
     return (
+        <>
         <SafeAreaView style={styles.container}>
             <LinearGradient 
                 colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
                 style={styles.background}
             />
             <FlatList
-                style={{paddingHorizontal: 20}}
+                //style={{paddingHorizontal: 20}}
                 scrollEnabled={true}
                 data={tasks}
                 keyExtractor={(item) => `${item.id}`}
-                contentContainerStyle={{gap:15}}
+                //contentContainerStyle={{gap:10}}
                 ListHeaderComponent={
-                    <View>
+                    <View style={{paddingHorizontal: 20}}>
                         <View>
                             <Text style={styles.greeting}>Hello, {name}</Text>
                             <CircleProgress/>
                             <ModuleList/> 
                         </View>
                         <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
-                            <Text style={styles.header}>Today's tasks</Text>
-                            <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('addTask')}>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.header}>Tasks</Text>
+                                <Text>priority</Text>
+                            </View>
+                            <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
                                 <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
                                     <Ionicons name="add" size={20} color="black" />
                                     <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text>
@@ -111,6 +119,25 @@ export default function Home (){
                 )}
             />
         </SafeAreaView>
+        {/* <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
+            <AddTaskBottomSheet
+                ref={bottomSheetRef}
+                onAdd={(newTask) => 
+                    // setTaskList(tasks => [...tasks, newTask])
+                    setTaskList(tasks => [...tasks, {
+                        id: generateTaskId(),
+                        user_id: user!.id,
+                        task_name: newTask.task_name,
+                        task_description: newTask.task_description,
+                        isCompleted: false,
+                        created_at: new Date(),
+                        module_id: newTask.module_id,
+                        category_id: newTask.category_id
+                    }])
+                }
+            /> */}
+            
+        </>
     );
 }
 

@@ -13,7 +13,7 @@ const ModuleListItem = ({module}: ModuleListItem) => {
         <View>
             <TouchableOpacity
                 style={[{backgroundColor: module.colour}, styles.container]}
-                onPress={()=>router.navigate({pathname: '[id]', params:{id: module.id}})}
+                onPress={()=>router.navigate({pathname: '/[id]', params:{id: module.id}})}
             >
                 <View style={{position: 'absolute', bottom: 15, alignSelf: 'center'}}>
                     <Text style={styles.text}>

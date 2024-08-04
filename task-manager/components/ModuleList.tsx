@@ -36,7 +36,7 @@ export default function ModuleList () {
                     <View>
                         <TouchableOpacity
                             style={styles.addContainer}
-                            onPress={()=>router.navigate('(modals)/addModule')}
+                            onPress={()=>router.navigate('/(modals)/addModule')}
                         >
                             <MaterialIcons name="add" size={65} color="gray" style={{alignSelf: 'center'}} />
                         </TouchableOpacity>

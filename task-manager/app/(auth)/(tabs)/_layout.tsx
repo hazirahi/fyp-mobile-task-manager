@@ -72,7 +72,7 @@ const TabLayout = () => {
           headerShown: false,
         }}
       />
-      
+
       <Tabs.Screen
         name="profile"
         options={{
@@ -81,7 +81,7 @@ const TabLayout = () => {
           tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
           headerRight: () => (
             <TouchableOpacity onPress={signOut} style={{paddingRight: 20}}>
-              <Ionicons name="settings" size={30} color={'black'} />
+              <Ionicons name="log-out-outline" size={30} color={'black'} />
             </TouchableOpacity>
           ),
           //  headerShown: false,

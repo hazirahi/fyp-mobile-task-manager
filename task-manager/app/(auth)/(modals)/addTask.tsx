@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, Animated } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,6 +13,8 @@ import AddDateTimePicker from "@/components/AddDateTimePicker";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+
+import { Priority } from "@/types/types";
 
 export default function addTaskScreen () {
     const { modules, categories, priorities, addTask } = useTaskList();
@@ -55,6 +57,13 @@ export default function addTaskScreen () {
         setTaskPriority(0);
     }
 
+    const [selectedPriority, setSelectedPriority] = useState(null);
+  
+    const handlePress = (priority: any) => {
+        setSelectedPriority(priority);
+        setTaskPriority(priority.id);
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient
@@ -62,11 +71,11 @@ export default function addTaskScreen () {
                 style={styles.background}
             />
             <View style={{paddingLeft: 15, width: 40}}>
-                <TouchableOpacity onPress={() => router.navigate('home')}>
+                <TouchableOpacity onPress={() => router.navigate('/home')}>
                     <Ionicons name="chevron-back" size={24} color="black" />
                 </TouchableOpacity>
             </View>
-            <View>
+            {/* <View>
                 <TextInput
                     style={[styles.input, styles.title]}
                     placeholder="add a task"
@@ -130,6 +139,91 @@ export default function addTaskScreen () {
                         setTaskPriority(item.id);
                     }}
                 />
+            </View> */}
+            <View style={{paddingHorizontal: 20, paddingTop: 10}}>
+                <View style={{paddingVertical: 10}}>
+                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Task:</Text>
+                    <TextInput
+                        style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
+                        placeholder="Add Task"
+                        onChangeText={(text) => setNewTaskTitle(text)}
+                        onEndEditing={() => Keyboard.dismiss()}
+                    />
+                    
+                </View>
+                <View style={{paddingVertical: 10}}>
+                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Description: (optional)</Text>
+                    <TextInput
+                            style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
+                            placeholder="Add Description"
+                            multiline
+                            onChangeText={(text) => setNewTaskDesc(text)}
+                            onEndEditing={() => Keyboard.dismiss()}
+                    />
+                </View>
+                <View style={{paddingVertical: 10}}>
+                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Priority:</Text>
+                    <View style={styles.priorityContainer}>
+                        {priorities.map((priority, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={[
+                                    styles.priorityButton,
+                                    selectedPriority === priority && styles.selectedPriorityButton,
+                                ]}
+                                onPress={() => {
+                                    handlePress(priority);
+                                }}
+                            >
+                                <Text style={styles.priorityText}>{priority.priority}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+                <View style={{flexDirection:'row', justifyContent: 'space-between', paddingVertical: 10}}>
+                    <View style={{width: '50%'}}>
+                        <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Module:</Text>
+                        <Dropdown
+                            style={[styles.dropdown]}
+                            data={modules}
+                            labelField='module_title'
+                            valueField='id'
+                            placeholder='Module'
+                            onChange={item => {
+                                setTaskModule(item.id);
+                            }}
+                        />
+                    </View>
+                    <View style={{width: '40%'}}>
+                        <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Due Date:</Text>
+                        <TouchableOpacity
+                            style={[styles.dropdown]}
+                            onPress={handleOpenPress}
+                        >
+                            <Text style={{textAlign: 'center', fontSize: 15}}>{dueDate}</Text>
+                        </TouchableOpacity>
+                        <AddDateTimePicker
+                            ref={bottomSheetRef}
+                            onAdd={(startDate) => {
+                                handleDueDateChange(startDate);
+                                bottomSheetRef.current?.close();
+                            }}
+                        />
+                    </View>
+                </View>
+                <View style={{paddingVertical: 10}}>
+                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Category: </Text>
+                    <Dropdown
+                        style={styles.dropdown}
+                        data={categories}
+                        labelField='category_name'
+                        valueField='id'
+                        placeholder='Category'
+                        onChange={item => {
+                            setTaskCategory(item.id);
+                        }}
+                    />
+                </View>
             </View>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>
                 <TouchableOpacity
@@ -137,7 +231,7 @@ export default function addTaskScreen () {
                     onPress={() => {
                         addNewTask();
                         Keyboard.dismiss();
-                        router.navigate('home');
+                        router.navigate('/home');
                     }}
                 >
                     <Text style={{padding: 10, paddingHorizontal: 25, textAlign: 'center', fontWeight: '600', fontSize: 16}}>Add Task</Text>
@@ -174,9 +268,9 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         backgroundColor: '#F6FF78',
-        padding: 10,
-        borderRadius: 20,
-        width: '40%',
+        padding: 15,
+        borderRadius: 30,
+        //width: '40%',
         paddingLeft: 15,
         borderWidth: 1
     },
@@ -187,4 +281,25 @@ const styles = StyleSheet.create({
         width: 348,
         borderWidth: 1
     },
+    priorityContainer: {
+        backgroundColor: '#A6F511',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 5,
+        borderRadius: 25,
+        borderWidth: 1
+    },
+    priorityButton: {
+        padding: 10,
+        borderRadius: 20,
+        width: 100,
+    },
+    selectedPriorityButton: {
+        backgroundColor: 'white',
+    },
+    priorityText: {
+        fontSize: 16,
+        color: 'black',
+        textAlign: 'center'
+    }
 })

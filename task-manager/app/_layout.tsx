@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from '@/provider/AuthProvider';
+import BadgeListProvider from '@/provider/BadgeProvider';
 import TaskListProvider from '@/provider/TaskListProvider';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useFonts } from 'expo-font';
@@ -6,6 +7,7 @@ import { useFonts } from 'expo-font';
 import { Slot, useSegments, useRouter, SplashScreen } from 'expo-router';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NewBadge } from './(auth)/(modals)/newBadge';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,10 +22,10 @@ const InitialLayout = () => {
 
         if (session && !inAuthGroup){
             //redirect authenticated users to list page
-            router.replace('/(tabs)/home');
+            router.replace('/home');
         } else if (!session){
             //redirect unauthenticated users to login page
-            router.replace('(public)/login');
+            router.replace('/login');
         }
     }, [session, initialized]);
 
@@ -48,9 +50,14 @@ const RootLayout = () => {
         <GestureHandlerRootView>
             <AuthProvider>
                 <BottomSheetModalProvider>
+                <BadgeListProvider>
+                    <NewBadge/>
                     <TaskListProvider>
-                        <InitialLayout/>    
-                    </TaskListProvider>
+                        
+                            <InitialLayout/>   
+                            </TaskListProvider> 
+                        </BadgeListProvider>
+                    
                 </BottomSheetModalProvider>
             </AuthProvider>
         </GestureHandlerRootView>

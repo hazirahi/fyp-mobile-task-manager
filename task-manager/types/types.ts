@@ -53,3 +53,19 @@ export type Note = {
 export type NoteMod = Note & {
     modules: Module[];
 }
+
+export type Badge = {
+    id: number
+    badge_name: string
+    badge_description: string
+    badge_criteria: string
+    badge_url: string
+    signedUrl?: string
+}
+
+export type UserBadge = {
+    id: number
+    badge_id: number
+    user_id: string
+    earned_at: Date
+}

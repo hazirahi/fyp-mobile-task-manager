@@ -216,7 +216,7 @@ const ModuleDetail = () => {
 
         return (
             <View>
-                {isFirstInCat && <Text style={styles.header}>{item.category_name}</Text>}
+                {isFirstInCat && <Text style={[styles.header, {paddingHorizontal: 20}]}>{item.category_name}</Text>}
                 <TaskListItem
                     task={taskwithModuleId}
                     onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
@@ -235,19 +235,19 @@ const ModuleDetail = () => {
                     style={styles.background}
                 />
                 <FlatList
-                    style={{paddingHorizontal: 20}}
+                    //style={{paddingHorizontal: 20}}
                     data={data}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={{gap:15}}
+                    //contentContainerStyle={{gap:15}}
                     ListHeaderComponent={
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
                             <View>
                                 <TextInput 
                                     placeholder="module title" 
                                     value={moduleTitle || ''}
                                     onChangeText={(text) => setModuleTitle(text)}
-                                    style={styles.header}
+                                    style={[styles.header, {paddingBottom: 5}]}
                                     onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
                                 />
                                 <TextInput 
@@ -264,9 +264,9 @@ const ModuleDetail = () => {
                         </View>
                     }
                     ListFooterComponent={
-                        <View style={{paddingTop:10}}>
+                        <View style={{paddingTop:10, paddingHorizontal: 20}}>
                             <TouchableOpacity 
-                                onPress={()=>router.push('(modals)/addCategory')}
+                                onPress={()=>router.push('/(auth)/(modals)/addCategory')}
                                 style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
                             >
                                 <Text>add category</Text>
@@ -334,7 +334,7 @@ const styles = StyleSheet.create ({
         fontWeight: 'bold',
         fontSize: 30,
         paddingTop: 15,
-        paddingBottom: 10
+        //paddingBottom: 10
     },
     description: {
         fontSize: 20,

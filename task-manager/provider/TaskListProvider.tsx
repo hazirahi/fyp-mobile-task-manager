@@ -1,6 +1,7 @@
 import { supabase } from "@/config/initSupabase";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useAuth } from '@/provider/AuthProvider';
+import { useBadgeList } from "./BadgeProvider";
 
 import { Task, TaskCat, Module, Category, Note, NoteMod, Priority } from "@/types/types";
 
@@ -77,6 +78,8 @@ const TaskListContext = createContext<TaskListItem>({
 
 const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
+    const { awardBadge, hasEarnedBadge } = useBadgeList();
+
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
     const [priorityList, setPriorityList] = useState<Priority[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
@@ -289,9 +292,28 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             if(error)
                 console.log(error.message)
             else {
-                console.log('tasklist: ', tasklist);
                 const taskId = tasklist.id;
                 console.log('catid: ', categoryId, moduleId, taskId);
+
+                //get task count for user
+                const { count } = await supabase
+                    .from('tasks')
+                    .select('id', { count: 'exact', head: true})
+                    .eq('user_id', user!.id)
+
+                console.log('task count ', count);
+
+                //award first task badge
+                if (count === 1) {
+                    const hasEarned = await hasEarnedBadge(1);
+                    if (!hasEarned) {
+                        console.log('calling has earned badge', 1, user!.id)
+                        awardBadge(user!.id, 1)
+                    } else {
+                        console.log('user already has badge')
+                    }
+                }
+
                 const { data: taskcat, error: taskcatError } = await supabase
                     .from('module_categories')
                     .insert({

@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         fontFamily: 'EBGaramond',
         fontSize: 50,
         fontWeight: '600',
-        paddingTop: 10
+        //paddingTop: 10
     },
     navBTN: {
         borderWidth: 1,

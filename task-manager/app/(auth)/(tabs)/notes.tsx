@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 50,
         fontWeight: '600',
-        paddingTop: 10,
+        //paddingTop: 10,
         paddingBottom: 20,
         fontFamily: 'EBGaramond'
     },
