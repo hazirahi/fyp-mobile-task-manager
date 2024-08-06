@@ -186,37 +186,31 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             })
             .select('*')
             .single()
-        if(error)
+        if(error){
             console.log(error.message)
-        else
-            //get  module count for user
-            // const { count } = await supabase
-            //     .from('modules')
-            //     .select('id', { count: 'exact', head: true })
-            //     .eq('user_id', user!.id)
+        } else {
+            // get  module count for user
+            const { count } = await supabase
+                .from('modules')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', user!.id)
 
-            // console.log('module count ', count);
+            console.log('module count ', count);
             
-            // //get task count for user
-            // const { count } = await supabase
-            //     .from('tasks')
-            //     .select('id', { count: 'exact', head: true})
-            //     .eq('user_id', user!.id)
+            // award first module badge
 
-            // console.log('task count ', count);
-
-            // //award first task badge
-            // if (count === 1) {
-            //     const hasEarned = await hasEarnedBadge(1);
-            //     if (!hasEarned) {
-            //         console.log('calling has earned badge', 1, user!.id)
-            //         awardBadge(user!.id, 1)
-            //     } else {
-            //         console.log('user already has badge')
-            //     }
-            // }
+            if (count === 1) {
+                const hasEarned = await hasEarnedBadge(2);
+                if (!hasEarned) {
+                    console.log('calling has earned badge', 2, user!.id)
+                    awardBadge(user!.id, 2)
+                } else {
+                    console.log('user already has badge')
+                }
+            }
         
             setModuleList([modulelist!, ...moduleList])
+        }
     }
 
     const addCategory = async (
@@ -428,10 +422,38 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             .single()
         
         setTaskList(taskList.map((x) => (x.id === task.id ? data! : x)))
-        console.log('oncheckpressed: ', task);
-        if (error) {
+
+        const { data: completedData, error: completedError } = await supabase
+            .from('user_completed_tasks')
+            .select('completed_tasks')
+            .eq('user_id', user!.id)
+            .single()
+
+        const newCompletedTasks = (completedData?.completed_tasks || 0) + 1;
+
+        // upsert task completions
+        await supabase
+            .from('user_completed_tasks')
+            .upsert({
+                user_id: user!.id,
+                completed_tasks: newCompletedTasks
+            })
+        
+        // console.log('completed data', newCompletedTasks)
+
+        // console.log('oncheckpressed: ', task);
+        if (error)
             throw error;
+
+        if (completedData && completedData.completed_tasks >= 5){
+            // check if user has badge
+            const hasEarned = await hasEarnedBadge(4);
+            if (!hasEarned) {
+                awardBadge(user!.id, 4);
+            }
         }
+
+        
     }
 
     // delete task
