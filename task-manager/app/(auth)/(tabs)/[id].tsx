@@ -8,7 +8,7 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { supabase } from "@/config/initSupabase";
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import TaskListItem from "@/components/TaskListItem";
 // import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
@@ -16,6 +16,11 @@ import TaskListItem from "@/components/TaskListItem";
 import { useTaskList } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
 import { TaskCat, ModuleCat } from '@/types/types';
+
+import { Circle, Svg, Symbol, Use } from "react-native-svg";
+import { Text as SvgText } from "react-native-svg";
+import AddCategory from "@/components/AddCategory";
+
 
 const getCatNames = async (categoryIds: number[]) => {
     const {data: categories, error} = await supabase
@@ -49,15 +54,14 @@ const getCatNames = async (categoryIds: number[]) => {
 //     }, {});
 // };
 
-
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const [loading, setLoading] = useState(true);
     const { onCheckPressed, onDelete, tasks, onTaskPressed} = useTaskList();
     const { user } = useAuth();
 
-    const bottomSheetRef = useRef<BottomSheet>(null);
-    const handleOpenPress = () => bottomSheetRef.current?.expand();
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handleOpenPress = () => bottomSheetRef.current?.present();
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
 
     const handleTaskAdded = (newTask: TaskCat) => {
@@ -90,7 +94,7 @@ const ModuleDetail = () => {
     }, [id]);
 
     useEffect(() => {
-        const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id)));
+        const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id))).filter((id) => id !== null);
         getCatNames(categoryIds).then((catNames) => setCatNames(catNames));
 
         const taskIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.task_id)));
@@ -199,12 +203,12 @@ const ModuleDetail = () => {
     }
 
     interface moduleCatWithCatName extends ModuleCat{
-        category_name: string;
+        category_name: string | null;
     }
 
     const data: moduleCatWithCatName[] = moduleCatList.map((moduleCat) => ({
         ...moduleCat,
-        category_name: catNames[moduleCat.category_id],
+        category_name: moduleCat.category_id? catNames[moduleCat.category_id] : null,
     }));
 
     const renderItem: ListRenderItem<moduleCatWithCatName> = ({item, index}) => {
@@ -214,6 +218,85 @@ const ModuleDetail = () => {
         const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id };
         const isFirstInCat = index === 0 || data[index-1].category_id !== item.category_id;
 
+        const getPrioritySymbol = (task: TaskCat) => {
+            switch (task.priority_id) {
+                //low
+                case 1:
+                    return (
+                        <View style={{position: 'absolute'}}>
+                            <Svg height="40" width="45" pointerEvents="none">
+                            <Symbol id="symbol" viewBox="0 0 80 90">
+                                <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
+                                <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
+                            </Symbol>
+                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                            <SvgText
+                                x={20}
+                                y={21}
+                                textAnchor="middle"
+                                alignmentBaseline="middle"
+                                fontWeight={'900'}
+                                fontSize={16}
+                                fill={'white'}
+                            >!</SvgText>
+                        </Svg>
+                        </View>
+                        
+                    )
+                // medium
+                case 2:
+                    return (
+                        <View style={{position: 'absolute'}}>
+                        <Svg height="40" width="45" pointerEvents="none">
+                            <Symbol id="symbol" viewBox="0 0 80 90">
+                                <Circle cx='0' cy='0' r='40' fill='#FF8800' />
+                                <Circle cx='30' cy='20' r='25' fill='#FF8800' />
+                            </Symbol>
+                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                            <SvgText
+                                x={20}
+                                y={21}
+                                textAnchor="middle"
+                                alignmentBaseline="middle"
+                                fontWeight={'900'}
+                                fontSize={16}
+                                fill={'white'}
+                            >!!</SvgText>
+                        </Svg>
+                        </View>
+                    )
+                // high
+                case 3:
+                    return (
+                        <View style={{position: 'absolute'}}>
+                        <Svg height="40" width="45" pointerEvents="none">
+                            <Symbol id="symbol" viewBox="0 0 80 90">
+                                <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
+                                <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
+                            </Symbol>
+                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                            <SvgText
+                                x={20}
+                                y={21}
+                                textAnchor="middle"
+                                alignmentBaseline="middle"
+                                fontWeight={'900'}
+                                fontSize={16}
+                                fill={'white'}
+                            >!!!</SvgText>
+                        </Svg>
+                        </View>
+                    )
+                default:
+                    return null;
+            }
+        }
+        
+        const onEditPressed = (task: TaskCat) => {
+            console.log(task.id);
+            router.navigate({pathname: '/editTask', params: {taskId: task.id}});
+        }
+
         return (
             <View>
                 {isFirstInCat && <Text style={[styles.header, {paddingHorizontal: 20}]}>{item.category_name}</Text>}
@@ -221,11 +304,15 @@ const ModuleDetail = () => {
                     task={taskwithModuleId}
                     onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
                     onDelete={()=>onDelete(taskwithModuleId)}
+                    onEdit={() => onEditPressed(taskwithModuleId)}
                     onTaskPressed={()=>onTaskPressed(taskwithModuleId)}
+                    prioritySymbol={getPrioritySymbol(taskwithModuleId)}
                 />
             </View>
         )
     }
+
+    
 
     return (
         <>
@@ -266,11 +353,18 @@ const ModuleDetail = () => {
                     ListFooterComponent={
                         <View style={{paddingTop:10, paddingHorizontal: 20}}>
                             <TouchableOpacity 
-                                onPress={()=>router.push('/(auth)/(modals)/addCategory')}
+                                onPress={handleOpenPress}
                                 style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
                             >
                                 <Text>add category</Text>
                             </TouchableOpacity>
+                            <AddCategory
+                                ref={bottomSheetRef}
+                                onAdd={(newCategory) => {
+                                    //addNewCat(newCategory, id)
+                                    bottomSheetRef.current?.close();
+                                }}
+                            />
                         </View>
                     }
                     

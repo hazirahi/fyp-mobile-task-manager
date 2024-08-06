@@ -48,7 +48,7 @@ export default function Notes() {
             <Ionicons name='add-circle' size={80} color={'#0084FF'} onPress={handleOpenPress} style={styles.addNoteBTN} />
             <AddNoteBottomSheet
                 ref={bottomSheetRef}
-                onAdd={(newNote) =>
+                onAdd={(newNote) => {
                     setNoteList(notes => [...notes, {
                         id: generateNoteId(),
                         user_id: user!.id,
@@ -56,7 +56,8 @@ export default function Notes() {
                         note_text: newNote.note_text,
                         module_id: newNote.module_id
                     }])
-                }
+                    bottomSheetRef.current?.close();
+                }}
             />
         </SafeAreaView>
     )

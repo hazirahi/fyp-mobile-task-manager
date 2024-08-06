@@ -14,10 +14,13 @@ import 'react-native-url-polyfill/auto';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { router } from 'expo-router';
+import { router, useSegments } from 'expo-router';
 
 import BottomSheet from '@gorhom/bottom-sheet';
 //import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
+
+import { Circle, Svg, Symbol, Use } from "react-native-svg";
+import { Text as SvgText } from "react-native-svg";
 
 export default function Home (){
     const { user } = useAuth();
@@ -75,6 +78,88 @@ export default function Home (){
         }
     }
 
+    const getPrioritySymbol = (task: TaskCat) => {
+        switch (task.priority_id) {
+            //low
+            case 1:
+                return (
+                    <View style={{position: 'absolute'}}>
+                        <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
+                            <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!</SvgText>
+                    </Svg>
+                    </View>
+                    
+                )
+            // medium
+            case 2:
+                return (
+                    <View style={{position: 'absolute'}}>
+                    <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#FF8800' />
+                            <Circle cx='30' cy='20' r='25' fill='#FF8800' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!!</SvgText>
+                    </Svg>
+                    </View>
+                )
+            // high
+            case 3:
+                return (
+                    <View style={{position: 'absolute'}}>
+                    <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
+                            <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!!!</SvgText>
+                    </Svg>
+                    </View>
+                )
+            default:
+                return null;
+        }
+    }
+
+    const onEditTask = (task: TaskCat) => {
+        console.log(task.id);
+        router.navigate({pathname: '/editTask', params: {taskId: task.id}});
+    }
+
+    // const segments = useSegments();
+    // console.log(segments);
+
     return (
         <>
         <SafeAreaView style={styles.container}>
@@ -98,7 +183,7 @@ export default function Home (){
                         <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.header}>Tasks</Text>
-                                <Text>priority</Text>
+                                {/* <Text>priority</Text> */}
                             </View>
                             <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
                                 <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
@@ -114,8 +199,11 @@ export default function Home (){
                         task={task}
                         onCheckPressed={() => onCheckPressed(task)}
                         onDelete={() => onDelete(task)}
+                        onEdit={() => onEditTask(task)}
                         onTaskPressed={() => onTaskPressed(task)}
+                        prioritySymbol={getPrioritySymbol(task)}
                     />
+                    
                 )}
             />
         </SafeAreaView>

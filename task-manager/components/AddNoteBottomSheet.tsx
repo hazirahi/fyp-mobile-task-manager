@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 
 import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
@@ -55,6 +55,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             newNoteTitle, newNoteContent, noteModule
         )
 
+        Keyboard.dismiss();
         setNewNoteTitle('');
         setNewNoteContent('');
         setNoteModule(0);
@@ -70,7 +71,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
             backgroundStyle={{backgroundColor: 'white'}}
-            keyboardBehavior='fillParent'
+            //keyboardBehavior='fillParent'
         >
             <View style={{flex:1, paddingHorizontal: 20}}>
                 <BottomSheetTextInput
@@ -78,7 +79,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     placeholder='note title'
                     onChangeText={(text) => setNewNoteTitle(text)}
                     value={newNoteTitle}
-                    multiline= {true}
+                    //multiline= {true}
                 />
                 <View>
                     <Dropdown
@@ -107,6 +108,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     onPress={() => {
                         addNewNote();
                         
+
                     }}
                 >
                     <Text style={{padding: 10, paddingHorizontal: 25, color: 'white'}}>Add Note</Text>

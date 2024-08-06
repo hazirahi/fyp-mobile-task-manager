@@ -50,14 +50,12 @@ const RootLayout = () => {
         <GestureHandlerRootView>
             <AuthProvider>
                 <BottomSheetModalProvider>
-                <BadgeListProvider>
-                    <NewBadge/>
-                    <TaskListProvider>
-                        
+                    <BadgeListProvider>
+                        <NewBadge/>
+                        <TaskListProvider>       
                             <InitialLayout/>   
-                            </TaskListProvider> 
-                        </BadgeListProvider>
-                    
+                        </TaskListProvider> 
+                    </BadgeListProvider>
                 </BottomSheetModalProvider>
             </AuthProvider>
         </GestureHandlerRootView>

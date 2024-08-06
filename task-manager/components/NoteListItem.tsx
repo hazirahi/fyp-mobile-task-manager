@@ -25,7 +25,7 @@ const NoteListItem = ({note}: NoteListItem) => {
                 colors={['#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
                 style={{borderRadius: 20, borderWidth: 1}}
             >
-            <TouchableOpacity style={styles.container} onPress={() => router.navigate({pathname: 'editNote', params: {noteId: note.id}})}>
+            <TouchableOpacity style={styles.container} onPress={() => router.navigate({pathname: '/editNote', params: {noteId: note.id}})}>
                 <Text style={styles.text}>{note.note_title}</Text>
                 <Text numberOfLines={6} style={{fontWeight: '400'}}>{note.note_text}</Text>
                 {noteModule.map((module) => (

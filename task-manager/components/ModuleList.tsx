@@ -38,7 +38,7 @@ export default function ModuleList () {
                             style={styles.addContainer}
                             onPress={()=>router.navigate('/(modals)/addModule')}
                         >
-                            <MaterialIcons name="add" size={65} color="gray" style={{alignSelf: 'center'}} />
+                            <MaterialIcons name="add" size={65} color="#0084FF" style={{alignSelf: 'center'}} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -61,11 +61,12 @@ const styles = StyleSheet.create({
         paddingBottom: 15
     },
     addContainer: {
-        // borderWidth: 1,
+        borderWidth: 1,
         borderRadius: 20,
         width: 120,
         height: 120,
         justifyContent: 'center',
-        backgroundColor: 'lightgray'
+        backgroundColor: '#16B4F8',
+        borderColor: '#0084FF'
     }
 })

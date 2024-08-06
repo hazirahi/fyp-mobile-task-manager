@@ -7,8 +7,10 @@ import { Swipeable } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
 import { Circle, Svg, Symbol, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
+import { ReactNode } from "react";
+import { router } from "expo-router";
 
-const RightActions = ({onDelete} : {onDelete: () => void;}) => {
+const RightActions = ({onDelete, onEdit} : {onDelete: () => void; onEdit: () => void;}) => {
     return (
         <View
             style={{
@@ -16,10 +18,16 @@ const RightActions = ({onDelete} : {onDelete: () => void;}) => {
                 flexDirection: 'row',
                 //paddingLeft: 5,
                 gap: 15,
-                paddingRight: 20
+                paddingRight: 20,
+                paddingTop: 20
             }}
         >
-            <MaterialIcons name="mode-edit" size={24} color="black" />
+            <MaterialIcons
+                onPress={onEdit}
+                name="mode-edit" 
+                size={24}
+                color="black"
+            />
             <MaterialCommunityIcons
                 onPress={onDelete}
                 name="delete-empty"
@@ -34,26 +42,28 @@ type TaskListItem = {
     task: TaskCat;
     onCheckPressed: () => void;
     onDelete: () => void;
+    onEdit: () => void;
     onTaskPressed: () => void;
+    prioritySymbol: ReactNode | null;
 }
 
-const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListItem) => {
-    const getBorderColour = () => {
-        switch (task.priority_id) {
-            // low
-            case 1:
-                return '#FFBB00';
-            // medium
-            case 2:
-                return '#FF8800';
-            // high
-            case 3:
-                return '#E51F1F';
-            // default
-            default:
-                return 'black';
-        }  
-    }
+const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, prioritySymbol}: TaskListItem) => {
+    // const getBorderColour = () => {
+    //     switch (task.priority_id) {
+    //         // low
+    //         case 1:
+    //             return '#FFBB00';
+    //         // medium
+    //         case 2:
+    //             return '#FF8800';
+    //         // high
+    //         case 3:
+    //             return '#E51F1F';
+    //         // default
+    //         default:
+    //             return 'black';
+    //     }  
+    // }
 
     // const getGradientColours = () => {
     //     switch (task.priority_id) {
@@ -76,103 +86,42 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
     //     }
     // }
 
-    const getPrioritySymbol = () => {
-        switch (task.priority_id) {
-            //low
-            case 1:
-                return (
-                    <Svg height="40" width="45">
-                        <Symbol id="symbol" viewBox="0 0 80 90">
-                            <Circle cx='0' cy='0' r='40' fill='#FFE100' />
-                            <Circle cx='30' cy='20' r='25' fill='#FFE100' />
-                        </Symbol>
-                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                        <SvgText
-                            x={20}
-                            y={21}
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                            fontWeight={'900'}
-                            fontSize={16}
-                            fill={'white'}
-                        >!</SvgText>
-                    </Svg>
-                )
-            // medium
-            case 2:
-                return (
-                    <Svg height="40" width="45">
-                        <Symbol id="symbol" viewBox="0 0 80 90">
-                            <Circle cx='0' cy='0' r='40' fill='#FF9500' />
-                            <Circle cx='30' cy='20' r='25' fill='#FF9500' />
-                        </Symbol>
-                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                        <SvgText
-                            x={20}
-                            y={21}
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                            fontWeight={'900'}
-                            fontSize={16}
-                            fill={'white'}
-                        >!!</SvgText>
-                    </Svg>
-                )
-            // high
-            case 3:
-                return (
-                    <Svg height="40" width="45">
-                        <Symbol id="symbol" viewBox="0 0 80 90">
-                            <Circle cx='0' cy='0' r='40' fill='#F40000' />
-                            <Circle cx='30' cy='20' r='25' fill='#F40000' />
-                        </Symbol>
-                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                        <SvgText
-                            x={20}
-                            y={21}
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                            fontWeight={'900'}
-                            fontSize={16}
-                            fill={'white'}
-                        >!!!</SvgText>
-                    </Svg>
-                )
-            default:
-                return null;
-        }
-    }
+    const handleEditPress = () => {
+        console.log(task.id);
+        router.navigate({ pathname: '/(auth)/(modals)/editNote', params: {taskId: task.id }});
+    };
 
     return (
         <>
         <Swipeable
             renderRightActions={() => (
-                <RightActions onDelete={onDelete}/>
+                <RightActions onDelete={onDelete} onEdit={onEdit}/>
             )}
         >
-            
-        {/* <LinearGradient
-            colors={getGradientColours()}
+            <View style={{paddingHorizontal: 20, paddingTop: 20}}>
+        <LinearGradient
+            //colors={getGradientColours()}
             // colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
             // colors={['#FFFFFF', '#FF83F7', '#CB59F8', '#B03AFF']}
-            style={[styles.taskContainer, { borderColor: getBorderColour() }]}
-        > */}
+            colors={['#FFFFFF', '#8CDCF9']}
+            style={[styles.taskContainer, { borderColor: '#0084FF', flexDirection: 'row', justifyContent: 'space-between' }]}
+        >
         
-        <View style={{paddingHorizontal: 20, paddingTop: 15}}>
+        {/* <View style={{paddingHorizontal: 20, paddingTop: 20}}> */}
             
         
-            <View style={[{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'white', borderColor: getBorderColour()}, styles.taskContainer]}>
-            
+            {/* <View style={[{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'white', borderColor: getBorderColour()}, styles.taskContainer]}>
+             */}
                 <Text
                     onPress={onTaskPressed}
                     style={[styles.taskTitle, {
                         textDecorationLine: task.isCompleted
                         ? 'line-through'
                         : 'none',
-                        // color: task.isCompleted
-                        // ? '#00CC44'
-                        // : 'black',
-                        color: getBorderColour()
+                        color: task.isCompleted
+                        ? '#0084FF'
+                        : 'black',
+                        // color: 'black'
                     }]}
                 >
                     {task.task_name}
@@ -189,16 +138,17 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onTaskPressed}: TaskListI
                         // task.isCompleted
                         // ? '#00CC44'
                         // : 'black'
-                        getBorderColour()
+                        '#0084FF'
                     }
                     
                 />
+                
+            {/* </View> */}
+                    
+            {/* </View>   */}
+            </LinearGradient>
+            {prioritySymbol}
             </View>
-            <View style={styles.symbol}>
-            {getPrioritySymbol()}
-            </View>
-            </View>  
-            {/* </LinearGradient> */}
         </Swipeable>
         
         </>
@@ -221,7 +171,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        bottom: 10
+        bottom: 20
     }
 })
 

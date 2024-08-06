@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         borderRadius: 200 / 2
     },
     noImage: {
-      backgroundColor: '#333',
-    //   borderRadius: 200 /2,
+        backgroundColor: '#333',
+        borderRadius: 200 /2,
     },
   })

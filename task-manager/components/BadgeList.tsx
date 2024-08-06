@@ -1,6 +1,6 @@
 import { useBadgeList } from "@/provider/BadgeProvider";
 import BadgeListItem from "./BadgeListItem";
-import { FlatList, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { Badge, UserBadge } from "@/types/types";
 import { supabase } from "@/config/initSupabase";
 import { useEffect, useState } from "react";
@@ -50,18 +50,23 @@ const BadgeList = ({badges, onBadgePress}: BadgeList) => {
 
     return (
         <View>
-            <FlatList
-                data={badgeData}
-                renderItem={({item}) => (
-                    <BadgeListItem
-                        badge={item}
-                        onPress={() => onBadgePress(item.signedUrl?? '')}
-                    />
-                )}
-                keyExtractor={(item) => `${item.id}`}
-                numColumns={4}
-                columnWrapperStyle={{justifyContent: 'space-evenly'}}
-            />
+            {badgeData.length === 0 ? (
+                <Text style={{textAlign: 'center', padding: 20, fontSize: 16, paddingHorizontal: 45}}>you haven't acquired any badges yet! explore the app to start collecting.</Text>
+            ) : (
+                <FlatList
+                    data={badgeData}
+                    renderItem={({item}) => (
+                        <BadgeListItem
+                            badge={item}
+                            onPress={() => onBadgePress(item.signedUrl?? '')}
+                        />
+                    )}
+                    keyExtractor={(item) => `${item.id}`}
+                    numColumns={4}
+                    columnWrapperStyle={{justifyContent: 'space-evenly'}}
+                />
+            )}
+            
         </View>
     )
 }

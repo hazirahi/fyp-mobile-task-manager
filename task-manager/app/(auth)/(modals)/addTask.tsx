@@ -27,12 +27,17 @@ export default function addTaskScreen () {
     const [taskCategory, setTaskCategory] = useState<number>(0);
     const [taskPriority, setTaskPriority] = useState<number>(0);
 
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState<Date | null>(new Date());
     const [dueDate, setDueDate] = useState('Due Date');
 
-    const handleDueDateChange = (date: Date) => {
-        setDueDate(dayjs(date).format('DD-MM-YYYY'));
-        setDate(date);
+    const handleDueDateChange = (date: Date | null) => {
+        if(date) {
+            setDueDate(dayjs(date).format('DD-MM-YYYY'));
+            setDate(date);
+        } else {
+            setDueDate('Due Date');
+            setDate(null);
+        }
     }
     
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
@@ -46,7 +51,12 @@ export default function addTaskScreen () {
 
     const addNewTask = () => {
         addTask(
-            newTaskTitle, newTaskDesc, taskModule, taskCategory, date, taskPriority
+            newTaskTitle,
+            newTaskDesc,
+            taskModule || null,
+            taskCategory || null,
+            date || null,
+            taskPriority || null
         )
 
         setNewTaskTitle('');
@@ -151,18 +161,20 @@ export default function addTaskScreen () {
                     />
                     
                 </View>
+                <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 10}}>Optional:</Text>
+                <View style={{paddingHorizontal: 15, paddingVertical: 10, borderRadius: 20, borderWidth: 1}}>
                 <View style={{paddingVertical: 10}}>
-                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Description: (optional)</Text>
+                    <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Description:</Text>
                     <TextInput
                             style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
                             placeholder="Add Description"
-                            multiline
+                            //multiline
                             onChangeText={(text) => setNewTaskDesc(text)}
                             onEndEditing={() => Keyboard.dismiss()}
                     />
                 </View>
                 <View style={{paddingVertical: 10}}>
-                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Priority:</Text>
+                    <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Priority:</Text>
                     <View style={styles.priorityContainer}>
                         {priorities.map((priority, index) => (
                             <TouchableOpacity
@@ -182,7 +194,7 @@ export default function addTaskScreen () {
                 </View>
                 <View style={{flexDirection:'row', justifyContent: 'space-between', paddingVertical: 10}}>
                     <View style={{width: '50%'}}>
-                        <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Module:</Text>
+                        <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Module:</Text>
                         <Dropdown
                             style={[styles.dropdown]}
                             data={modules}
@@ -195,7 +207,7 @@ export default function addTaskScreen () {
                         />
                     </View>
                     <View style={{width: '40%'}}>
-                        <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Due Date:</Text>
+                        <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Due Date:</Text>
                         <TouchableOpacity
                             style={[styles.dropdown]}
                             onPress={handleOpenPress}
@@ -212,7 +224,7 @@ export default function addTaskScreen () {
                     </View>
                 </View>
                 <View style={{paddingVertical: 10}}>
-                    <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Category: </Text>
+                    <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Category: </Text>
                     <Dropdown
                         style={styles.dropdown}
                         data={categories}
@@ -224,6 +236,7 @@ export default function addTaskScreen () {
                         }}
                     />
                 </View>
+            </View>
             </View>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>
                 <TouchableOpacity

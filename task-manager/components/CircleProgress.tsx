@@ -48,8 +48,8 @@ export default function CircleProgress() {
                     }
                 </AnimatedCircularProgress>
             </View>
-            <View style={{alignItems: 'center', paddingTop: 25}}>
-                <Text style={{fontWeight: '600', fontSize: 16, paddingBottom: 5}}>you're doing well, sweetie!</Text>
+            <View style={{alignItems: 'center', paddingTop: 25, paddingRight: 26}}>
+                <Text style={{fontWeight: '600', fontSize: 16, paddingBottom: 5}}>you're doing well!</Text>
                 <Text> {completedTasks.length}/{tasks.length} tasks completed</Text>
             </View>
         </View>
@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         padding:20,
-        gap: 10
+        justifyContent: 'space-between'
     }
 })

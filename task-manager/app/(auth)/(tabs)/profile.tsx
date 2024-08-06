@@ -258,7 +258,7 @@ export default function Account (){
                         </View>
                     )}
                     <View style={{paddingTop: 15}}>
-                        <TextInput placeholder='Your Name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                        <TextInput placeholder='name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
                     </View>
                     <View style={{paddingTop: 5}}>
                         <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
@@ -287,11 +287,11 @@ export default function Account (){
                     </View>
                 </View>
             </View>
-            <View style={{paddingTop: 20}}>
+            {/* <View style={{paddingTop: 20}}>
                 <Text style={styles.header}>This Week's Progress: </Text>
                 <View style ={{backgroundColor: '#A6F511', padding: 20, borderWidth: 1, borderRadius: 10}}>
                 </View>
-            </View>
+            </View> */}
         </SafeAreaView>
     );
 }

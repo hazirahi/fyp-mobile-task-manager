@@ -4,7 +4,7 @@ import { useTaskList } from "@/provider/TaskListProvider";
 import { NoteMod } from "@/types/types";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 
 
@@ -76,35 +76,36 @@ const EditNote = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <LinearGradient 
-                colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
-                style={styles.background}
-            />
-            <View style={{paddingHorizontal: 15}}>
-                <TouchableOpacity onPress={() => router.navigate('notes')}>
-                    <Ionicons name="chevron-back" size={24} color="black" />
-                </TouchableOpacity>
-            </View>
-            <View style={{paddingHorizontal: 20, paddingTop: 10}}>
-                <View>
-                    <TextInput
-                        style={styles.title}
-                        value={noteTitle || ''}
-                        onChangeText={(text) => setNoteTitle(text)}
-                        multiline={true}
-                        // onEndEditing={() => updateNote({noteTitle, noteText})}
-                    />
-                    <TextInput
-                        style={styles.content}
-                        value={noteText || ''}
-                        onChangeText={(text) => setNoteText(text)}
-                        multiline={true}
-                        // onEndEditing={() => updateNote({noteTitle, noteText})}
-                    />
+            <ScrollView keyboardShouldPersistTaps='handled'>
+                <LinearGradient 
+                    colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
+                    style={styles.background}
+                />
+                <View style={{paddingHorizontal: 15}}>
+                    <TouchableOpacity onPress={() => router.navigate('/notes')}>
+                        <Ionicons name="chevron-back" size={24} color="black" />
+                    </TouchableOpacity>
+                </View>
+                <View style={{paddingHorizontal: 20, paddingTop: 10}}>
+                    <View>
+                        <TextInput
+                            style={styles.title}
+                            value={noteTitle || ''}
+                            onChangeText={(text) => setNoteTitle(text)}
+                            multiline={true}
+                            // onEndEditing={() => updateNote({noteTitle, noteText})}
+                        />
+                        <TextInput
+                            style={styles.content}
+                            value={noteText || ''}
+                            onChangeText={(text) => setNoteText(text)}
+                            multiline={true}
+                            // onEndEditing={() => updateNote({noteTitle, noteText})}
+                        />
+                    </View>
                 </View>
                 
-                
-            </View>
+            </ScrollView>
             <View style={styles.btnContainer}>
                 <View>
                     <TouchableOpacity>
@@ -115,12 +116,12 @@ const EditNote = () => {
                     style={styles.updateBTN}
                     onPress={() => {
                         updateNote({noteTitle, noteText});
-                        router.navigate('notes')
+                        router.navigate('/notes')
                     }}
                 >
                     <Text style={{fontSize: 15, fontWeight: '600'}}>Done</Text>
                 </TouchableOpacity>
-                </View>
+            </View>
         </SafeAreaView>
     )
 
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         top: 0,
-        height: 900
+        height: 750
     },
     title: {
         fontSize: 35,
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         position: 'absolute',
-        bottom: 40,
+        bottom: 50,
         // right: 20,
         flexDirection: 'row',
         alignItems: 'center',
