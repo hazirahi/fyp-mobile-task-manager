@@ -76,9 +76,9 @@ const EditNote = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView keyboardShouldPersistTaps='handled'>
+            
                 <LinearGradient 
-                    colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
+                    colors={['#D5FF61', '#F6FF78','#FFFFFF', '#F6FF78', '#D5FF61']}
                     style={styles.background}
                 />
                 <View style={{paddingHorizontal: 15}}>
@@ -86,6 +86,7 @@ const EditNote = () => {
                         <Ionicons name="chevron-back" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
+                <ScrollView keyboardShouldPersistTaps='handled'>
                 <View style={{paddingHorizontal: 20, paddingTop: 10}}>
                     <View>
                         <TextInput
@@ -130,14 +131,14 @@ const EditNote = () => {
 const styles = StyleSheet.create({
     container: {
         flex:1,
-        backgroundColor: '#0084FF'
+        backgroundColor: '#D5FF61'
     },
     background: {
         position: 'absolute',
         left: 0,
         right: 0,
         top: 0,
-        height: 750
+        height: 900
     },
     title: {
         fontSize: 35,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     updateBTN: {
-        backgroundColor: '#0084FF',
+        backgroundColor: '#A6F511',
         padding: 10,
         borderRadius: 20,
         width: 100,

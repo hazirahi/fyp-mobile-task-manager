@@ -22,8 +22,8 @@ const NoteListItem = ({note}: NoteListItem) => {
     return (
         <View>
             <LinearGradient
-                colors={['#FFFFFF', '#8CDCF9', '#16B4F8', '#0084FF']}
-                style={{borderRadius: 20, borderWidth: 1}}
+                colors={['#FFFFFF', '#F6FF78', '#D5FF61']}
+                style={{borderRadius: 20, borderWidth: 1, borderColor: '#80DA39'}}
             >
             <TouchableOpacity style={styles.container} onPress={() => router.navigate({pathname: '/editNote', params: {noteId: note.id}})}>
                 <Text style={styles.text}>{note.note_title}</Text>
@@ -50,15 +50,15 @@ const styles = StyleSheet.create({
     },
     text: { 
         textAlign: 'left',
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: '#0084FF',
+        fontWeight: '600',
+        fontSize: 17,
+        color: '#80DA39',
         paddingBottom: 5
     },
     module: {
-        fontWeight: 'bold',
+        fontWeight: '600',
         fontSize: 16,
-        color: 'white'
+        color: '#80DA39'
     }
 })
 

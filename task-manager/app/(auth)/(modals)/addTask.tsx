@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, Animated } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, Animated, ScrollView } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -150,7 +150,8 @@ export default function addTaskScreen () {
                     }}
                 />
             </View> */}
-            <View style={{paddingHorizontal: 20, paddingTop: 10}}>
+            <ScrollView style={{paddingHorizontal: 20}} keyboardShouldPersistTaps='handled'>
+            <View style={{paddingTop: 10}}>
                 <View style={{paddingVertical: 10}}>
                     <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Task:</Text>
                     <TextInput
@@ -168,7 +169,7 @@ export default function addTaskScreen () {
                     <TextInput
                             style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
                             placeholder="Add Description"
-                            //multiline
+                            multiline
                             onChangeText={(text) => setNewTaskDesc(text)}
                             onEndEditing={() => Keyboard.dismiss()}
                     />
@@ -238,6 +239,7 @@ export default function addTaskScreen () {
                 </View>
             </View>
             </View>
+            </ScrollView>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>
                 <TouchableOpacity
                     style={styles.addButton}

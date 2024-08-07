@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 
-import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Note } from '@/types/types';
 import { useTaskList } from '@/provider/TaskListProvider';
 import { Dropdown } from 'react-native-element-dropdown';
 
-export type Ref = BottomSheet;
+type Ref = BottomSheetModal;
 
 export type AddNote = {
     onAdd: (
@@ -63,9 +63,9 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
     }
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={innerRef}
-            index={-1}
+            index={0}
             snapPoints={snapPoints}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
@@ -114,7 +114,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     <Text style={{padding: 10, paddingHorizontal: 25, color: 'white'}}>Add Note</Text>
                 </TouchableOpacity>
             </View>
-        </BottomSheet>
+        </BottomSheetModal>
     )
 
 })

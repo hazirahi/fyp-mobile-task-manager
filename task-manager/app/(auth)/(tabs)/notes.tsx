@@ -5,7 +5,7 @@ import { useAuth } from "@/provider/AuthProvider";
 import { Note } from "@/types/types";
 import { useTaskList } from "@/provider/TaskListProvider";
 import { Ionicons } from "@expo/vector-icons";
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,8 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 export default function Notes() {
     const { user } = useAuth();
 
-    const bottomSheetRef = useRef<BottomSheet>(null);
-    const handleOpenPress = () => bottomSheetRef.current?.expand();
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handleOpenPress = () => bottomSheetRef.current?.present();
 
     const [noteList, setNoteList] = useState<Note[]>([]);
     const { getNotes, getModule } = useTaskList();

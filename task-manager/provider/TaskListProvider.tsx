@@ -406,10 +406,32 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             })
             .select('*')
             .single()
-        if (error)
+        if (error) {
             console.log(error.message)
-        else
+        } else {
+            //get note count for user
+            const { count } = await supabase
+                .from('notes')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', user!.id)
+
+            console.log('note count: ', count);
+
+            //award first note badge
+
+            if (count === 1) {
+                const hasEarned = await hasEarnedBadge(5);
+                if (!hasEarned) {
+                    console.log('getting badge', 5, user!.id)
+                    awardBadge(user!.id, 5)
+                } else {
+                    console.log('user already has badge')
+                }
+            }
+            
             setNoteList([notelist!, ...noteList]);
+        }
+            
     }
 
     // check task
