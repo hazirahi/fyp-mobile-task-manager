@@ -343,6 +343,7 @@ const ModuleDetail = () => {
                                     onChangeText={(text) => setModuleDesc(text)} 
                                     style={styles.description} 
                                     onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
+                                    multiline
                                 />
                             </View>
                             <View style={{paddingTop: 10}}>

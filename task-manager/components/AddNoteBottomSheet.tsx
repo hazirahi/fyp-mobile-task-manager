@@ -133,9 +133,9 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         backgroundColor: '#8CDCF9',
-        padding: 5,
+        padding: 10,
         borderRadius: 20,
-        width: '30%',
+        width: '40%',
         paddingLeft: 15,
         borderWidth: 1,
         borderColor: '#0084FF'

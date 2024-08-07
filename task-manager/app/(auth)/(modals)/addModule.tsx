@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { SafeAreaView, Text, StyleSheet, View, Modal, Keyboard } from "react-native";
+import { useState, useRef } from "react";
+import { SafeAreaView, Text, StyleSheet, View, Modal, Keyboard, ScrollView } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import ColorPicker, { colorKit, HueCircular, InputWidget, Panel1, returnedResults, Swatches } from "reanimated-color-picker";
@@ -10,6 +10,8 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import { useTaskList } from "@/provider/TaskListProvider";
 import { Circle, Svg } from "react-native-svg";
+import AddCategory from "@/components/AddCategory";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function AddModule() {
 
@@ -39,6 +41,11 @@ export default function AddModule() {
         console.log(newModuleTitle, newModuleDesc, colour);
     }
 
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handleOpenPress = () => bottomSheetRef.current?.present();
+
+    // ADD CATEGORY IN MODULE PLS TY
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <LinearGradient
@@ -50,6 +57,7 @@ export default function AddModule() {
                     <Ionicons name="chevron-back" size={24} color="black" />
                 </TouchableOpacity>
             </View>
+            <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={{alignItems: 'center', paddingTop: 20}}>
                 <View style={{padding: 10, borderRadius: 10, borderWidth: 1}}>
                     <TouchableOpacity onPress={() => setShowModal(true)}>
@@ -95,6 +103,7 @@ export default function AddModule() {
                     </Modal>
                 </View>
             </View>
+            
             <View style={{paddingHorizontal: 20, paddingTop: 20}}>
                 <View style={{paddingVertical: 10}}>
                     <Text style={styles.header}>Module title:</Text>
@@ -109,14 +118,31 @@ export default function AddModule() {
                 <View style={{paddingVertical: 10}}>
                     <Text style={styles.header}>Description:</Text>
                     <TextInput
-                        style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
+                        style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15, height: 100}}
                         placeholder="add description"
                         onChangeText={(text) => setNewModuleDesc(text)}
                         value={newModuleDesc}
-                        onEndEditing={() => Keyboard.dismiss()}
+                        //onEndEditing={() => Keyboard.dismiss()}
+                        multiline
+                    />
+                </View>
+                <View style={{paddingTop: 10}}>
+                    <TouchableOpacity 
+                        onPress={handleOpenPress}
+                        style={{backgroundColor: '#A6F511', borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
+                    >
+                        <Text style={{fontWeight: '500'}}>Add Category</Text>
+                    </TouchableOpacity>
+                    <AddCategory
+                        ref={bottomSheetRef}
+                        onAdd={(newCategory) => {
+                            //addNewCat(newCategory, id)
+                            bottomSheetRef.current?.close();
+                        }}
                     />
                 </View>
             </View>
+            </ScrollView>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>
                 <TouchableOpacity
                     style={styles.addButton}

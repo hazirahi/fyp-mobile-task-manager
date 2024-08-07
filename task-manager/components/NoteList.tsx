@@ -19,20 +19,29 @@ export default function NoteList() {
 
     
     return(
-        <View>
-            <FlatList
-                scrollEnabled={true}
-                data={notes}
-                keyExtractor={(item) => `${item.id}`}
-                contentContainerStyle={{gap:15}}
-                columnWrapperStyle={{justifyContent: 'space-evenly'}}
-                renderItem={({ item: note }) => (
-                   <NoteListItem
-                        note={note}
-                   />
-                )}
-                numColumns={2}
-            />
+        <View style={{paddingHorizontal: 20}}>
+            {notes.length === 0 ? (
+                <View style={{ borderWidth: 1, borderRadius: 20, padding: 40, height: '90%'}}>
+                    <Text style={{textAlign: 'center', top: '40%', fontSize: 17, fontWeight: '500'}}>
+                        You haven't created any notes yet! Tap the + icon to add a new note.
+                    </Text>
+                </View>
+            ) : (
+                <FlatList
+                    scrollEnabled={true}
+                    data={notes}
+                    keyExtractor={(item) => `${item.id}`}
+                    contentContainerStyle={{gap:15}}
+                    columnWrapperStyle={{justifyContent: 'space-evenly'}}
+                    renderItem={({ item: note }) => (
+                    <NoteListItem
+                            note={note}
+                    />
+                    )}
+                    numColumns={2}
+                />
+            )}
+            
         </View>
     )
 }

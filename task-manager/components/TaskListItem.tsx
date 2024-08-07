@@ -91,6 +91,8 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
         router.navigate({ pathname: '/(auth)/(modals)/editNote', params: {taskId: task.id }});
     };
 
+    // TASK LIST ITEM WHEN TOO LONG, THE CIRCLE TOO MUCH TO RIGHT
+
     return (
         <>
         <Swipeable
@@ -104,7 +106,7 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
             // colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
             // colors={['#FFFFFF', '#FF83F7', '#CB59F8', '#B03AFF']}
             colors={['#FFFFFF', '#8CDCF9']}
-            style={[styles.taskContainer, { borderColor: '#0084FF', flexDirection: 'row', justifyContent: 'space-between' }]}
+            style={[styles.taskContainer, ]}
         >
         
         {/* <View style={{paddingHorizontal: 20, paddingTop: 20}}> */}
@@ -112,6 +114,7 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
         
             {/* <View style={[{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'white', borderColor: getBorderColour()}, styles.taskContainer]}>
              */}
+             <View style={{ borderColor: '#0084FF', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text
                     onPress={onTaskPressed}
                     style={[styles.taskTitle, {
@@ -142,7 +145,7 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
                     }
                     
                 />
-                
+            </View>
             {/* </View> */}
                     
             {/* </View>   */}
@@ -164,7 +167,8 @@ const styles = StyleSheet.create({
     },
     taskTitle: {
         fontSize: 17,
-        fontWeight: '400'
+        fontWeight: '400',
+         width: '80%'
     },
     symbol: { 
         position: 'absolute',
