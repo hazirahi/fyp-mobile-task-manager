@@ -6,6 +6,7 @@ export type Task = {
     isCompleted: boolean
     created_at: Date | null
     module_id: number | null
+    category_id: number | null
     due_date: Date | null
     priority_id: number | null
 }
@@ -37,12 +38,13 @@ export type ModuleCat = {
     user_id: string
 }
 
-export type TaskCat = Task & {
-    category_id: Category['id'] | null
-    module_id: Module['id'] | null
-    due_date: Date | null
-    priority_id: Priority['id'] | null
+export type ModuleCatTask = {
+    module_id: number
+    category_id: number | null
+    task: Task
 }
+
+export type TaskCat = Omit<Task, 'module_id' | 'category_id'> & ModuleCatTask
 
 export type Note = {
     id: number

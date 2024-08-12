@@ -15,6 +15,7 @@ import { Task, TaskCat, Module, Category, Note, NoteMod, Priority, ModuleCat } f
 
 type TaskListItem = {
     tasks: TaskCat[];
+    catTasks: TaskCat[];
     priorities: Priority[];
     modules: Module[];
     categories: Category[];
@@ -26,6 +27,7 @@ type TaskListItem = {
     getCategory: () => void;
     // getModuleCat: () => void;
     getTasks: () => void;
+    getTasksByCategory: () => void;
     getNotes: () => void;
     // getTaskSection: () => void;
     addModule: (
@@ -34,12 +36,13 @@ type TaskListItem = {
         colour: Module['colour']
     ) => void;
     addCategory: (
-        category_name: Category['category_name']
+        category_name: Category['category_name'],
+        module_id: ModuleCat['id']
     ) => void;
-    addCategoryToModule: (
-        module_id: ModuleCat['module_id'],
-        category_id: ModuleCat['category_id']
-    ) => void;
+    // addCategoryToModule: (
+    //     module_id: ModuleCat['module_id'],
+    //     category_id: ModuleCat['category_id']
+    // ) => void;
     addTask: (
         task_name: TaskCat['task_name'],
         task_description: TaskCat['task_description'],
@@ -56,10 +59,12 @@ type TaskListItem = {
     onCheckPressed: (task: Task) => void;
     onDelete: (task: Task) => void;
     onTaskPressed: (task: Task) => void;
+    updateCategory: (category: Category) => void;
 };
 
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
+    catTasks: [],
     priorities: [],
     modules: [],
     categories: [],
@@ -70,15 +75,17 @@ const TaskListContext = createContext<TaskListItem>({
     getCategory: () => {},
     // getModuleCat: () => {},
     getTasks: () => {},
+    getTasksByCategory: () => {},
     getNotes: () => {},
     addModule: () => {},
     addCategory: () => {},
-    addCategoryToModule: () => {},
+    //addCategoryToModule: () => {},
     addTask: () => {},
     addNote: () => {},
     onCheckPressed: () => {},
     onDelete: () => {},
-    onTaskPressed: () => {}
+    onTaskPressed: () => {},
+    updateCategory: () => {}
 });
 
 const TaskListProvider = ({ children }: PropsWithChildren) => {
@@ -86,6 +93,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { awardBadge, hasEarnedBadge } = useBadgeList();
 
     const [taskList, setTaskList] = useState<TaskCat[]>([]);
+    const [catTaskList, setCatTaskList] = useState<TaskCat[]>([]);
     const [priorityList, setPriorityList] = useState<Priority[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -137,6 +145,28 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setTaskList(taskList!);
             // console.log('provider: ', taskList);
         }
+    }
+
+    //get tasks by cat
+    const getTasksByCategory = async () => {
+        const { data: catTaskList, error } = await supabase
+            .from('tasks')
+            .select('*,  categories(category_name)')
+            .order('created_at', {ascending: false})
+        if (error) {
+            console.log(error.message)
+            return;
+        }
+        
+        const tasksByCategory = catTaskList.reduce((acc, task) => {
+            if (!acc[task.category_id]) {
+                acc[task.category_id] = [];
+            }
+            acc[task.category_id].push(task);
+            return acc;
+        }, {});
+
+        setCatTaskList(tasksByCategory);
     }
 
     const getNotes = async () => {
@@ -210,11 +240,13 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             }
         
             setModuleList([modulelist!, ...moduleList])
+            return modulelist.id;
         }
     }
 
     const addCategory = async (
-        category_name: Category['category_name']   
+        category_name: Category['category_name'],
+        module_id: ModuleCat['module_id']
     ) => {
         try {
             const { data: categorylist, error } = await supabase
@@ -229,7 +261,24 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                 throw error;
             } else {
                 setCategoryList([categorylist!, ...categoryList]);
+                const category_id = categorylist.id;
 
+                //add category to module
+                const { data: moduleCatList, error: moduleCatError } = await supabase
+                    .from('module_categories')
+                    .insert({
+                        module_id: module_id,
+                        category_id: category_id,
+                        user_id: user!.id
+                    })
+                    .select('*')
+                    .single()
+                if (moduleCatError) {
+                    console.log(moduleCatError.message)
+                } else {
+                    console.log('cat added to module: ', moduleCatList)
+                }
+                return category_id;
             }
         } catch (error) {
             throw error;
@@ -237,23 +286,23 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
            
     }
 
-    const addCategoryToModule = async (
-        module_id: ModuleCat['module_id'],
-        category_id: ModuleCat['category_id']
-    ) => {
-        const { data: moduleCatList, error } = await supabase
-            .from('module_categories')
-            .insert({
-                module_id: module_id,
-                category_id: category_id,
-                user_id: user!.id
-            });
-        if (error) {
-            console.log(error.message)
-        } else {
-            console.log('cat added to module!')
-        }
-    }
+    // const addCategoryToModule = async (
+    //     module_id: ModuleCat['module_id'],
+    //     category_id: ModuleCat['category_id']
+    // ) => {
+    //     const { data: moduleCatList, error } = await supabase
+    //         .from('module_categories')
+    //         .insert({
+    //             module_id: module_id,
+    //             category_id: category_id,
+    //             user_id: user!.id
+    //         });
+    //     if (error) {
+    //         console.log(error.message)
+    //     } else {
+    //         console.log('cat added to module!', moduleCatList)
+    //     }
+    // }
 
     // const addTask = async (
     //     // task_name: Task['task_name'],
@@ -495,9 +544,24 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         console.log('ontaskpressed')
     }
 
+    // update category
+    async function updateCategory(category:Category) {
+        const { data, error } = await supabase
+            .from('categories')
+            .update(category)
+            .eq('user_id', user!.id)
+            .select('*')
+        if (error) {
+            console.log(error.message)
+        } else {
+            console.log('category updated successfully!', category)
+        }
+    }
+
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
+            catTasks: catTaskList,
             priorities: priorityList,
             modules: moduleList,
             categories: categoryList,
@@ -508,16 +572,18 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             getCategory,
             // getModuleCat,
             getTasks,
+            getTasksByCategory,
             getNotes,
             // getTaskSection,
             addModule,
             addCategory,
-            addCategoryToModule,
+            //addCategoryToModule,
             addTask,
             addNote,
             onCheckPressed,
             onDelete,
-            onTaskPressed
+            onTaskPressed,
+            updateCategory
         }}>
             {children}
         </TaskListContext.Provider>

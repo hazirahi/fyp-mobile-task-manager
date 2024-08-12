@@ -1,11 +1,8 @@
 import { Text, View , StyleSheet} from "react-native";
-import { TouchableOpacity, TextInput } from "react-native-gesture-handler";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTaskList } from "@/provider/TaskListProvider";
 import { forwardRef, useImperativeHandle, useRef, useState, useMemo, useCallback } from "react";
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { Category } from "@/types/types";
+import { Category, Module } from "@/types/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // adds category to all modules atm, not sure if i want to make it so that only add the category to current module :/
@@ -67,8 +64,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 type Ref = BottomSheetModal;
 
 export type AddCategory = {
+    moduleId: number;
     onAdd: (
-        category_name: Category['category_name']
+        category_name: Category['category_name'],
+        module_id: Module['id']
     ) => void;
 }
 
@@ -87,14 +86,14 @@ const AddCategory = forwardRef<Ref, AddCategory>((props, ref) => {
 
     const { categories, addCategory } = useTaskList();
     const [newCategory, setNewCategory] = useState('');
+    //const [moduleId, setModuleId] = useState<number>(0);
 
     const addNewCat = () => {
-        addCategory(newCategory);
+        console.log('(ADDCATEGORY) adding new cat: ', newCategory, props.moduleId)
+        addCategory(newCategory, props.moduleId);
         setNewCategory('');
         innerRef.current?.close();
     }
-
-    
 
     return (
         <BottomSheetModal

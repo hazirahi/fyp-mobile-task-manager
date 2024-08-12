@@ -32,7 +32,7 @@ export default function NoteList() {
                     data={notes}
                     keyExtractor={(item) => `${item.id}`}
                     contentContainerStyle={{gap:15}}
-                    columnWrapperStyle={{justifyContent: 'space-evenly'}}
+                    columnWrapperStyle={{justifyContent: 'space-between'}}
                     renderItem={({ item: note }) => (
                     <NoteListItem
                             note={note}

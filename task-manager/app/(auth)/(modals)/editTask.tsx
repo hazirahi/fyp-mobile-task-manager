@@ -241,7 +241,7 @@ const EditTask = () => {
                         router.navigate('/home');
                     }}
                 >
-                    <Text style={{padding: 10, paddingHorizontal: 25, textAlign: 'center', fontWeight: '600', fontSize: 16}}>Add Task</Text>
+                    <Text style={{padding: 10, paddingHorizontal: 25, textAlign: 'center', fontWeight: '600', fontSize: 16}}>Edit Task</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
         height: 900
     },
     priorityContainer: {
-        backgroundColor: '#A6F511',
+        backgroundColor: '#16B4F8',
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 5,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     dropdown: {
-        backgroundColor: '#F6FF78',
+        backgroundColor: '#8CDCF9',
         padding: 15,
         borderRadius: 30,
         //width: '40%',
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     },
     saveButton: {
         alignSelf: 'center',
-        backgroundColor: '#A6F511',
+        backgroundColor: '#16B4F8',
         borderRadius: 20,
         width: 348,
         borderWidth: 1

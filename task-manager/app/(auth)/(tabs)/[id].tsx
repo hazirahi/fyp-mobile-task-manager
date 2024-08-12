@@ -20,6 +20,8 @@ import { TaskCat, ModuleCat } from '@/types/types';
 import { Circle, Svg, Symbol, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
 import AddCategory from "@/components/AddCategory";
+import TaskListView from "@/components/TaskListView";
+import TaskKanbanView from "@/components/TaskKanbanView";
 
 
 const getCatNames = async (categoryIds: number[]) => {
@@ -57,7 +59,7 @@ const getCatNames = async (categoryIds: number[]) => {
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const [loading, setLoading] = useState(true);
-    const { onCheckPressed, onDelete, tasks, onTaskPressed} = useTaskList();
+    const { onCheckPressed, onDelete, tasks, onTaskPressed, categories, getCategory, getTasks, catTasks } = useTaskList();
     const { user } = useAuth();
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -78,7 +80,15 @@ const ModuleDetail = () => {
     const [ moduleDesc, setModuleDesc ] = useState('');
     const [ moduleColour, setModuleColour ] = useState('');
 
+    const [view, setView] = useState('list');
+    const handleViewChange = (newView: 'list' | 'kanban') => {
+        setView(newView);
+    };
+
+    //const [ moduleTasks, setModuleTasks ] = useState<Task
+
     const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
+    const [categorizedTasks, setCategorizedTasks] = useState<{[id: number]: TaskCat[]}>({});
     const [catNames, setCatNames] = useState<{[id:number]:string}>({});
 
     let taskIdCounter = 0;
@@ -90,25 +100,62 @@ const ModuleDetail = () => {
     useEffect(() => {
         console.log(id);
         id&&getModuleInfo();
-        getModuleCat();
+        //getModuleCat();
+        getModuleTasks();
     }, [id]);
 
     useEffect(() => {
-        const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id))).filter((id) => id !== null);
-        getCatNames(categoryIds).then((catNames) => setCatNames(catNames));
+        
+    })
 
-        const taskIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.task_id)));
-        // getModuleTasks(taskIds).then((taskNames) => setTaskNames(taskNames));
-    },[moduleCatList]);
+    // const getCatTasks = async () => {
+    //     const { data: modCat, error } = await supabase
+    //         .from('tasks')
+    //         .select('*')
+    //         .eq
+    // }
 
-    const getModuleCat = async () => {
-        const {data: moduleCatList} = await supabase
-            .from('module_categories')
-            .select(`*, categories(*), tasks(*)`)
-            .eq('module_id', id)
-        if (moduleCatList)
-            setModuleCatList(moduleCatList!);
-    }
+    // useEffect(() => {
+    //     const catNamesObj = categories.reduce((acc: any, category) => {
+    //         acc[category.id] = category.category_name;
+    //         return acc;
+    //     }, {});
+    //     setCatNames(catNamesObj);
+    //     getCategory();
+    // }, []);
+
+    // useEffect(() => {
+    //     const categorizedTasksObj = tasks.reduce((acc: any, task) => {
+    //         const categoryId = task.category_id;
+    //         if (categoryId !== null && categoryId !== undefined) {
+    //             if (!acc[categoryId]) {
+    //                 acc[categoryId] = [];
+    //             }
+    //             acc[categoryId].push(task);
+    //         }
+            
+    //         return acc;
+    //     }, {});
+    //     setCategorizedTasks(categorizedTasksObj);
+    //     getTasks();
+    // }, [])
+
+    // useEffect(() => {
+    //     const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id))).filter((id) => id !== null);
+    //     getCatNames(categoryIds).then((catNames) => setCatNames(catNames));
+
+    //     const taskIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.task_id)));
+    //     // getModuleTasks(taskIds).then((taskNames) => setTaskNames(taskNames));
+    // },[moduleCatList]);
+
+    // const getModuleCat = async () => {
+    //     const {data: moduleCatList} = await supabase
+    //         .from('module_categories')
+    //         .select(`*, categories(*), tasks(*)`)
+    //         .eq('module_id', id)
+    //     if (moduleCatList)
+    //         setModuleCatList(moduleCatList!);
+    // }
 
     // const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
     //     title: catName,
@@ -166,6 +213,32 @@ const ModuleDetail = () => {
         }
     }
 
+    const getModuleTasks = async () => {
+        const { data: modTasks, error } = await supabase
+            .from('tasks')
+            .select('*, categories(*)')
+            .eq('module_id', id)
+        if (error) {
+            console.log(error.message)
+        } else {
+            //console.log(modTasks)
+            setTaskList(modTasks!);
+            
+        }
+    }
+
+    const tasksByCategory = taskList.reduce((acc: {[key: number]: TaskCat[]}, task) => {
+        if (task.category_id !== null){
+            const categoryId = task.category_id;
+            if (!acc[categoryId]) {
+                acc[categoryId] = [];
+            }
+            acc[categoryId].push(task);
+        }
+        
+        return acc;
+    }, {})
+
     async function updateModule({
         moduleTitle,
         moduleDesc,
@@ -202,117 +275,214 @@ const ModuleDetail = () => {
         }
     }
 
-    interface moduleCatWithCatName extends ModuleCat{
-        category_name: string | null;
-    }
+    // interface moduleCatWithCatName extends ModuleCat{
+    //     category_name: string | null;
+    // }
 
-    const data: moduleCatWithCatName[] = moduleCatList.map((moduleCat) => ({
-        ...moduleCat,
-        category_name: moduleCat.category_id? catNames[moduleCat.category_id] : null,
-    }));
+    // const data: moduleCatWithCatName[] = moduleCatList.map((moduleCat) => ({
+    //     ...moduleCat,
+    //     category_name: moduleCat.category_id? catNames[moduleCat.category_id] : null,
+    // }));
 
-    const renderItem: ListRenderItem<moduleCatWithCatName> = ({item, index}) => {
-        const task = tasks.find((t) => t.id === item.task_id);
-        if(!task) return null;
+    // const data: TaskCat[] = tasks.map((task) => ({
+    //     ...task,
+    //     module_cat_task: {
+    //         module_id: task.module_id,
+    //         category_id: task.category_id,
+    //         task: task
+    //     }
+    // }))
 
-        const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id };
-        const isFirstInCat = index === 0 || data[index-1].category_id !== item.category_id;
+    // const renderItem: ListRenderItem<moduleCatWithCatName> = ({item, index}) => {
+    //     const task = tasks.find((t) => t.id === item.task_id);
+    //     if(!task) return null;
 
-        const getPrioritySymbol = (task: TaskCat) => {
-            switch (task.priority_id) {
-                //low
-                case 1:
-                    return (
-                        <View style={{position: 'absolute'}}>
-                            <Svg height="40" width="45" pointerEvents="none">
-                            <Symbol id="symbol" viewBox="0 0 80 90">
-                                <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
-                                <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
-                            </Symbol>
-                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                            <SvgText
-                                x={20}
-                                y={21}
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                                fontWeight={'900'}
-                                fontSize={16}
-                                fill={'white'}
-                            >!</SvgText>
-                        </Svg>
-                        </View>
+    //     const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id };
+    //     const isFirstInCat = index === 0 || data[index-1].category_id !== item.category_id;
+
+    //     const getPrioritySymbol = (task: TaskCat) => {
+    //         switch (task.priority_id) {
+    //             //low
+    //             case 1:
+    //                 return (
+    //                     <View style={{position: 'absolute'}}>
+    //                         <Svg height="40" width="45" pointerEvents="none">
+    //                         <Symbol id="symbol" viewBox="0 0 80 90">
+    //                             <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
+    //                             <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
+    //                         </Symbol>
+    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+    //                         <SvgText
+    //                             x={20}
+    //                             y={21}
+    //                             textAnchor="middle"
+    //                             alignmentBaseline="middle"
+    //                             fontWeight={'900'}
+    //                             fontSize={16}
+    //                             fill={'white'}
+    //                         >!</SvgText>
+    //                     </Svg>
+    //                     </View>
                         
-                    )
-                // medium
-                case 2:
-                    return (
-                        <View style={{position: 'absolute'}}>
-                        <Svg height="40" width="45" pointerEvents="none">
-                            <Symbol id="symbol" viewBox="0 0 80 90">
-                                <Circle cx='0' cy='0' r='40' fill='#FF8800' />
-                                <Circle cx='30' cy='20' r='25' fill='#FF8800' />
-                            </Symbol>
-                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                            <SvgText
-                                x={20}
-                                y={21}
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                                fontWeight={'900'}
-                                fontSize={16}
-                                fill={'white'}
-                            >!!</SvgText>
-                        </Svg>
-                        </View>
-                    )
-                // high
-                case 3:
-                    return (
-                        <View style={{position: 'absolute'}}>
-                        <Svg height="40" width="45" pointerEvents="none">
-                            <Symbol id="symbol" viewBox="0 0 80 90">
-                                <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
-                                <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
-                            </Symbol>
-                            <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-                            <SvgText
-                                x={20}
-                                y={21}
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                                fontWeight={'900'}
-                                fontSize={16}
-                                fill={'white'}
-                            >!!!</SvgText>
-                        </Svg>
-                        </View>
-                    )
-                default:
-                    return null;
-            }
-        }
+    //                 )
+    //             // medium
+    //             case 2:
+    //                 return (
+    //                     <View style={{position: 'absolute'}}>
+    //                     <Svg height="40" width="45" pointerEvents="none">
+    //                         <Symbol id="symbol" viewBox="0 0 80 90">
+    //                             <Circle cx='0' cy='0' r='40' fill='#FF8800' />
+    //                             <Circle cx='30' cy='20' r='25' fill='#FF8800' />
+    //                         </Symbol>
+    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+    //                         <SvgText
+    //                             x={20}
+    //                             y={21}
+    //                             textAnchor="middle"
+    //                             alignmentBaseline="middle"
+    //                             fontWeight={'900'}
+    //                             fontSize={16}
+    //                             fill={'white'}
+    //                         >!!</SvgText>
+    //                     </Svg>
+    //                     </View>
+    //                 )
+    //             // high
+    //             case 3:
+    //                 return (
+    //                     <View style={{position: 'absolute'}}>
+    //                     <Svg height="40" width="45" pointerEvents="none">
+    //                         <Symbol id="symbol" viewBox="0 0 80 90">
+    //                             <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
+    //                             <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
+    //                         </Symbol>
+    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+    //                         <SvgText
+    //                             x={20}
+    //                             y={21}
+    //                             textAnchor="middle"
+    //                             alignmentBaseline="middle"
+    //                             fontWeight={'900'}
+    //                             fontSize={16}
+    //                             fill={'white'}
+    //                         >!!!</SvgText>
+    //                     </Svg>
+    //                     </View>
+    //                 )
+    //             default:
+    //                 return null;
+    //         }
+    //     }
         
-        const onEditPressed = (task: TaskCat) => {
-            console.log(task.id);
-            router.navigate({pathname: '/editTask', params: {taskId: task.id}});
-        }
+    //     const onEditPressed = (task: TaskCat) => {
+    //         console.log(task.id);
+    //         router.navigate({pathname: '/editTask', params: {taskId: task.id}});
+    //     }
 
-        return (
-            <View>
-                {isFirstInCat && <Text style={[styles.header, {paddingHorizontal: 20}]}>{item.category_name}</Text>}
-                <TaskListItem
-                    task={taskwithModuleId}
-                    onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
-                    onDelete={()=>onDelete(taskwithModuleId)}
-                    onEdit={() => onEditPressed(taskwithModuleId)}
-                    onTaskPressed={()=>onTaskPressed(taskwithModuleId)}
-                    prioritySymbol={getPrioritySymbol(taskwithModuleId)}
-                />
-            </View>
-        )
-    }
+    //     return (
+    //         <View>
+    //             {isFirstInCat && <Text style={[styles.header, {paddingHorizontal: 20}]}>{item.category_name}</Text>}
+    //             <TaskListItem
+    //                 task={taskwithModuleId}
+    //                 onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
+    //                 onDelete={()=>onDelete(taskwithModuleId)}
+    //                 onEdit={() => onEditPressed(taskwithModuleId)}
+    //                 onTaskPressed={()=>onTaskPressed(taskwithModuleId)}
+    //                 prioritySymbol={getPrioritySymbol(taskwithModuleId)}
+    //             />
+    //         </View>
+    //     )
+    // }
+
+    // const filteredTasks = data.flatMap((moduleCat) => {
+    //     const task = tasks.find((t) => t.id === moduleCat.task_id);
+    //     if(!task) return [];
+    //     return [{...task, module_id: moduleCat.module_id}]
+    // })
+
+    // const filteredTasks = data;
 
     
+    
+    const getPrioritySymbol = (task: TaskCat) => {
+        switch (task.priority_id) {
+            //low
+            case 1:
+                return (
+                    <View style={{position: 'absolute'}}>
+                        <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
+                            <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!</SvgText>
+                    </Svg>
+                    </View>
+                    
+                )
+            // medium
+            case 2:
+                return (
+                    <View style={{position: 'absolute'}}>
+                    <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#FF8800' />
+                            <Circle cx='30' cy='20' r='25' fill='#FF8800' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!!</SvgText>
+                    </Svg>
+                    </View>
+                )
+            // high
+            case 3:
+                return (
+                    <View style={{position: 'absolute'}}>
+                    <Svg height="40" width="45" pointerEvents="none">
+                        <Symbol id="symbol" viewBox="0 0 80 90">
+                            <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
+                            <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
+                        </Symbol>
+                        <Use href="#symbol" x={0} y={20} width={75} height={38}/>
+                        <SvgText
+                            x={20}
+                            y={21}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontWeight={'900'}
+                            fontSize={16}
+                            fill={'white'}
+                        >!!!</SvgText>
+                    </Svg>
+                    </View>
+                )
+            default:
+                return null;
+        }
+    }
+    
+    const onEditPressed = (task: TaskCat) => {
+        console.log(task.id);
+        router.navigate({pathname: '/editTask', params: {taskId: task.id}});
+    }
+
 
     return (
         <>
@@ -321,7 +491,71 @@ const ModuleDetail = () => {
                     colors={[moduleColour,'#FFFFFF']}
                     style={styles.background}
                 />
-                <FlatList
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
+                    <View>
+                        <TextInput 
+                            placeholder="module title" 
+                            value={moduleTitle || ''}
+                            onChangeText={(text) => setModuleTitle(text)}
+                            style={[styles.header, {paddingBottom: 5}]}
+                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
+                        />
+                        <TextInput 
+                            placeholder="module desc"
+                            value={moduleDesc || ''} 
+                            onChangeText={(text) => setModuleDesc(text)} 
+                            style={styles.description} 
+                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
+                            multiline
+                        />
+                    </View>
+                    <View style={{paddingTop: 10}}>
+                        <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
+                    </View>
+                </View>
+                <View >
+                    <View style={{flexDirection: 'row', paddingHorizontal: 20, gap: 20}}>
+
+                    
+                        <TouchableOpacity 
+                            style={styles.navBTN}
+                            onPress={() => handleViewChange('list')}
+                        >
+                            <Text>List</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.navBTN}
+                            onPress={() => handleViewChange('kanban')}
+                        >
+                            <Text>Kanban</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {view === 'list' ? (
+                        <TaskListView
+                            tasksByCategory={tasksByCategory}
+                            onCheckPressed={onCheckPressed}
+                            onDelete={onDelete}
+                            onTaskPressed={onTaskPressed}
+                            onEdit={onEditPressed}
+                            getPrioritySymbol={getPrioritySymbol}
+                        />
+                    ) : (
+                        <TaskKanbanView
+                            tasksByCategory={tasksByCategory}
+                            onCheckPressed={onCheckPressed}
+                            onDelete={onDelete}
+                            onTaskPressed={onTaskPressed}
+                            onEdit={onEditPressed}
+                            getPrioritySymbol={getPrioritySymbol}
+                        />
+                    )}
+                </View>
+                
+                
+
+                
+
+                {/* <FlatList
                     //style={{paddingHorizontal: 20}}
                     data={data}
                     renderItem={renderItem}
@@ -361,7 +595,9 @@ const ModuleDetail = () => {
                             </TouchableOpacity>
                             <AddCategory
                                 ref={bottomSheetRef}
-                                onAdd={(newCategory) => {
+                                moduleId={Number(id)}
+                                onAdd={(newCategory, id) => {
+                                    console.log(newCategory, id)
                                     //addNewCat(newCategory, id)
                                     bottomSheetRef.current?.close();
                                 }}
@@ -369,7 +605,7 @@ const ModuleDetail = () => {
                         </View>
                     }
                     
-                />
+                /> */}
             </SafeAreaView>
                 {/* <View style={{paddingVertical: 5}}> */}
                     {/* <TouchableOpacity onPress={handleLayoutChange}>

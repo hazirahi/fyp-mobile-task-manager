@@ -1,17 +1,31 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { Ionicons } from '@expo/vector-icons';
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import FocusTaskBottomSheet from "@/components/FocusTaskBottomSheet";
+import { useTaskList } from "@/provider/TaskListProvider";
 
 export default function Timer() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [key, setKey] = useState(0);
     const [timerMode, setTimerMode] = useState('pomodoro');
     const [duration, setDuration] = useState(25 * 60);
+    const [showModal, setShowModal] = useState(false);
+
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handleOpenPress = () => bottomSheetRef.current?.present();
+    const [focusTask, setFocusTask] = useState('Time to Focus!');
+    const [currentTaskId, setCurrentTaskId] = useState(null);
+
+    // IFFA ADD MODULE CAT BUT GOT TWO CAT W SAME NAME
+    // CHOOSE TIMER TASK MORE OBV 
+
+    const { tasks, onCheckPressed } = useTaskList();
 
     const timerModes = {
         pomodoro: 25 * 60,
@@ -22,6 +36,15 @@ export default function Timer() {
     const handleTimerMode = (mode: keyof typeof timerModes) => {
         setTimerMode(mode);
         setDuration(timerModes[mode]);
+    }
+
+    const handleShowModal = () => {
+        setShowModal(true);
+    }
+
+    const handleTaskSelect = (taskName: string) => {
+        setFocusTask(taskName);
+        bottomSheetRef.current?.close();
     }
 
     // add notifs when timer end
@@ -53,7 +76,17 @@ export default function Timer() {
                 </TouchableOpacity>
             </View>
             <View style={{alignItems: 'center', paddingTop: 40}}>
-                <Text style={{paddingBottom: 30, fontWeight: '500', fontSize: 30}}>Time to Focus!</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        handleOpenPress();
+                    }}
+                >
+                    <Text style={{paddingBottom: 30, fontWeight: '500', fontSize: 30}}>{focusTask}</Text>
+                </TouchableOpacity>
+                <FocusTaskBottomSheet
+                    ref={bottomSheetRef}
+                    onTaskSelect={handleTaskSelect}
+                />
                 <CountdownCircleTimer
                     isPlaying={isPlaying}
                     duration={duration}
@@ -62,6 +95,9 @@ export default function Timer() {
                     strokeWidth={22}
                     size={250}
                     key={key}
+                    onComplete={() => {
+                        setShowModal(true);
+                    }}
                 >
                 {({ remainingTime }) => (
                     <Text style={{ color: '#D5FF61', fontSize: 50, fontWeight: '700' }}>
@@ -70,6 +106,39 @@ export default function Timer() {
                     </Text>
                 )}
                 </CountdownCircleTimer>
+                <Modal
+                    visible={showModal}
+                    onRequestClose={() => setShowModal(false)}
+                    animationType="slide"
+                    transparent={true}
+                >
+                    <View style={styles.modalContainer}>
+                        <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 25, textAlign: 'center', paddingTop: 40}}>your session has ended!</Text>
+                        <Text>do you want to mark your current task as completed?</Text>
+                        <View style={{flexDirection:'row'}}>
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    const currentTask = tasks.find((task) => task.id === currentTaskId)
+
+                                    if (currentTask) {
+                                        await onCheckPressed(currentTask)
+                                    }
+
+                                    setShowModal(false);
+                                }}
+                            >
+                                <Text>Yes</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={()=>setShowModal(false)}
+                                style={styles.closebtn}
+                            >
+                                <Text style={{fontWeight: '600', fontSize: 13}}>No, close</Text>
+                            </TouchableOpacity>
+                        </View>
+                        
+                    </View>
+                </Modal>
                 <View style={{flexDirection:'row', paddingTop: 40}}>
                     
                     <TouchableOpacity
@@ -123,5 +192,32 @@ const styles = StyleSheet.create({
     },
     activeNavBTN: {
         backgroundColor: '#8CDCF9'
+    },
+    modalContainer: {
+        top: 300,
+        alignItems: 'center',
+        alignSelf: 'center',
+        width: 300,
+        height: 180,
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 20,
+        borderWidth: 1,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 5
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 10
+    },
+    closebtn: {
+        alignSelf: 'center',
+        borderWidth: 1,
+        padding: 6,
+        borderRadius: 10,
+        backgroundColor: '#A6F511',
+        paddingHorizontal: 15
     }
 });

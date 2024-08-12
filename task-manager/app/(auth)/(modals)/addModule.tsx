@@ -32,13 +32,14 @@ export default function AddModule() {
     const [newModuleTitle, setNewModuleTitle] = useState('');
     const [newModuleDesc, setNewModuleDesc] = useState('');
 
-    const addNewModule = () => {
+    const addNewModule = async () => {
         addModule(
             newModuleTitle,
             newModuleDesc,
             colour
-        )
+        );
         console.log(newModuleTitle, newModuleDesc, colour);
+        
     }
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -126,7 +127,7 @@ export default function AddModule() {
                         multiline
                     />
                 </View>
-                <View style={{paddingTop: 10}}>
+                {/* <View style={{paddingTop: 10}}>
                     <TouchableOpacity 
                         onPress={handleOpenPress}
                         style={{backgroundColor: '#A6F511', borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
@@ -135,12 +136,12 @@ export default function AddModule() {
                     </TouchableOpacity>
                     <AddCategory
                         ref={bottomSheetRef}
+                        moduleId={}
                         onAdd={(newCategory) => {
-                            //addNewCat(newCategory, id)
                             bottomSheetRef.current?.close();
                         }}
                     />
-                </View>
+                </View> */}
             </View>
             </ScrollView>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>

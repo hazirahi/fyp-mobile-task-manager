@@ -10,6 +10,7 @@ const ExpoSecureStoreAdapter = {
         return SecureStore.getItemAsync(key);
     },
     setItem: (key: string, value: string) => {
+        console.log('storing value in securestore: ', key, ' = ', value);
         SecureStore.setItemAsync(key, value);
     },
     removeItem: (key: string) => {

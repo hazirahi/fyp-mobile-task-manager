@@ -30,7 +30,7 @@ const BadgeList = ({badges, onBadgePress}: BadgeList) => {
                     const { data: signedUrl, error: signedUrlError } = await supabase
                         .storage
                         .from('badges')
-                        .createSignedUrl(badge.badge_url, 3600);
+                        .createSignedUrl(badge.badge_url, 1800);
                     
                     if (signedUrlError) {
                         console.log(signedUrlError.message)

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, Animated, ScrollView } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, ScrollView } from "react-native";
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -14,7 +14,6 @@ import AddDateTimePicker from "@/components/AddDateTimePicker";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 
-import { Priority } from "@/types/types";
 
 export default function addTaskScreen () {
     const { modules, categories, priorities, addTask } = useTaskList();
@@ -167,7 +166,7 @@ export default function addTaskScreen () {
                 <View style={{paddingVertical: 10}}>
                     <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Description:</Text>
                     <TextInput
-                            style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
+                            style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15, height: 90}}
                             placeholder="Add Description"
                             multiline
                             onChangeText={(text) => setNewTaskDesc(text)}
@@ -236,6 +235,15 @@ export default function addTaskScreen () {
                             setTaskCategory(item.id);
                         }}
                     />
+                    {/* <MultiSelect
+                        data={categories}
+                        labelField='category_name'
+                        valueField='id'
+                        placeholder='Category'
+                        onChange={item => {
+                            setTaskCategory(item.id);
+                        }}
+                    /> */}
                 </View>
             </View>
             </View>

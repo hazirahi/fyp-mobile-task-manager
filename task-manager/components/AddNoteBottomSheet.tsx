@@ -55,10 +55,11 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             newNoteTitle, newNoteContent, noteModule
         )
 
-        Keyboard.dismiss();
+        
         setNewNoteTitle('');
         setNewNoteContent('');
         setNoteModule(0);
+        Keyboard.dismiss();
         innerRef.current?.close();
     }
 
@@ -74,6 +75,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             //keyboardBehavior='fillParent'
         >
             <View style={{flex:1, paddingHorizontal: 20}}>
+                <View>
                 <BottomSheetTextInput
                     style={styles.title}
                     placeholder='note title'
@@ -81,6 +83,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     value={newNoteTitle}
                     //multiline= {true}
                 />
+                </View>
                 <View>
                     <Dropdown
                         style={styles.dropdown}
@@ -93,14 +96,15 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                         }}
                     />
                 </View>
+                <View>
                 <BottomSheetTextInput
                     style={styles.content}
                     placeholder='add something here...'
                     onChangeText={(text) => setNewNoteContent(text)}
                     value={newNoteContent}
-                    multiline= {true}
+                    multiline
                 />
-                
+                </View>
             </View>
             <View style={{padding: 20}}>
                 <TouchableOpacity

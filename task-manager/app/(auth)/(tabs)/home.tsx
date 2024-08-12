@@ -205,6 +205,16 @@ export default function Home (){
                     />
                     
                 )}
+                ListEmptyComponent={
+                    <View style={{padding: 20}}>
+                        <View style={{ borderWidth: 1, borderRadius: 20, padding: 40, height: '60%'}}>
+                            <Text style={{textAlign: 'center', top: '30%', fontSize: 16, fontWeight: '500'}}>
+                                You haven't created any tasks yet! Tap the + Add Task button to create a new task.
+                            </Text>
+                        </View>
+                    </View>
+                    
+                }
             />
         </SafeAreaView>
         {/* <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
