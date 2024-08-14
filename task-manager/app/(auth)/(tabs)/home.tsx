@@ -1,7 +1,7 @@
 import { supabase } from '@/config/initSupabase';
 import { useTaskList } from '@/provider/TaskListProvider';
 import { useAuth } from '@/provider/AuthProvider';
-import { TaskCat } from '@/types/types';
+import { Task } from '@/types/types';
 
 import ModuleList from '@/components/ModuleList';
 import CircleProgress from '@/components/CircleProgress';
@@ -25,7 +25,7 @@ import { Text as SvgText } from "react-native-svg";
 export default function Home (){
     const { user } = useAuth();
 
-    const [taskList, setTaskList] = useState<TaskCat[]>([]);
+    const [taskList, setTaskList] = useState<Task[]>([]);
     const { tasks, getPriority, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ export default function Home (){
         }
     }
 
-    const getPrioritySymbol = (task: TaskCat) => {
+    const getPrioritySymbol = (task: Task) => {
         switch (task.priority_id) {
             //low
             case 1:
@@ -152,7 +152,7 @@ export default function Home (){
         }
     }
 
-    const onEditTask = (task: TaskCat) => {
+    const onEditTask = (task: Task) => {
         console.log(task.id);
         router.navigate({pathname: '/editTask', params: {taskId: task.id}});
     }

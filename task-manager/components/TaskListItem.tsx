@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import { TaskCat } from "@/types/types";
+import { Task } from "@/types/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Swipeable } from "react-native-gesture-handler";
@@ -39,7 +39,7 @@ const RightActions = ({onDelete, onEdit} : {onDelete: () => void; onEdit: () => 
 };
 
 type TaskListItem = {
-    task: TaskCat;
+    task: Task;
     onCheckPressed: () => void;
     onDelete: () => void;
     onEdit: () => void;
@@ -90,8 +90,6 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
         console.log(task.id);
         router.navigate({ pathname: '/(auth)/(modals)/editNote', params: {taskId: task.id }});
     };
-
-    // TASK LIST ITEM WHEN TOO LONG, THE CIRCLE TOO MUCH TO RIGHT
 
     return (
         <>

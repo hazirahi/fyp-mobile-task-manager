@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { TaskCat } from "@/types/types";
+import { Task } from "@/types/types";
 import { useTaskList } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
 import AddDateTimePicker from "@/components/AddDateTimePicker";
@@ -39,7 +39,7 @@ export default function addTaskScreen () {
         }
     }
     
-    const [taskList, setTaskList] = useState<TaskCat[]>([]);
+    const [taskList, setTaskList] = useState<Task[]>([]);
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handleOpenPress = () => bottomSheetRef.current?.present();

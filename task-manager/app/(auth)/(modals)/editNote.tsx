@@ -101,6 +101,7 @@ const EditNote = () => {
                             value={noteText || ''}
                             onChangeText={(text) => setNoteText(text)}
                             multiline={true}
+                            placeholder="add something here..."
                             // onEndEditing={() => updateNote({noteTitle, noteText})}
                         />
                     </View>

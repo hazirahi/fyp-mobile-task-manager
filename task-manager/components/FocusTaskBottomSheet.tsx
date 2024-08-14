@@ -9,7 +9,7 @@ import { useTaskList } from "@/provider/TaskListProvider";
 type Ref = BottomSheetModal;
 
 type FocusTask = {
-    onTaskSelect: (taskName: string) => void;
+    onTaskSelect: (taskName: string, taskId: number) => void;
 }
 
 const FocusTaskBottomSheet = forwardRef<Ref, FocusTask>((props, ref) => {
@@ -49,7 +49,7 @@ const FocusTaskBottomSheet = forwardRef<Ref, FocusTask>((props, ref) => {
                     renderItem={({ item: task }) => (
                         <View>
                             <TouchableOpacity
-                                onPress={() => onTaskSelect(task.task_name)}
+                                onPress={() => onTaskSelect(task.task_name, task.id)}
                             >
                                 <Text style={{fontSize: 16, fontWeight: '500'}}>{task.task_name}</Text>
                             </TouchableOpacity>     

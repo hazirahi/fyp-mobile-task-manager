@@ -1,6 +1,6 @@
 import { useTaskList } from "@/provider/TaskListProvider"
 import { FlatList, ListRenderItem, View, Text, StyleSheet, SectionList, SectionListRenderItem, SectionListData } from "react-native";
-import { TaskCat, ModuleCat } from "@/types/types";
+import { Task } from "@/types/types";
 import { Svg, Symbol, Circle, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
 import { router } from "expo-router";
@@ -9,12 +9,12 @@ import { ReactNode } from "react";
 
 interface Props {
     //tasks: TaskCat[];
-    tasksByCategory: {[id: number]: TaskCat[]};
-    onCheckPressed: (task: TaskCat) => void;
-    onDelete: (task: TaskCat) => void;
-    onTaskPressed: (task: TaskCat) => void;
-    onEdit: (task: TaskCat) => void;
-    getPrioritySymbol: (task: TaskCat) => ReactNode;
+    tasksByCategory: {[id: number]: Task[]};
+    onCheckPressed: (task: Task) => void;
+    onDelete: (task: Task) => void;
+    onTaskPressed: (task: Task) => void;
+    onEdit: (task: Task) => void;
+    getPrioritySymbol: (task: Task) => ReactNode;
 }
 
 const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed, onEdit, getPrioritySymbol} : Props) => {
@@ -70,7 +70,9 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
         categoryNames[category.id] = category.category_name;
     })
 
-    const renderItem = ({item}: {item: TaskCat}) => {
+    categoryNames[-1] = 'uncategorized'
+
+    const renderItem = ({item}: {item: Task}) => {
         return (
             <TaskListItem
                 task={item}
@@ -83,34 +85,53 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
         )
     }
 
-    const renderSectionHeader = ({section}: {section: SectionListData<TaskCat>}) => {
-        const categoryId = section.title;
-        const categoryName = categoryNames[categoryId];
+    const renderSectionHeader = ({section}: {section: SectionListData<Task>}) => {
+        //const categoryId = section.title;
+        const categoryName = categoryNames[section.title];
         //console.log(categoryId)
         return (
             <View style={{paddingLeft: 20, paddingTop: 15}}>
-                <Text style={styles.header}>{categoryName}</Text>
+                <Text style={styles.header}>{categoryName || 'uncategorized'}</Text>
             </View>
         )
     }
 
+    const sections = Object.entries(tasksByCategory).map(([categoryId, tasks]) => ({
+        title: parseInt(categoryId) === -1 ? 'uncategorized' : parseInt(categoryId),
+        data: tasks
+    }));
+    
+    // const noCatTasks = tasksByCategory[-1] || [];
+    // if (noCatTasks.length > 0) {
+    //     sections.push({
+    //         title: -1,
+    //         data: noCatTasks,
+    //     })
+    // }
+
     return (
         <SectionList
-            sections={Object.entries(tasksByCategory).map(([categoryId, tasks]) => ({
-                title: categoryId,
-                data: tasks
-            }))}
+            sections={sections}
             renderItem={renderItem}
             renderSectionHeader={renderSectionHeader}
             keyExtractor={(item) => item.id.toString()}
             stickySectionHeadersEnabled={false}
+            ListEmptyComponent={
+                <View style={{padding: 20}}>
+                    <View style={{ borderWidth: 1, borderRadius: 20, padding: 40, height: 460}}>
+                        <Text style={{textAlign: 'center', top: '40%', fontSize: 16, fontWeight: '500'}}>
+                            You haven't created any tasks yet! Tap the + button to create a new task.
+                        </Text>
+                    </View>
+                </View>
+            }
         />
     )
 }
 
 const styles = StyleSheet.create ({ 
     header: {
-        fontSize: 23,
+        fontSize: 20,
         fontWeight: '600'
     }
 })

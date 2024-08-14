@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useAuth } from '@/provider/AuthProvider';
 import { useBadgeList } from "./BadgeProvider";
 
-import { Task, TaskCat, Module, Category, Note, NoteMod, Priority, ModuleCat } from "@/types/types";
+import { Task, Module, Category, Note, NoteMod, Priority } from "@/types/types";
 
 // export type TaskSection = {
 //     task_id: number
@@ -14,8 +14,8 @@ import { Task, TaskCat, Module, Category, Note, NoteMod, Priority, ModuleCat } f
 // }
 
 type TaskListItem = {
-    tasks: TaskCat[];
-    catTasks: TaskCat[];
+    tasks: Task[];
+    //catTasks: TaskCat[];
     priorities: Priority[];
     modules: Module[];
     categories: Category[];
@@ -37,19 +37,19 @@ type TaskListItem = {
     ) => void;
     addCategory: (
         category_name: Category['category_name'],
-        module_id: ModuleCat['id']
+        module_id: Module['id']
     ) => void;
     // addCategoryToModule: (
     //     module_id: ModuleCat['module_id'],
     //     category_id: ModuleCat['category_id']
     // ) => void;
     addTask: (
-        task_name: TaskCat['task_name'],
-        task_description: TaskCat['task_description'],
-        module_id: TaskCat['module_id'],
-        category_id: TaskCat['category_id'],
-        start_date: TaskCat['due_date'],
-        priority: TaskCat['priority_id']
+        task_name: Task['task_name'],
+        task_description: Task['task_description'],
+        module_id: Task['module_id'],
+        category_id: Task['category_id'],
+        start_date: Task['due_date'],
+        priority: Task['priority_id']
     ) => void;
     addNote: (
         note_title: Note['note_title'],
@@ -64,7 +64,7 @@ type TaskListItem = {
 
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
-    catTasks: [],
+    //catTasks: [],
     priorities: [],
     modules: [],
     categories: [],
@@ -92,8 +92,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const { user } = useAuth();
     const { awardBadge, hasEarnedBadge } = useBadgeList();
 
-    const [taskList, setTaskList] = useState<TaskCat[]>([]);
-    const [catTaskList, setCatTaskList] = useState<TaskCat[]>([]);
+    const [taskList, setTaskList] = useState<Task[]>([]);
+    const [catTaskList, setCatTaskList] = useState<Task[]>([]);
     const [priorityList, setPriorityList] = useState<Priority[]>([]);
     const [moduleList, setModuleList] = useState<Module[]>([]);
     const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -246,7 +246,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
 
     const addCategory = async (
         category_name: Category['category_name'],
-        module_id: ModuleCat['module_id']
+        module_id: Module['id']
     ) => {
         try {
             const { data: categorylist, error } = await supabase
@@ -368,13 +368,14 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     //     }
     // }
 
+
     const addTask = async (
-        task_name: TaskCat['task_name'],
-        task_description: TaskCat['task_description'],
-        moduleId: TaskCat['module_id'] | null,
-        categoryId: TaskCat['category_id'] | null,
-        due_date: TaskCat['due_date'] | null,
-        priority_id: TaskCat['priority_id'] | null
+        task_name: Task['task_name'],
+        task_description: Task['task_description'],
+        moduleId: Task['module_id'] | null,
+        categoryId: Task['category_id'] | null,
+        due_date: Task['due_date'] | null,
+        priority_id: Task['priority_id'] | null
     ) => {
         try {
             console.log('adding task: ', task_name, ' due date: ', due_date);
@@ -385,6 +386,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     task_description: task_description,
                     user_id: user!.id,
                     module_id: moduleId,
+                    category_id: categoryId,
                     due_date: due_date,
                     priority_id: priority_id
                 })
@@ -415,23 +417,22 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     }
                 }
 
-                const { data: taskcat, error: taskcatError } = await supabase
-                    .from('module_categories')
-                    .insert({
-                        category_id: categoryId,
-                        module_id: moduleId,
-                        task_id: taskId,
-                        user_id: user!.id
-                    })
-                    .select('*')
-                    .single()
-                if(taskcatError)
-                    console.log(taskcatError.message)
-                else{
+                // const { data: taskcat, error: taskcatError } = await supabase
+                //     .from('module_categories')
+                //     .insert({
+                //         category_id: categoryId,
+                //         module_id: moduleId,
+                //         user_id: user!.id
+                //     })
+                //     .select('*')
+                //     .single()
+                // if(taskcatError)
+                //     console.log(taskcatError.message)
+                // else{
                     console.log('taskcat: ', tasklist.task_name);
                     setTaskList([tasklist, ...taskList]);
                     
-                }
+                //}
             
             }
         } catch (error: any) {
@@ -510,9 +511,9 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                 completed_tasks: newCompletedTasks
             })
         
-        // console.log('completed data', newCompletedTasks)
+        console.log('completed data', newCompletedTasks)
 
-        // console.log('oncheckpressed: ', task);
+        console.log('oncheckpressed: ', task);
         if (error)
             throw error;
 
@@ -561,7 +562,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
-            catTasks: catTaskList,
+            //atTasks: catTaskList,
             priorities: priorityList,
             modules: moduleList,
             categories: categoryList,

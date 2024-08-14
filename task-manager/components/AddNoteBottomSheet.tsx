@@ -80,8 +80,7 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     style={styles.title}
                     placeholder='note title'
                     onChangeText={(text) => setNewNoteTitle(text)}
-                    value={newNoteTitle}
-                    //multiline= {true}
+                    multiline
                 />
                 </View>
                 <View>
@@ -101,7 +100,6 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     style={styles.content}
                     placeholder='add something here...'
                     onChangeText={(text) => setNewNoteContent(text)}
-                    value={newNoteContent}
                     multiline
                 />
                 </View>

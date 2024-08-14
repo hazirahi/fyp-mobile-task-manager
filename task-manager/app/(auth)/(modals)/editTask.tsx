@@ -21,7 +21,7 @@ const EditTask = () => {
 
     const [taskName, setTaskName] = useState('');
     const [taskDesc, setTaskDesc] = useState('');
-    const [taskPriority, setTaskPriority] = useState<number>(0);
+    const [taskPriority, setTaskPriority] = useState<number|null>(null);
     const [taskModule, setTaskModule] = useState<number>(0);
     const [taskCategory, setTaskCategory] = useState<number>(0);
 
@@ -48,7 +48,7 @@ const EditTask = () => {
     const getTaskInfo = async () => {
         const { data: tasks, error } = await supabase
             .from('tasks')
-            .select('*, modules(*, module_categories(*, categories(*)))')
+            .select('*, modules(*, module_categories(*)) , categories(*)')
             .eq('id', taskId)
             .single()
         if (error)
@@ -59,18 +59,19 @@ const EditTask = () => {
             const selectedPriority = priorities.find((priority) => priority.id === tasks.priority_id);
             setSelectedPriority(selectedPriority);
             setTaskModule(tasks.module_id);
+            setTaskCategory(tasks.category_id);
             if (tasks.due_date) {
                 const dueDateValue = dayjs(tasks.due_date).format('DD-MM-YYYY');
                 setDueDate(dueDateValue);
                 setDate(new Date(tasks.due_date));
             }
             
-            if (tasks.modules && tasks.modules.module_categories && tasks.modules.module_categories.length > 0) {
-                const category = tasks.modules.module_categories[0].categories;
-                if (category) {
-                    setTaskCategory(category.id)
-                }
-            }
+            // if (tasks.modules && tasks.modules.module_categories && tasks.modules.module_categories.length > 0) {
+            //     const category = tasks.modules.module_categories[0].categories;
+            //     if (category) {
+            //         setTaskCategory(category.id)
+            //     }
+            // }
         }
     }
 
@@ -86,15 +87,15 @@ const EditTask = () => {
         taskDesc,
         taskPriority,
         taskModule,
-        date,
-        taskCategory
+        taskCategory,
+        date
     } : {
         taskName: string
         taskDesc: string | null
         taskPriority: number | null
         taskModule: number | null
-        date: Date | null
         taskCategory: number | null
+        date: Date | null
     }) {
         try {
             setLoading(true);
@@ -107,13 +108,15 @@ const EditTask = () => {
                 task_description: taskDesc,
                 due_date: date,
                 module_id: taskModule,
+                category_id: taskCategory,
                 priority_id: taskPriority
             }
             console.log('task update: ', updates)
 
             const { error } = await supabase
                 .from('tasks')
-                .upsert(updates)
+                .update(updates)
+                .eq('id', taskId)
             if (error) {
                 throw error
             } else {
@@ -121,15 +124,15 @@ const EditTask = () => {
                     .from('module_categories')
                     .upsert({
                         category_id: taskCategory,
-                        module_id: taskModule
+                        module_id: taskModule,
+                        user_id: user.id
                     })
                     .eq('user_id', user!.id)
                 if (moduleCatError)
                     console.log(moduleCatError.message);
             }
         } catch (error) {
-            if (error instanceof Error)
-                alert(error.message)
+            console.error(error)
         } finally {
             setLoading(false)
         }
@@ -241,7 +244,7 @@ const EditTask = () => {
                         router.navigate('/home');
                     }}
                 >
-                    <Text style={{padding: 10, paddingHorizontal: 25, textAlign: 'center', fontWeight: '600', fontSize: 16}}>Edit Task</Text>
+                    <Text style={{padding: 10, paddingHorizontal: 25, textAlign: 'center', fontWeight: '600', fontSize: 16}}>Save</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

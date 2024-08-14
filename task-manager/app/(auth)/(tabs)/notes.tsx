@@ -49,13 +49,13 @@ export default function Notes() {
             <AddNoteBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newNote) => {
-                    setNoteList(notes => [...notes, {
-                        id: generateNoteId(),
-                        user_id: user!.id,
-                        note_title: newNote.note_title,
-                        note_text: newNote.note_text,
-                        module_id: newNote.module_id
-                    }])
+                    // setNoteList(notes => [...notes, {
+                    //     id: generateNoteId(),
+                    //     user_id: user!.id,
+                    //     note_title: newNote.note_title,
+                    //     note_text: newNote.note_text,
+                    //     module_id: newNote.module_id
+                    // }])
                     bottomSheetRef.current?.close();
                 }}
             />

@@ -20,10 +20,7 @@ export default function Timer() {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handleOpenPress = () => bottomSheetRef.current?.present();
     const [focusTask, setFocusTask] = useState('Time to Focus!');
-    const [currentTaskId, setCurrentTaskId] = useState(null);
-
-    // IFFA ADD MODULE CAT BUT GOT TWO CAT W SAME NAME
-    // CHOOSE TIMER TASK MORE OBV 
+    const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
 
     const { tasks, onCheckPressed } = useTaskList();
 
@@ -42,12 +39,11 @@ export default function Timer() {
         setShowModal(true);
     }
 
-    const handleTaskSelect = (taskName: string) => {
+    const handleTaskSelect = (taskName: string, taskId: number) => {
         setFocusTask(taskName);
+        setCurrentTaskId(taskId);
         bottomSheetRef.current?.close();
     }
-
-    // add notifs when timer end
     
     return(
         <SafeAreaView style={styles.container}>
@@ -80,8 +76,9 @@ export default function Timer() {
                     onPress={() => {
                         handleOpenPress();
                     }}
+                    style={{paddingBottom: 30}}
                 >
-                    <Text style={{paddingBottom: 30, fontWeight: '500', fontSize: 30}}>{focusTask}</Text>
+                    <Text style={styles.focusTask}>{focusTask}</Text>
                 </TouchableOpacity>
                 <FocusTaskBottomSheet
                     ref={bottomSheetRef}
@@ -113,21 +110,22 @@ export default function Timer() {
                     transparent={true}
                 >
                     <View style={styles.modalContainer}>
-                        <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 25, textAlign: 'center', paddingTop: 40}}>your session has ended!</Text>
-                        <Text>do you want to mark your current task as completed?</Text>
-                        <View style={{flexDirection:'row'}}>
+                        <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 10, textAlign: 'center', paddingTop: 20}}>your session has ended!</Text>
+                        <Text style={{fontWeight: '400', fontSize: 15, textAlign: 'center', paddingBottom: 25}}>do you want to mark your current task as completed?</Text>
+                        <View style={{flexDirection:'row', gap: 10}}>
                             <TouchableOpacity
                                 onPress={async () => {
                                     const currentTask = tasks.find((task) => task.id === currentTaskId)
 
                                     if (currentTask) {
-                                        await onCheckPressed(currentTask)
+                                        await onCheckPressed(currentTask);
                                     }
 
                                     setShowModal(false);
                                 }}
+                                style={styles.closebtn}
                             >
-                                <Text>Yes</Text>
+                                <Text style={{fontWeight: '600', fontSize: 13}}>Yes</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={()=>setShowModal(false)}
@@ -193,12 +191,23 @@ const styles = StyleSheet.create({
     activeNavBTN: {
         backgroundColor: '#8CDCF9'
     },
+    focusTask: {
+        fontWeight: '500',
+        fontSize: 30,
+        shadowColor: '#2EF5FF',
+        shadowOpacity: 1,
+        shadowRadius: 5,
+        shadowOffset: {
+            width: 0,
+            height: 0
+        }
+    },
     modalContainer: {
         top: 300,
         alignItems: 'center',
         alignSelf: 'center',
         width: 300,
-        height: 180,
+        height: 190,
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 20,
