@@ -150,7 +150,7 @@ const EditTask = () => {
                 </TouchableOpacity>
             </View>
             <ScrollView style={{paddingHorizontal: 20}} keyboardShouldPersistTaps='handled'>
-                <View>
+                <View style={{paddingVertical: 10}}>
                     <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Task:</Text>
                     <TextInput
                         style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}

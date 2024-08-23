@@ -155,7 +155,8 @@ export default function addTaskScreen () {
                     <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 5}}>Task:</Text>
                     <TextInput
                         style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
-                        placeholder="Add Task"
+                        placeholder="what would you like to do?"
+                        placeholderTextColor={'lightgray'}
                         onChangeText={(text) => setNewTaskTitle(text)}
                         onEndEditing={() => Keyboard.dismiss()}
                     />
@@ -167,7 +168,8 @@ export default function addTaskScreen () {
                     <Text style={{fontWeight: '500', fontSize: 17, paddingBottom: 5}}>Description:</Text>
                     <TextInput
                             style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15, height: 90}}
-                            placeholder="Add Description"
+                            placeholder="description"
+                            placeholderTextColor={'lightgray'}
                             multiline
                             onChangeText={(text) => setNewTaskDesc(text)}
                             onEndEditing={() => Keyboard.dismiss()}

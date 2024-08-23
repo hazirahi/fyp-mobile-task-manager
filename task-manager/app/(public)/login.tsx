@@ -4,6 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { supabase } from '@/config/initSupabase';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import defaultTheme from '@/styles/defaultTheme';
 
 
 const Login = () => {
@@ -22,7 +23,7 @@ const Login = () => {
     
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[defaultTheme.layouts.container, {backgroundColor: 'white'}]}>
           <LinearGradient 
             colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
             style={styles.background}
@@ -32,14 +33,16 @@ const Login = () => {
             <TextInput
               autoCapitalize='none' 
               placeholder='email'
+              placeholderTextColor={'#AEB8C1'}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => setEmail(text)}
               style={styles.input}
             />
             <TextInput
               placeholder='password'
+              placeholderTextColor={'#AEB8C1'}
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text) => setPassword(text)}
               secureTextEntry
               style={[styles.input, {marginTop: 9}]}
             />
@@ -59,10 +62,10 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: 'white'
+  // },
   background: {
     position: 'absolute',
     left: 0,

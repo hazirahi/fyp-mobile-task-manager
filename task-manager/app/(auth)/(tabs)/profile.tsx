@@ -258,10 +258,10 @@ export default function Account (){
                         </View>
                     )}
                     <View style={{paddingTop: 15}}>
-                        <TextInput placeholder='name' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                        <TextInput placeholder='name' placeholderTextColor='#A4D44C' value={name || ''} onChangeText={(text) => setName(text)} style={[styles.input, {fontSize: 30, fontWeight: '700'}]} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
                     </View>
                     <View style={{paddingTop: 5}}>
-                        <TextInput placeholder='email' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
+                        <TextInput placeholder='email' placeholderTextColor='#A4D44C' value={email || ''} onChangeText={(text) => setEmail(text)} style={styles.input} onEndEditing={()=> updateProfile({ name, email, avatar_url: avatarUrl })} />
                     </View>
                 </View>
             </View>

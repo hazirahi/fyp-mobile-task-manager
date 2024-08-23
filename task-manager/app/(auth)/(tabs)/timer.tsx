@@ -79,6 +79,7 @@ export default function Timer() {
                     style={{paddingBottom: 30}}
                 >
                     <Text style={styles.focusTask}>{focusTask}</Text>
+                    <Text style={{fontSize: 14, textAlign: 'center', fontWeight: '500'}}>(tap to switch task)</Text>
                 </TouchableOpacity>
                 <FocusTaskBottomSheet
                     ref={bottomSheetRef}
@@ -194,13 +195,7 @@ const styles = StyleSheet.create({
     focusTask: {
         fontWeight: '500',
         fontSize: 30,
-        shadowColor: '#2EF5FF',
-        shadowOpacity: 1,
-        shadowRadius: 5,
-        shadowOffset: {
-            width: 0,
-            height: 0
-        }
+        textAlign: 'center'
     },
     modalContainer: {
         top: 300,

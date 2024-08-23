@@ -444,7 +444,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const addNote = async (
         note_title: Note['note_title'],
         note_text: Note['note_text'],
-        module_id: Note['module_id']
+        module_id: Note['module_id'] | null
     ) => {
         const { data: notelist, error } = await supabase
             .from('notes')

@@ -30,14 +30,16 @@ const SignUp = () => {
                 <TextInput
                     autoCapitalize='none' 
                     placeholder='email'
+                    placeholderTextColor={'#AEB8C1'}
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(text) => setEmail(text)}
                     style={styles.input}
                 />
                 <TextInput
                     placeholder='password'
+                    placeholderTextColor={'#AEB8C1'}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => setPassword(text)}
                     secureTextEntry
                     style={[styles.input, {marginTop: 9}]}
                 />

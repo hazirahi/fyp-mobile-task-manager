@@ -15,7 +15,7 @@ const ModuleListItem = ({module}: ModuleListItem) => {
                 style={[{backgroundColor: module.colour}, styles.container]}
                 onPress={()=>router.navigate({pathname: '/[id]', params:{id: module.id}})}
             >
-                <View style={{position: 'absolute', bottom: 15, alignSelf: 'center'}}>
+                <View style={{position: 'absolute', bottom: 10, alignSelf: 'center'}}>
                     <Text style={styles.text}>
                         {module.module_title}
                     </Text>
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     },
     text: { 
         textAlign: 'center',
-        fontWeight: '400',
-        fontSize: 17,
+        fontWeight: '500',
+        fontSize: 16,
         color: 'black'
     },
 })

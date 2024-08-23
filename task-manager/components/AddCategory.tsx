@@ -109,6 +109,7 @@ const AddCategory = forwardRef<Ref, AddCategory>((props, ref) => {
                 <BottomSheetTextInput 
                     style={styles.header}
                     placeholder="add category"
+                    placeholderTextColor={'lightgray'}
                     onChangeText={(text) => setNewCategory(text)}
                     value={newCategory}
                 />

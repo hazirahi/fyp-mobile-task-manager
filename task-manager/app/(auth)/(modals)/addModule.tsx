@@ -44,9 +44,7 @@ export default function AddModule() {
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handleOpenPress = () => bottomSheetRef.current?.present();
-
-    // ADD CATEGORY IN MODULE PLS TY
-
+    
     return (
         <SafeAreaView style={{flex: 1}}>
             <LinearGradient
@@ -110,7 +108,8 @@ export default function AddModule() {
                     <Text style={styles.header}>Module title:</Text>
                     <TextInput
                         style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15}}
-                        placeholder="add module"
+                        placeholder="module"
+                        placeholderTextColor={'lightgray'}
                         onChangeText={(text) => setNewModuleTitle(text)}
                         value={newModuleTitle}
                         onEndEditing={() => Keyboard.dismiss()}
@@ -120,7 +119,8 @@ export default function AddModule() {
                     <Text style={styles.header}>Description:</Text>
                     <TextInput
                         style={{padding: 15, backgroundColor: 'white', borderWidth: 1, borderRadius: 15, height: 100}}
-                        placeholder="add description"
+                        placeholder="description"
+                        placeholderTextColor={'lightgray'}
                         onChangeText={(text) => setNewModuleDesc(text)}
                         value={newModuleDesc}
                         //onEndEditing={() => Keyboard.dismiss()}

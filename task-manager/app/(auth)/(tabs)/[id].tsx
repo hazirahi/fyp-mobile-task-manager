@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, View, StyleSheet, TextInput, ListRenderItem, FlatList } from "react-native";
+import { Text, View, StyleSheet, TextInput, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -19,6 +19,8 @@ import { Task } from '@/types/types';
 
 import { Circle, Svg, Symbol, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
+import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import ColorPicker, { colorKit, HueCircular, InputWidget, Panel1, returnedResults, Swatches } from "reanimated-color-picker";
 import AddCategory from "@/components/AddCategory";
 import TaskListView from "@/components/TaskListView";
 import TaskKanbanView from "@/components/TaskKanbanView";
@@ -59,7 +61,7 @@ const getCatNames = async (categoryIds: number[]) => {
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const [loading, setLoading] = useState(true);
-    const { onCheckPressed, onDelete, tasks, onTaskPressed, categories, getCategory, getTasks } = useTaskList();
+    const { onCheckPressed, onDelete, tasks, onTaskPressed } = useTaskList();
     const { user } = useAuth();
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -70,11 +72,7 @@ const ModuleDetail = () => {
         setTaskList([...taskList, newTask]);
     };
 
-    // const [layoutType, setLayoutType] = useState('vertical');
-
-    // const handleLayoutChange = () => {
-    //     setLayoutType(layoutType === 'vertical' ? 'horizontal' : 'vertical');
-    // }
+    
 
     const [ moduleTitle, setModuleTitle ] = useState('');
     const [ moduleDesc, setModuleDesc ] = useState('');
@@ -104,9 +102,6 @@ const ModuleDetail = () => {
         getModuleTasks();
     }, [id]);
 
-    useEffect(() => {
-        
-    })
 
     // const getCatTasks = async () => {
     //     const { data: modCat, error } = await supabase
@@ -488,7 +483,6 @@ const ModuleDetail = () => {
         router.navigate({pathname: '/editTask', params: {taskId: task.id}});
     }
 
-
     return (
         <>
             <SafeAreaView style={styles.container}>
@@ -496,15 +490,42 @@ const ModuleDetail = () => {
                     colors={[moduleColour,'#FFFFFF']}
                     style={styles.background}
                 />
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
-                    <View>
-                        <TextInput 
-                            placeholder="module title" 
-                            value={moduleTitle || ''}
-                            onChangeText={(text) => setModuleTitle(text)}
-                            style={[styles.header, {paddingBottom: 5}]}
-                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
-                        />
+                <View style={{paddingHorizontal: 20}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={{width: '70%'}}>
+                            <TextInput 
+                                placeholder="module title" 
+                                value={moduleTitle || ''}
+                                onChangeText={(text) => setModuleTitle(text)}
+                                style={styles.header}
+                                onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
+                                multiline
+                            />
+                            <TextInput 
+                                placeholder="module desc"
+                                value={moduleDesc || ''} 
+                                onChangeText={(text) => setModuleDesc(text)} 
+                                style={styles.description} 
+                                onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
+                                multiline
+                            />
+                        </View>
+                        <View style={{paddingTop: 10}}>
+                            <TouchableOpacity>
+                                <Svg height={80} width={80} viewBox="0 0 80 80">
+                                    <Circle
+                                        cx={40}
+                                        cy={40}
+                                        r={35}
+                                        fill={moduleColour}
+                                        stroke={'black'}
+                                        strokeWidth={1}
+                                    />
+                                </Svg>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    {/* <View>
                         <TextInput 
                             placeholder="module desc"
                             value={moduleDesc || ''} 
@@ -513,10 +534,7 @@ const ModuleDetail = () => {
                             onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
                             multiline
                         />
-                    </View>
-                    <View style={{paddingTop: 10}}>
-                        <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
-                    </View>
+                    </View> */}
                 </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between',  paddingHorizontal: 20, alignItems: 'center'}}>
                         <View style={{flexDirection: 'row', gap: 10}}>
@@ -524,13 +542,13 @@ const ModuleDetail = () => {
                                 style={[styles.navBTN, view === 'list' ? {backgroundColor: moduleColour} : {}]}
                                 onPress={() => handleViewChange('list')}
                             >
-                                <Text style={{textAlign: 'center', fontWeight: '600'}}>List View</Text>
+                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>List View</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.navBTN, view === 'kanban' ? {backgroundColor: moduleColour} : {}]}
                                 onPress={() => handleViewChange('kanban')}
                             >
-                                <Text style={{textAlign: 'center', fontWeight: '600'}}>Board View</Text>
+                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Board View</Text>
                             </TouchableOpacity>
                         </View>
                         <View>
@@ -563,7 +581,7 @@ const ModuleDetail = () => {
                             />
                         )}
                     </View>
-                    <View style={{paddingTop: 15, justifyContent: 'center', width: 300, alignSelf: 'center'}}>
+                    <View style={{paddingTop: 5, justifyContent: 'center', width: 300, alignSelf: 'center'}}>
                         <TouchableOpacity 
                             onPress={handleOpenPress}
                             style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
@@ -680,7 +698,7 @@ const styles = StyleSheet.create ({
     container: {
         flex:1,
         backgroundColor: 'white',
-        // paddingHorizontal: 20
+        //paddingHorizontal: 20
     },
     background: {
         position: 'absolute',
@@ -697,20 +715,19 @@ const styles = StyleSheet.create ({
     },
     description: {
         fontSize: 20,
-        paddingBottom: 10
+        paddingBottom: 15
     },
     navBTN: {
         borderWidth: 1,
         borderRadius: 20,
-        padding: 10,
-        width: 100
+        padding: 10
     },
     moduleColour: {
-        paddingTop: 20,
-        borderRadius: 200/2,
-        height: 70,
-        width: 70,
-        borderWidth: 1
+        // paddingTop: 20,
+        // borderRadius: 200/2,
+        // height: 70,
+        // width: 70,
+        // borderWidth: 1
     },
     addTaskBTN: {
         alignSelf: 'center',
@@ -718,6 +735,56 @@ const styles = StyleSheet.create ({
         padding: 6,
         borderRadius: 10,
         backgroundColor: '#A6F511'
+    },
+    pickerContainer: {
+        alignSelf: 'center',
+        width: 300,
+        padding: 20,
+        borderRadius: 20,
+        
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+    
+        elevation: 10,
+    },
+    hueContainer: {
+        justifyContent: 'center',
+    },
+    panelStyle: {
+        width: '70%',
+        height: '70%',
+        alignSelf: 'center',
+        borderRadius: 16,
+    },
+    swatchesContainer: {
+        paddingTop: 20,
+        marginTop: 20,
+        borderTopWidth: 1,
+        borderColor: '#bebdbe',
+        alignItems: 'center',
+        flexWrap: 'nowrap',
+        gap: 10,
+    },
+    swatchStyle: {
+        borderRadius: 20,
+        height: 30,
+        width: 30,
+        margin: 0,
+        marginBottom: 20,
+        marginHorizontal: 0,
+        marginVertical: 0,
+    },
+    selectColour: {
+        borderRadius: 40,
+        padding: 10,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        borderWidth: 1
     },
 })
 

@@ -13,7 +13,7 @@ export type AddNote = {
         newNote: {
             note_title: Note['note_title'],
             note_text: Note['note_text'],
-            module_id: Note['module_id']
+            module_id: Note['module_id'] 
         }
     ) => void;
 }
@@ -52,7 +52,9 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
         console.log(newNoteTitle, newNoteContent, noteModule);
 
         addNote(
-            newNoteTitle, newNoteContent, noteModule
+            newNoteTitle,
+            newNoteContent,
+            noteModule || null
         )
 
         
@@ -71,14 +73,15 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
-            backgroundStyle={{backgroundColor: 'white'}}
+            backgroundStyle={{backgroundColor: '#F6FF78'}}
             //keyboardBehavior='fillParent'
         >
             <View style={{flex:1, paddingHorizontal: 20}}>
                 <View>
                 <BottomSheetTextInput
                     style={styles.title}
-                    placeholder='note title'
+                    placeholder='add note'
+                    placeholderTextColor='#A4D44C'
                     onChangeText={(text) => setNewNoteTitle(text)}
                     multiline
                 />
@@ -98,7 +101,8 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                 <View>
                 <BottomSheetTextInput
                     style={styles.content}
-                    placeholder='add something here...'
+                    placeholder='write down your thoughts here...'
+                    placeholderTextColor='#A4D44C'
                     onChangeText={(text) => setNewNoteContent(text)}
                     multiline
                 />
@@ -136,7 +140,7 @@ const styles = StyleSheet.create({
     dropdown: {
         backgroundColor: '#8CDCF9',
         padding: 10,
-        borderRadius: 20,
+        borderRadius: 13,
         width: '40%',
         paddingLeft: 15,
         borderWidth: 1,

@@ -63,7 +63,7 @@ const BadgeList = ({badges, onBadgePress}: BadgeList) => {
                     )}
                     keyExtractor={(item) => `${item.id}`}
                     numColumns={4}
-                    columnWrapperStyle={{justifyContent: 'space-evenly'}}
+                    columnWrapperStyle={{justifyContent: 'space-between', padding: 5}}
                 />
             )}
             

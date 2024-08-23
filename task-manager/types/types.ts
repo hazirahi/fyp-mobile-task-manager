@@ -30,27 +30,11 @@ export type Category = {
     user_id: string
 }
 
-// export type ModuleCat = {
-//     id: number
-//     module_id: number
-//     category_id: number | null
-//     task_id: number
-//     user_id: string
-// }
-
-// export type ModuleCatTask = {
-//     module_id: number
-//     category_id: number | null
-//     task: Task
-// }
-
-// export type TaskCat = Omit<Task, 'module_id' | 'category_id'> & ModuleCatTask
-
 export type Note = {
     id: number
     note_title: string
     note_text: string
-    module_id: number
+    module_id: number | null
     user_id: string
 
 }

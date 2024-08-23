@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { useTaskList } from "@/provider/TaskListProvider";
-import { TaskCat } from "@/types/types";
+import { Task } from "@/types/types";
 
 export default function CalendarScreen() {
   const { tasks, getTasks } = useTaskList();
 
   const [items, setItems] = useState<any>({});
-  const agendaItems = {};
+  const agendaItems: { [key: string]: any[]} = {};
   
   const [selectedDate, setSelectedDate] = useState(new Date());
   
@@ -19,14 +19,48 @@ export default function CalendarScreen() {
 
   useEffect(() => {
     getTasks();
-  }, []);
+    agendaTasks();
+  }, [tasks]);
 
   const timeToString = (time: Date) => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
   }
 
-  
+  const agendaTasks = () => {
+    const agendaItems: { [key: string]: any[]} = {};
+    tasks.forEach((task: Task) => {
+      if (task.due_date) {
+        const dueDate = timeToString(task.due_date);
+        if(!agendaItems[dueDate]) {
+          agendaItems[dueDate] = [];
+        }
+        agendaItems[dueDate].push({
+          name: task.task_name,
+          description: task.task_description
+        });
+      }
+    });
+    setItems(agendaItems);
+  }
+
+  // const loadItems = (day: DateData) => {
+  //   const items = {};
+
+  //   setTimeout(() => {
+  //     for (let i = -15; i < 85; i++) {
+  //       const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+  //       const strTime = (time).toString;
+
+  //       if (!items[strTime]) {
+  //         items[strTime] = [];
+  //       }
+  //     }
+
+      
+  //   })
+  // }
+
   const renderEmptyDate = () => {
     return <View/>;
   };
@@ -58,17 +92,24 @@ export default function CalendarScreen() {
       {/* <Agenda
         items={items}
         selectedDate={new Date()}
-        renderItem={({ item }: { item: { name: string; description: string } }) => (
+        renderItem={({ item }: { item: { name: string, description: string}}) => (
           <View>
-            <Text>{item.name}</Text>
-            <Text>{item.description}</Text>
+            {item && (
+              <View>
+                <Text>{item.name}</Text>
+                <Text>{item.description}</Text>
+              </View>
+            )}
+            
           </View>
         )}
         renderEmptyDate={renderEmptyDate}
         onDayPress={(day: any) => setSelectedDate(day.date)}
-        showClosingKnob={false}
-        minDate={'2020-01-01'}
-        maxDate={'2030-01-01'}
+        hideKnob={false}
+        showClosingKnob={true}
+        minDate={'2023-01-01'}
+        maxDate={'2027-01-01'}
+        loadItemsForMonth={loadItems}
       /> */}
 
 

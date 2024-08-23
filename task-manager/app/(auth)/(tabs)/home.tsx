@@ -21,6 +21,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 
 import { Circle, Svg, Symbol, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
+import defaultTheme from '@/styles/defaultTheme';
 
 export default function Home (){
     const { user } = useAuth();
