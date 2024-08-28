@@ -20,8 +20,6 @@ const Login = () => {
         setLoading(false);
     };
 
-    
-
     return (
         <SafeAreaView style={[defaultTheme.layouts.container, {backgroundColor: 'white'}]}>
           <LinearGradient 
@@ -62,10 +60,6 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: 'white'
-  // },
   background: {
     position: 'absolute',
     left: 0,

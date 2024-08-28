@@ -8,7 +8,7 @@ import CircleProgress from '@/components/CircleProgress';
 import TaskListItem from '@/components/TaskListItem';
 
 import { useEffect, useState, useRef } from 'react';
-import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList } from "react-native";
 import 'react-native-url-polyfill/auto';
 
 import { Ionicons } from '@expo/vector-icons';

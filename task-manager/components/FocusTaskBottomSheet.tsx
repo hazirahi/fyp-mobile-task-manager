@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useMemo, useCallback } from "react";
-import { BottomSheetModal, BottomSheetBackdrop, BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetBackdrop, BottomSheetTextInput, BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import TaskListItem from "./TaskListItem";
@@ -23,7 +23,7 @@ const FocusTaskBottomSheet = forwardRef<Ref, FocusTask>((props, ref) => {
         () => innerRef.current
     );
 
-    const snapPoints = useMemo(() => ['50%', '60%'], []);
+    const snapPoints = useMemo(() => ['50%', '80%'], []);
     const renderBackdrop = useCallback(
         (props:any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []
     );
@@ -34,12 +34,13 @@ const FocusTaskBottomSheet = forwardRef<Ref, FocusTask>((props, ref) => {
             index={0}
             snapPoints={snapPoints}
             enablePanDownToClose={true}
+            enableDismissOnClose
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{backgroundColor: '#302F33'}}
-            backgroundStyle={{backgroundColor: 'white'}}
+            backgroundStyle={{backgroundColor: '#8CDCF9'}}
         >
             <View style={styles.container}>
-                <Text style={{fontSize: 23, fontWeight: '700', paddingBottom: 10}}>Choose a task to focus on:</Text>
+                <Text style={{fontSize: 23, fontWeight: '700', paddingBottom: 15}}>What do you want to focus on?</Text>
                 <FlatList
                     style={styles.taskContainer}
                     scrollEnabled={true}
@@ -47,7 +48,7 @@ const FocusTaskBottomSheet = forwardRef<Ref, FocusTask>((props, ref) => {
                     data={tasks}
                     keyExtractor={(item) => `${item.id}`}
                     renderItem={({ item: task }) => (
-                        <View>
+                        <View style={{backgroundColor: '#4DC6F9', borderRadius: 12, padding: 15, paddingVertical: 13}}>
                             <TouchableOpacity
                                 onPress={() => onTaskSelect(task.task_name, task.id)}
                             >
@@ -67,10 +68,12 @@ const styles = StyleSheet.create({
         paddingTop: 30
     },
     taskContainer: {
-        backgroundColor: '#8CDCF9',
-        paddingVertical: 30,
-        paddingHorizontal: 20,
-        borderRadius: 20
+        backgroundColor: '#77D6F8',
+        borderRadius: 10,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderWidth: 1,
+        borderColor: '#16B4F8',
     }
 })
 

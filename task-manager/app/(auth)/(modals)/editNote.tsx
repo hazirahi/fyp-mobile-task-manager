@@ -76,7 +76,6 @@ const EditNote = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            
                 <LinearGradient 
                     colors={['#D5FF61', '#F6FF78','#FFFFFF', '#F6FF78', '#D5FF61']}
                     style={styles.background}
@@ -121,7 +120,7 @@ const EditNote = () => {
                         router.navigate('/notes')
                     }}
                 >
-                    <Text style={{fontSize: 15, fontWeight: '600'}}>Done</Text>
+                    <Text style={{fontSize: 15, fontWeight: '600'}}>Save</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

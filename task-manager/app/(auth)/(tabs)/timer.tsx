@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import FocusTaskBottomSheet from "@/components/FocusTaskBottomSheet";
 import { useTaskList } from "@/provider/TaskListProvider";
+import DurationPicker from "@/components/DurationPickerBottomSheet";
 
 export default function Timer() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -21,6 +22,11 @@ export default function Timer() {
     const handleOpenPress = () => bottomSheetRef.current?.present();
     const [focusTask, setFocusTask] = useState('Time to Focus!');
     const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
+
+    const durationBottomSheetRef = useRef<BottomSheetModal>(null);
+    const handleDurationOpen = () => durationBottomSheetRef.current?.present();
+    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [durationString, setDurationString] = useState<string | null>(null);
 
     const { tasks, onCheckPressed } = useTaskList();
 
@@ -35,14 +41,40 @@ export default function Timer() {
         setDuration(timerModes[mode]);
     }
 
-    const handleShowModal = () => {
-        setShowModal(true);
-    }
-
     const handleTaskSelect = (taskName: string, taskId: number) => {
         setFocusTask(taskName);
         setCurrentTaskId(taskId);
-        bottomSheetRef.current?.close();
+        bottomSheetRef.current?.dismiss();
+    }
+
+    const formatTime = ({hours, minutes, seconds}:{
+        hours?: number;
+        minutes?: number;
+        seconds?: number;
+    }) => {
+        const timeParts = [];
+
+        if (hours !== undefined) {
+            timeParts.push(hours.toString().padStart(2, "0"));
+        }
+        if (minutes !== undefined) {
+            timeParts.push(minutes.toString().padStart(2, "0"));
+        }
+        if (seconds !== undefined) {
+            timeParts.push(seconds.toString().padStart(2, "0"));
+        }
+
+        return timeParts.join(":");
+    }
+
+    // const handleSelectDuration = (hours: number, minutes: number, seconds: number) => {
+    //     const newSessionLength = hours * 3600 + minutes * 60 + seconds;
+    //     setDuration(newSessionLength);
+    //     setShowTimePicker(false);
+    // }
+
+    const handleDurationChange = (newDuration: number) => {
+        setDuration(newDuration);
     }
     
     return(
@@ -138,15 +170,14 @@ export default function Timer() {
                         
                     </View>
                 </Modal>
-                <View style={{flexDirection:'row', paddingTop: 40}}>
-                    
+                <View style={{flexDirection:'row', paddingTop: 35, alignItems: 'center', gap: 15}}>                    
                     <TouchableOpacity
                             onPress={() => {
                                 setKey(prevKey => prevKey + 1); 
                                 setIsPlaying(false);
                             }}
                     >
-                        <Ionicons name="stop-circle" size={80} color="red" />
+                        <Ionicons name="stop-circle" size={60} color="#E51F1F" />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -159,6 +190,19 @@ export default function Timer() {
                         )}
                         
                     </TouchableOpacity>
+                    <View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                handleDurationOpen();
+                            }}
+                        >
+                            <Ionicons name="timer" size={60} color="#16B4F8" />
+                        </TouchableOpacity>
+                        <DurationPicker
+                            ref={durationBottomSheetRef}
+                            onDurationChange={handleDurationChange}
+                        />
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
