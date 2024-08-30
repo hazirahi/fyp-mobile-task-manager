@@ -100,7 +100,6 @@ const BadgeListProvider = ({ children }: PropsWithChildren) => {
                         console.log(badgeError.message)
                     } else {
                         setAwardedBadge(badgeData);
-                        //showModalCallback();
                         handleShowModal();
                     }
             }

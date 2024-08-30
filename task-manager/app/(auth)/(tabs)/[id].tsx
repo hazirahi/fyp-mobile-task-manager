@@ -10,20 +10,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "@/config/initSupabase";
 import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 
-import TaskListItem from "@/components/TaskListItem";
-// import AddTaskBottomSheet from "@/components/AddTaskBottomSheet";
-
 import { useTaskList } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
 import { Task } from '@/types/types';
 
 import { Circle, Svg, Symbol, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
-import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
-import ColorPicker, { colorKit, HueCircular, InputWidget, Panel1, returnedResults, Swatches } from "reanimated-color-picker";
 import AddCategory from "@/components/AddCategory";
 import TaskListView from "@/components/TaskListView";
 import TaskKanbanView from "@/components/TaskKanbanView";
+import NoteList from "@/components/NoteList";
+import ModuleNotes from "@/components/ModuleNotes";
 
 
 const getCatNames = async (categoryIds: number[]) => {
@@ -42,22 +39,6 @@ const getCatNames = async (categoryIds: number[]) => {
     }, {});
 }
 
-// const getModuleTasks = async (taskIds: number[]) => {
-//     const {data: moduletasks, error} = await supabase
-//         .from('tasks')
-//         .select('*')
-//         .in('id', taskIds);
-//     if (error)
-//         throw error;
-//     if (!moduletasks)
-//         return {};
-
-//     return moduletasks.reduce((acc: { [id: number]: string }, task) => {
-//         acc[task.id] = task.task_name;
-//         return acc;
-//     }, {});
-// };
-
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
     const [loading, setLoading] = useState(true);
@@ -72,22 +53,14 @@ const ModuleDetail = () => {
         setTaskList([...taskList, newTask]);
     };
 
-    
-
     const [ moduleTitle, setModuleTitle ] = useState('');
     const [ moduleDesc, setModuleDesc ] = useState('');
     const [ moduleColour, setModuleColour ] = useState('');
 
     const [view, setView] = useState('list');
-    const handleViewChange = (newView: 'list' | 'kanban') => {
+    const handleViewChange = (newView: 'list' | 'kanban' | 'notes') => {
         setView(newView);
     };
-
-    //const [ moduleTasks, setModuleTasks ] = useState<Task
-
-    // const [moduleCatList, setModuleCatList] = useState<ModuleCat[]>([]);
-    // const [categorizedTasks, setCategorizedTasks] = useState<{[id: number]: TaskCat[]}>({});
-    // const [catNames, setCatNames] = useState<{[id:number]:string}>({});
 
     let taskIdCounter = 0;
 
@@ -275,135 +248,6 @@ const ModuleDetail = () => {
         }
     }
 
-    // interface moduleCatWithCatName extends ModuleCat{
-    //     category_name: string | null;
-    // }
-
-    // const data: moduleCatWithCatName[] = moduleCatList.map((moduleCat) => ({
-    //     ...moduleCat,
-    //     category_name: moduleCat.category_id? catNames[moduleCat.category_id] : null,
-    // }));
-
-    // const data: TaskCat[] = tasks.map((task) => ({
-    //     ...task,
-    //     module_cat_task: {
-    //         module_id: task.module_id,
-    //         category_id: task.category_id,
-    //         task: task
-    //     }
-    // }))
-
-    // const renderItem: ListRenderItem<moduleCatWithCatName> = ({item, index}) => {
-    //     const task = tasks.find((t) => t.id === item.task_id);
-    //     if(!task) return null;
-
-    //     const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id };
-    //     const isFirstInCat = index === 0 || data[index-1].category_id !== item.category_id;
-
-    //     const getPrioritySymbol = (task: TaskCat) => {
-    //         switch (task.priority_id) {
-    //             //low
-    //             case 1:
-    //                 return (
-    //                     <View style={{position: 'absolute'}}>
-    //                         <Svg height="40" width="45" pointerEvents="none">
-    //                         <Symbol id="symbol" viewBox="0 0 80 90">
-    //                             <Circle cx='0' cy='0' r='40' fill='#FFBB00' />
-    //                             <Circle cx='30' cy='20' r='25' fill='#FFBB00' />
-    //                         </Symbol>
-    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-    //                         <SvgText
-    //                             x={20}
-    //                             y={21}
-    //                             textAnchor="middle"
-    //                             alignmentBaseline="middle"
-    //                             fontWeight={'900'}
-    //                             fontSize={16}
-    //                             fill={'white'}
-    //                         >!</SvgText>
-    //                     </Svg>
-    //                     </View>
-                        
-    //                 )
-    //             // medium
-    //             case 2:
-    //                 return (
-    //                     <View style={{position: 'absolute'}}>
-    //                     <Svg height="40" width="45" pointerEvents="none">
-    //                         <Symbol id="symbol" viewBox="0 0 80 90">
-    //                             <Circle cx='0' cy='0' r='40' fill='#FF8800' />
-    //                             <Circle cx='30' cy='20' r='25' fill='#FF8800' />
-    //                         </Symbol>
-    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-    //                         <SvgText
-    //                             x={20}
-    //                             y={21}
-    //                             textAnchor="middle"
-    //                             alignmentBaseline="middle"
-    //                             fontWeight={'900'}
-    //                             fontSize={16}
-    //                             fill={'white'}
-    //                         >!!</SvgText>
-    //                     </Svg>
-    //                     </View>
-    //                 )
-    //             // high
-    //             case 3:
-    //                 return (
-    //                     <View style={{position: 'absolute'}}>
-    //                     <Svg height="40" width="45" pointerEvents="none">
-    //                         <Symbol id="symbol" viewBox="0 0 80 90">
-    //                             <Circle cx='0' cy='0' r='40' fill='#E51F1F' />
-    //                             <Circle cx='30' cy='20' r='25' fill='#E51F1F' />
-    //                         </Symbol>
-    //                         <Use href="#symbol" x={0} y={20} width={75} height={38}/>
-    //                         <SvgText
-    //                             x={20}
-    //                             y={21}
-    //                             textAnchor="middle"
-    //                             alignmentBaseline="middle"
-    //                             fontWeight={'900'}
-    //                             fontSize={16}
-    //                             fill={'white'}
-    //                         >!!!</SvgText>
-    //                     </Svg>
-    //                     </View>
-    //                 )
-    //             default:
-    //                 return null;
-    //         }
-    //     }
-        
-    //     const onEditPressed = (task: TaskCat) => {
-    //         console.log(task.id);
-    //         router.navigate({pathname: '/editTask', params: {taskId: task.id}});
-    //     }
-
-    //     return (
-    //         <View>
-    //             {isFirstInCat && <Text style={[styles.header, {paddingHorizontal: 20}]}>{item.category_name}</Text>}
-    //             <TaskListItem
-    //                 task={taskwithModuleId}
-    //                 onCheckPressed={()=>onCheckPressed(taskwithModuleId)}
-    //                 onDelete={()=>onDelete(taskwithModuleId)}
-    //                 onEdit={() => onEditPressed(taskwithModuleId)}
-    //                 onTaskPressed={()=>onTaskPressed(taskwithModuleId)}
-    //                 prioritySymbol={getPrioritySymbol(taskwithModuleId)}
-    //             />
-    //         </View>
-    //     )
-    // }
-
-    // const filteredTasks = data.flatMap((moduleCat) => {
-    //     const task = tasks.find((t) => t.id === moduleCat.task_id);
-    //     if(!task) return [];
-    //     return [{...task, module_id: moduleCat.module_id}]
-    // })
-
-    // const filteredTasks = data;
-
-    
-    
     const getPrioritySymbol = (task: Task) => {
         switch (task.priority_id) {
             //low
@@ -525,16 +369,6 @@ const ModuleDetail = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    {/* <View>
-                        <TextInput 
-                            placeholder="module desc"
-                            value={moduleDesc || ''} 
-                            onChangeText={(text) => setModuleDesc(text)} 
-                            style={styles.description} 
-                            onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
-                            multiline
-                        />
-                    </View> */}
                 </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between',  paddingHorizontal: 20, alignItems: 'center'}}>
                         <View style={{flexDirection: 'row', gap: 10}}>
@@ -550,12 +384,17 @@ const ModuleDetail = () => {
                             >
                                 <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Board View</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.navBTN, view === 'notes' ? {backgroundColor: moduleColour} : {}]}
+                                onPress={() => handleViewChange('notes')}
+                            >
+                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Notes</Text>
+                            </TouchableOpacity>
                         </View>
                         <View>
                             <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
                                 <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
                                     <Ionicons name="add" size={20} color="black" />
-                                    {/* <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text> */}
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -570,7 +409,7 @@ const ModuleDetail = () => {
                                 onEdit={onEditPressed}
                                 getPrioritySymbol={getPrioritySymbol}
                             />
-                        ) : (
+                        ) : view === 'kanban' ? (
                             <TaskKanbanView
                                 tasksByCategory={tasksByCategory}
                                 onCheckPressed={onCheckPressed}
@@ -579,6 +418,8 @@ const ModuleDetail = () => {
                                 onEdit={onEditPressed}
                                 getPrioritySymbol={getPrioritySymbol}
                             />
+                        ) : (
+                            <ModuleNotes/>
                         )}
                     </View>
                     <View style={{paddingTop: 5, justifyContent: 'center', width: 300, alignSelf: 'center'}}>
@@ -593,7 +434,6 @@ const ModuleDetail = () => {
                             moduleId={Number(id)}
                             onAdd={(newCategory, id) => {
                                 console.log(newCategory, id)
-                                //addNewCat(newCategory, id)
                                 bottomSheetRef.current?.close();
                             }}
                         />

@@ -59,11 +59,6 @@ const DurationPicker = forwardRef<Ref, {onDurationChange: OnDurationChange}>(({o
                     initialValue={{minutes: 25}}
                     disableInfiniteScroll
                 />
-                {/* <View style={{paddingTop: 20}}>
-                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 20, padding: 10, borderWidth: 1}}>
-                        <Text>change duration</Text>
-                    </TouchableOpacity>
-                </View> */}
             </View>
         </BottomSheetModal>
     )

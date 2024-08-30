@@ -13,12 +13,6 @@ type NoteListItem = {
 const NoteListItem = ({note}: NoteListItem) => {
     const noteModule = Array.isArray(note.modules) ? note.modules : [note.modules];
 
-    // const navigation = useNavigation();
-
-    const handleEditPress = () => {
-       
-    }
-    
     return (
         <View>
             <LinearGradient

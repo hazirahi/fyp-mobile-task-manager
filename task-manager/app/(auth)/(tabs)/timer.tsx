@@ -47,32 +47,6 @@ export default function Timer() {
         bottomSheetRef.current?.dismiss();
     }
 
-    const formatTime = ({hours, minutes, seconds}:{
-        hours?: number;
-        minutes?: number;
-        seconds?: number;
-    }) => {
-        const timeParts = [];
-
-        if (hours !== undefined) {
-            timeParts.push(hours.toString().padStart(2, "0"));
-        }
-        if (minutes !== undefined) {
-            timeParts.push(minutes.toString().padStart(2, "0"));
-        }
-        if (seconds !== undefined) {
-            timeParts.push(seconds.toString().padStart(2, "0"));
-        }
-
-        return timeParts.join(":");
-    }
-
-    // const handleSelectDuration = (hours: number, minutes: number, seconds: number) => {
-    //     const newSessionLength = hours * 3600 + minutes * 60 + seconds;
-    //     setDuration(newSessionLength);
-    //     setShowTimePicker(false);
-    // }
-
     const handleDurationChange = (newDuration: number) => {
         setDuration(newDuration);
     }
@@ -129,12 +103,12 @@ export default function Timer() {
                         setShowModal(true);
                     }}
                 >
-                {({ remainingTime }) => (
-                    <Text style={{ color: '#D5FF61', fontSize: 50, fontWeight: '700' }}>
-                        {Math.floor(remainingTime / 60).toString().padStart(2, '0')}:
-                        {Math.floor(remainingTime % 60).toString().padStart(2,'0')}
-                    </Text>
-                )}
+                    {({ remainingTime }) => (
+                        <Text style={{ color: '#D5FF61', fontSize: 50, fontWeight: '700' }}>
+                            {Math.floor(remainingTime / 60).toString().padStart(2, '0')}:
+                            {Math.floor(remainingTime % 60).toString().padStart(2,'0')}
+                        </Text>
+                    )}
                 </CountdownCircleTimer>
                 <Modal
                     visible={showModal}

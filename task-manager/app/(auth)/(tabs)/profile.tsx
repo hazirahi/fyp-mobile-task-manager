@@ -268,17 +268,6 @@ export default function Account (){
             <View style={{paddingTop: 20}}>
                 <Text style={styles.header}>Badges: </Text>
                 <View style ={{backgroundColor: '#A6F511', padding: 20, borderWidth: 1, borderRadius: 10}}>
-                    {/* <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                        {badgeUrls.map((url, index) => (
-                            <TouchableOpacity key={index} onPress={() => handleBadgePress(url)}>
-                                <SvgUri
-                                    width={60}
-                                    height={60}
-                                    uri={url}
-                                />
-                            </TouchableOpacity>
-                        ))}
-                    </View> */}
                     <View>
                         <BadgeList
                             badges={userBadgeList}
