@@ -157,6 +157,27 @@ export default function Account (){
             setUserBadgeList(userBadgeList!)
     }
 
+    const handleBadgePress = async (badgeId: number, signedUrl: string | null) => {
+        setEquippedBadge(signedUrl);
+        await updateEquippedBadge(badgeId);
+    };
+
+    const updateEquippedBadge = async (badgeId: number) => {
+        try { 
+            await supabase 
+                .from('user_badges')
+                .update({equipped: false})
+                .eq('user_id', user!.id)
+
+            await supabase
+                .from('user_badges')
+                .update({equipped: true})
+                .eq('user_id', user!.id)
+                .eq('badge_id', badgeId)
+        } catch (error: any) {
+            console.log(error.message)
+        }
+    }
     
 
     // const BadgeItem = ({item} : {item:FileObject}) => {
@@ -271,7 +292,7 @@ export default function Account (){
                     <View>
                         <BadgeList
                             badges={userBadgeList}
-                            onBadgePress={setEquippedBadge}
+                            onBadgePress={handleBadgePress}
                         />
                     </View>
                 </View>

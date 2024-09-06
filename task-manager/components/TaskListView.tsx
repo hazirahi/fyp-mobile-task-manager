@@ -111,11 +111,11 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
     //     })
     // }
 
-    console.log('tasklistview w tasksbycat: ', tasksByCategory)
+    // console.log('tasklistview w tasksbycat: ', tasksByCategory)
 
-    useEffect(() => {
-        console.log('tasksbycat changed')
-    }, [tasksByCategory]);
+    // useEffect(() => {
+    //     console.log('tasksbycat changed')
+    // }, [tasksByCategory]);
 
     return (
         <SectionList

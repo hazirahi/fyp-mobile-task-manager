@@ -21,10 +21,6 @@ interface Props {
 const TaskKanbanView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed, onEdit, getPrioritySymbol} : Props) => {
     const { categories, updateCategory } = useTaskList();
 
-    useEffect(() => {
-
-    }, [tasksByCategory]);
-
     const categoryNames: {[id: number]: string} = {};
     categories.forEach((category) => {
         categoryNames[category.id] = category.category_name;

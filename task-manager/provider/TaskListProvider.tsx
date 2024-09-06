@@ -517,6 +517,14 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         if (error)
             throw error;
 
+        if (completedData && completedData.completed_tasks >= 1){
+            //check if user has badge
+            const hasEarned = await hasEarnedBadge(3);
+            if (!hasEarned) {
+                awardBadge(user!.id, 3);
+            }
+        }
+
         if (completedData && completedData.completed_tasks >= 5){
             // check if user has badge
             const hasEarned = await hasEarnedBadge(4);

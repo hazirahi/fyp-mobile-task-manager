@@ -57,4 +57,5 @@ export type UserBadge = {
     badge_id: number
     user_id: string
     earned_at: Date
+    equipped: boolean
 }

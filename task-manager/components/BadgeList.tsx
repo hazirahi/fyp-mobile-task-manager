@@ -4,13 +4,16 @@ import { FlatList, Text, View } from "react-native";
 import { Badge, UserBadge } from "@/types/types";
 import { supabase } from "@/config/initSupabase";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/provider/AuthProvider";
 
 type BadgeList = {
     badges: UserBadge[]
-    onBadgePress: (badgeUrl: string) => void;
+    //onBadgePress: (badgeUrl: string) => void;
+    onBadgePress: (badgeId: number, signedUrl: string | null) => void;
 }
 
 const BadgeList = ({badges, onBadgePress}: BadgeList) => {
+    const { user } = useAuth();
     const [badgeData, setBadgeData] = useState<Badge[]>([]);
     const [selectedBadge, setSelectedBadge] = useState(null);
     
@@ -58,7 +61,11 @@ const BadgeList = ({badges, onBadgePress}: BadgeList) => {
                     renderItem={({item}) => (
                         <BadgeListItem
                             badge={item}
-                            onPress={() => onBadgePress(item.signedUrl?? '')}
+                            onPress={() => {
+                                onBadgePress(item.id, item.signedUrl?? '');
+                                console.log('badgelsit: ', item.id)
+                                //onBadgePress(item.signedUrl?? '')
+                            }}
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
