@@ -72,7 +72,7 @@ const ModuleDetail = () => {
         console.log(id);
         id&&getModuleInfo();
         //getModuleCat();
-        getModuleTasks();
+        //getModuleTasks();
     }, [id]);
 
 
@@ -181,21 +181,25 @@ const ModuleDetail = () => {
         }
     }
 
-    const getModuleTasks = async () => {
-        const { data: modTasks, error } = await supabase
-            .from('tasks')
-            .select('*, categories(*)')
-            .eq('module_id', id)
-        if (error) {
-            console.log(error.message)
-        } else {
-            //console.log(modTasks)
-            setTaskList(modTasks!);
+    // const getModuleTasks = async () => {
+    //     const { data: modTasks, error } = await supabase
+    //         .from('tasks')
+    //         .select('*, categories(*)')
+    //         .eq('module_id', id)
+    //     if (error) {
+    //         console.log(error.message)
+    //     } else {
+    //         console.log(modTasks)
+    //         setTaskList(modTasks!);
             
-        }
-    }
+    //     }
+    // }
 
-    const tasksByCategory = taskList.reduce((acc: {[key: number]: Task[]}, task) => {
+    
+
+    const modTasks = tasks.filter((task) => task.module_id === Number(id));
+
+    const tasksByCategory = modTasks.reduce((acc: {[key: number]: Task[]}, task) => {
         if (task.category_id !== null){
             const categoryId = task.category_id;
             if (!acc[categoryId]) {

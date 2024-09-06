@@ -1,5 +1,5 @@
 import { FlatList, Text, View, StyleSheet } from "react-native";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Category, Task } from "@/types/types";
 import { useTaskList } from "@/provider/TaskListProvider";
 import TaskListItem from "./TaskListItem";
@@ -20,6 +20,11 @@ interface Props {
 
 const TaskKanbanView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed, onEdit, getPrioritySymbol} : Props) => {
     const { categories, updateCategory } = useTaskList();
+
+    useEffect(() => {
+
+    }, [tasksByCategory]);
+
     const categoryNames: {[id: number]: string} = {};
     categories.forEach((category) => {
         categoryNames[category.id] = category.category_name;

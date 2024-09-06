@@ -5,7 +5,7 @@ import { Svg, Symbol, Circle, Use } from "react-native-svg";
 import { Text as SvgText } from "react-native-svg";
 import { router } from "expo-router";
 import TaskListItem from "./TaskListItem";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface Props {
     //tasks: TaskCat[];
@@ -63,8 +63,10 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
     //         </View>
     //     )
     // }
+    
 
     const { categories } = useTaskList();
+
     const categoryNames: {[id: number]: string} = {};
     categories.forEach((category) => {
         categoryNames[category.id] = category.category_name;
@@ -108,6 +110,12 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
     //         data: noCatTasks,
     //     })
     // }
+
+    console.log('tasklistview w tasksbycat: ', tasksByCategory)
+
+    useEffect(() => {
+        console.log('tasksbycat changed')
+    }, [tasksByCategory]);
 
     return (
         <SectionList

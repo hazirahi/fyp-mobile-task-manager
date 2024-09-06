@@ -56,7 +56,6 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
             newNoteContent,
             noteModule || null
         )
-
         
         setNewNoteTitle('');
         setNewNoteContent('');

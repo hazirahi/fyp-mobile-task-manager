@@ -73,7 +73,7 @@ export default function CalendarScreen() {
       />
       <View style={{paddingHorizontal: 20}}>
         <Text style={styles.header}>Calendar</Text>
-        <View style={styles.calendarContainer}>
+        {/* <View style={styles.calendarContainer}>
           <Calendar
             onDayPress={(day: DateData) => {
               console.log('selected day', day);
@@ -88,6 +88,8 @@ export default function CalendarScreen() {
             }}
           />
         </View>
+        */}
+
       </View>
       {/* <Agenda
         items={items}
