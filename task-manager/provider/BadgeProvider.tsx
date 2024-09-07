@@ -83,7 +83,8 @@ const BadgeListProvider = ({ children }: PropsWithChildren) => {
                 .insert({
                     badge_id: badgeId,
                     user_id: userId,
-                    earned_at: new Date()
+                    earned_at: new Date(),
+                    equipped: false
                 })
                 .select('*')
                 .single()

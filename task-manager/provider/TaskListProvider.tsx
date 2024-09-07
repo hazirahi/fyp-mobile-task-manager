@@ -501,7 +501,25 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             .eq('user_id', user!.id)
             .single()
 
-        const newCompletedTasks = (completedData?.completed_tasks || 0) + 1;
+        let newCompletedTasks = completedData?.completed_tasks || 0;
+
+        if (newCompletedTasks === 1){
+            //check if user has badge
+            const hasEarned = await hasEarnedBadge(3);
+            if (!hasEarned){
+                awardBadge(user!.id, 3);
+            }
+        }
+
+        if (newCompletedTasks === 5){
+            //check if user has badge
+            const hasEarned = await hasEarnedBadge(4);
+            if (!hasEarned){
+                awardBadge(user!.id, 4);
+            }
+        }
+
+        newCompletedTasks++;
 
         // upsert task completions
         await supabase
@@ -516,24 +534,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         console.log('oncheckpressed: ', task);
         if (error)
             throw error;
-
-        if (completedData && completedData.completed_tasks >= 1){
-            //check if user has badge
-            const hasEarned = await hasEarnedBadge(3);
-            if (!hasEarned) {
-                awardBadge(user!.id, 3);
-            }
-        }
-
-        if (completedData && completedData.completed_tasks >= 5){
-            // check if user has badge
-            const hasEarned = await hasEarnedBadge(4);
-            if (!hasEarned) {
-                awardBadge(user!.id, 4);
-            }
-        }
-
-        
     }
 
     // delete task
