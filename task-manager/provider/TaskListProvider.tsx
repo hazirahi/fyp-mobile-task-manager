@@ -503,7 +503,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
 
         let newCompletedTasks = completedData?.completed_tasks || 0;
 
-        if (newCompletedTasks === 1){
+        if (newCompletedTasks === 0){
             //check if user has badge
             const hasEarned = await hasEarnedBadge(3);
             if (!hasEarned){
@@ -511,7 +511,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             }
         }
 
-        if (newCompletedTasks === 5){
+        if (newCompletedTasks === 4){
             //check if user has badge
             const hasEarned = await hasEarnedBadge(4);
             if (!hasEarned){

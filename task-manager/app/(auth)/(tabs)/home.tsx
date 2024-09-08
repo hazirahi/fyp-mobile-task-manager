@@ -26,21 +26,20 @@ import defaultTheme from '@/styles/defaultTheme';
 export default function Home (){
     const { user } = useAuth();
 
-    const [taskList, setTaskList] = useState<Task[]>([]);
     const { tasks, getPriority, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
 
-    const bottomSheetRef = useRef<BottomSheet>(null);
-    const handleOpenPress = () => bottomSheetRef.current?.expand();
+    // const bottomSheetRef = useRef<BottomSheet>(null);
+    // const handleOpenPress = () => bottomSheetRef.current?.expand();
 
-    let taskIdCounter = 0;
+    // let taskIdCounter = 0;
 
-    const generateTaskId = () => {
-        return ++taskIdCounter;
-    }
+    // const generateTaskId = () => {
+    //     return ++taskIdCounter;
+    // }
 
     useEffect(() => {
         if (!user) return;
@@ -51,7 +50,6 @@ export default function Home (){
         getCategory();
         getTasks();
     }, [user]);
-
 
     // get user's name
     async function getProfile(){
