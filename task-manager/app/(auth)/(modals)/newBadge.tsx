@@ -1,17 +1,8 @@
 import { useBadgeList } from "@/provider/BadgeProvider";
-import { useState } from "react";
 import { Modal, Text, TouchableOpacity, View, StyleSheet } from "react-native";
-// let showModalCallback: () => void;
 
 const NewBadge = () => {
-    const [showModalState, setShowModalState] = useState(false);
-    const { awardedBadge, handleShowModal, handleHideModal, showModal } = useBadgeList();
-
-    // const handleShowModal = () => {
-    //     setShowModalState(true);
-    // };
-
-    // showModalCallback = handleShowModal;
+    const { awardedBadge, handleHideModal, showModal } = useBadgeList();
     
     return (
         <Modal 

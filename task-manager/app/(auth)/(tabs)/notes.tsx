@@ -1,30 +1,23 @@
-import AddNoteBottomSheet from "@/components/AddNoteBottomSheet";
-import NoteList from "@/components/NoteList";
-import { supabase } from "@/config/initSupabase";
-import { useAuth } from "@/provider/AuthProvider";
-import { Note } from "@/types/types";
-import { useTaskList } from "@/provider/TaskListProvider";
-import { Ionicons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+
+import AddNoteBottomSheet from "@/components/AddNoteBottomSheet";
+import NoteList from "@/components/NoteList";
+import { useAuth } from "@/provider/AuthProvider";
+import { useTaskList } from "@/provider/TaskListProvider";
+
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function Notes() {
     const { user } = useAuth();
+    const { getNotes, getModule } = useTaskList();
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handleOpenPress = () => bottomSheetRef.current?.present();
-
-    const [noteList, setNoteList] = useState<Note[]>([]);
-    const { getNotes, getModule } = useTaskList();
-
-    let noteIdCounter = 0;
-
-    const generateNoteId = () => {
-        return ++noteIdCounter;
-    }
 
     useEffect(() => {
         if (!user) return;
@@ -49,19 +42,11 @@ export default function Notes() {
             <AddNoteBottomSheet
                 ref={bottomSheetRef}
                 onAdd={(newNote) => {
-                    // setNoteList(notes => [...notes, {
-                    //     id: generateNoteId(),
-                    //     user_id: user!.id,
-                    //     note_title: newNote.note_title,
-                    //     note_text: newNote.note_text,
-                    //     module_id: newNote.module_id
-                    // }])
                     bottomSheetRef.current?.close();
                 }}
             />
         </SafeAreaView>
     )
-    
 }
 
 const styles = StyleSheet.create({
@@ -79,7 +64,6 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 50,
         fontWeight: '600',
-        //paddingTop: 10,
         paddingBottom: 20,
         fontFamily: 'EBGaramond'
     },

@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useMemo, useCallback } from "react";
-import { Alert, Button, Platform, Text, View } from "react-native";
+import { View } from "react-native";
 import DateTimePicker from 'react-native-ui-datepicker';
 
 import dayjs from 'dayjs';

@@ -1,21 +1,18 @@
-import { useBadgeList } from "@/provider/BadgeProvider";
-import BadgeListItem from "./BadgeListItem";
-import { FlatList, Text, View } from "react-native";
-import { Badge, UserBadge } from "@/types/types";
-import { supabase } from "@/config/initSupabase";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/provider/AuthProvider";
+import { FlatList, Text, View } from "react-native";
+
+import { supabase } from "@/config/initSupabase";
+import { Badge, UserBadge } from "@/types/types";
+
+import BadgeListItem from "./BadgeListItem";
 
 type BadgeList = {
-    badges: UserBadge[]
-    //onBadgePress: (badgeUrl: string) => void;
+    badges: UserBadge[];
     onBadgePress: (badgeId: number, signedUrl: string | null) => void;
 }
 
 const BadgeList = ({badges, onBadgePress}: BadgeList) => {
-    const { user } = useAuth();
     const [badgeData, setBadgeData] = useState<Badge[]>([]);
-    const [selectedBadge, setSelectedBadge] = useState(null);
     
     const getBadgeData = async (userBadges: UserBadge[]) => {
         const badgeIds = userBadges.map((userBadges) => userBadges.badge_id);
@@ -64,7 +61,6 @@ const BadgeList = ({badges, onBadgePress}: BadgeList) => {
                             onPress={() => {
                                 onBadgePress(item.id, item.signedUrl?? '');
                                 console.log('badgelsit: ', item.id)
-                                //onBadgePress(item.signedUrl?? '')
                             }}
                         />
                     )}

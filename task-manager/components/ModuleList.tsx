@@ -7,16 +7,9 @@ import ModuleListItem from "./ModuleListItem";
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { router } from "expo-router";
-import { useState } from "react";
 
 export default function ModuleList () {
     const { modules } = useTaskList();
-
-    const addNewModule = () => {
-        console.log('add module pressed');
-    }
-    
-    const [modalVisible, setModalVisible] = useState(false);
 
     return (
         <View style={styles.container}>

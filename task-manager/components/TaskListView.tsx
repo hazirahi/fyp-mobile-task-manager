@@ -1,11 +1,9 @@
-import { useTaskList } from "@/provider/TaskListProvider"
-import { FlatList, ListRenderItem, View, Text, StyleSheet, SectionList, SectionListRenderItem, SectionListData } from "react-native";
+import { ReactNode} from "react";
+import { View, Text, StyleSheet, SectionList, SectionListData } from "react-native";
+
 import { Task } from "@/types/types";
-import { Svg, Symbol, Circle, Use } from "react-native-svg";
-import { Text as SvgText } from "react-native-svg";
-import { router } from "expo-router";
+import { useTaskList } from "@/provider/TaskListProvider"
 import TaskListItem from "./TaskListItem";
-import { ReactNode, useEffect } from "react";
 
 interface Props {
     //tasks: TaskCat[];
@@ -18,52 +16,6 @@ interface Props {
 }
 
 const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed, onEdit, getPrioritySymbol} : Props) => {
-
-    // const renderItem: ListRenderItem<{[id: number]: TaskCat[]}> = ({item, index}) => {
-    //     const categoryId = Number(Object.keys(tasksByCategory)[index]);
-    //     const tasks = tasksByCategory[categoryId]
-    //     return (
-    //         <View>
-    //             <Text>{categoryId}</Text>
-    //             {tasks.map((task) => (
-    //                 <TaskListItem
-    //                     key={task.id}
-    //                     task={task}
-    //                     onCheckPressed={() => onCheckPressed(task)}
-    //                     onDelete={() => onDelete(task)}
-    //                     onTaskPressed={() => onTaskPressed(task)}
-    //                     onEdit={() => onEdit}
-    //                     prioritySymbol={getPrioritySymbol(task)}
-    //                 />
-    //             ))}
-    //         </View>
-    //     )
-    // }
-
-    
-
-    // const renderItem: SectionListRenderItem<{[id: number]: TaskCat[]}> = ({ item, section }) => {
-
-    //     //console.log(item.category_id)
-    //     return (
-    //         <View>
-    //             <Text>{section.title}</Text>
-    //             {section.data.map((task) => (
-    //                 <TaskListItem
-    //                     key={task.id}
-    //                     task={task}
-    //                     onCheckPressed={() => onCheckPressed(task)}
-    //                     onDelete={() => onDelete(task)}
-    //                     onTaskPressed={() => onTaskPressed(task)}
-    //                     onEdit={() => onEdit(task)}
-    //                     prioritySymbol={getPrioritySymbol(task)}
-    //                 />
-    //             ))}
-                
-    //         </View>
-    //     )
-    // }
-    
 
     const { categories } = useTaskList();
 
@@ -88,9 +40,7 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
     }
 
     const renderSectionHeader = ({section}: {section: SectionListData<Task>}) => {
-        //const categoryId = section.title;
         const categoryName = categoryNames[section.title];
-        //console.log(categoryId)
         return (
             <View style={{paddingLeft: 20, paddingTop: 15}}>
                 <Text style={styles.header}>{categoryName || 'uncategorized'}</Text>
@@ -102,20 +52,6 @@ const TaskListView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed,
         title: parseInt(categoryId) === -1 ? 'uncategorized' : parseInt(categoryId),
         data: tasks
     }));
-    
-    // const noCatTasks = tasksByCategory[-1] || [];
-    // if (noCatTasks.length > 0) {
-    //     sections.push({
-    //         title: -1,
-    //         data: noCatTasks,
-    //     })
-    // }
-
-    // console.log('tasklistview w tasksbycat: ', tasksByCategory)
-
-    // useEffect(() => {
-    //     console.log('tasksbycat changed')
-    // }, [tasksByCategory]);
 
     return (
         <SectionList

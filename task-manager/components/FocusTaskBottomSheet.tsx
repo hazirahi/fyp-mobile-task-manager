@@ -1,10 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useMemo, useCallback } from "react";
-import { BottomSheetModal, BottomSheetBackdrop, BottomSheetTextInput, BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import TaskListItem from "./TaskListItem";
-import { useTaskList } from "@/provider/TaskListProvider";
 
+import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+
+import { useTaskList } from "@/provider/TaskListProvider";
 
 type Ref = BottomSheetModal;
 

@@ -1,10 +1,10 @@
 import { NoteMod } from "@/types/types";
+
 import { Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useNavigation } from "expo-router";
-import { useState } from "react";
-import EditNote from "@/app/(auth)/(modals)/editNote";
+import { router } from "expo-router";
 
 type NoteListItem = {
     note: NoteMod;

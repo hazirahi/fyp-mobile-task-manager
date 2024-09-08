@@ -1,41 +1,28 @@
-import { View, StyleSheet, Alert, TextInput, Image, Text, FlatList, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Alert, TextInput, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 
 import { supabase } from "@/config/initSupabase";
-import { AuthProvider, useAuth } from '@/provider/AuthProvider';
+import { useAuth } from '@/provider/AuthProvider';
 import Avatar from '@/components/Avatar';
 
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SvgUri, Path, G, Circle } from 'react-native-svg';
-import { useBadgeList } from '@/provider/BadgeProvider';
+import { SvgUri } from 'react-native-svg';
 import { UserBadge } from '@/types/types';
 import BadgeList from '@/components/BadgeList';
 
 //https://supabase.com/docs/guides/getting-started/tutorials/with-expo-react-native?queryGroups=auth-store&auth-store=secure-store
 
-interface FileObject {
-    name: string;
-}
-
 export default function Account (){
     const { user, session } = useAuth();
-    const { badges } = useBadgeList();
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
 
-    const [badgeList, setBadgeList] = useState<FileObject[]>([]);
     const [userBadgeList, setUserBadgeList] = useState<UserBadge[]>([]);
-    const [badgeUrls, setBadgeUrls] = useState<string[]>([]);
     const [equippedBadge, setEquippedBadge] = useState<string | null>(null);
-
-    // const handleBadgePress = (url: string) => {
-    //     setEquippedBadge(url);
-    // };
 
     useEffect(() => {
         if (!user) return;
@@ -107,45 +94,6 @@ export default function Account (){
         }
     }
 
-    // const getBadges = async () => {
-    //     const { data:badgeList, error } = await supabase
-    //         .storage
-    //         .from('badges')
-    //         .list();
-
-    //     if (error) {
-    //         console.log(error.message);
-    //     } else {
-    //         setBadgeList(badgeList!);
-            
-    //         try {
-    //             await supabase.storage.from('badges').remove(['.emptyFolderPlaceholder']);
-    //         } catch (error) {
-    //             console.log((error as Error).message);
-    //         }
-    //         // console.log(badgeList);
-    //         const signedUrls = await Promise.all(
-    //             badgeList.map(async (badge) => {
-    //                 const { data, error } = await supabase
-    //                     .storage
-    //                     .from('badges')
-    //                     .createSignedUrl(badge.name, 3600);
-                    
-    //                 if (error) {
-    //                     console.log(error.message);
-    //                     return null;
-    //                 }
-    //                 //console.log(data.signedUrl)
-    //                 return data.signedUrl;
-    //             })
-    //         );
-    //         //console.log(signedUrls)
-    //         setBadgeUrls(signedUrls.filter((url) => url !== null));
-    //         //setBadgeList(badgeList!);
-            
-    //     }
-    // };
-
     const getUserBadges = async () => {
         const { data: userBadgeList, error } = await supabase
             .from('user_badges')
@@ -178,84 +126,9 @@ export default function Account (){
             console.log(error.message)
         }
     }
-    
-
-    // const BadgeItem = ({item} : {item:FileObject}) => {
-    //     const [imageUrl, setImageUrl] = useState('');
-
-    //     const getSignedUrl = async () => {
-    //         const { data, error } = await supabase.storage
-    //             .from('badges')
-    //             .createSignedUrl(item.name, 60);
-
-    //         if (error) {
-    //             console.log(error.message)
-    //         } else {
-    //             setImageUrl(data.signedUrl);
-    //         }
-    //     };
-
-    //     getSignedUrl();
-
-    //     return (
-    //         <View>
-    //             {imageUrl ? (
-    //                 <Image
-    //                     source={{uri: imageUrl}}
-    //                     style={{width: 70, height: 70, resizeMode:'contain'}}
-    //                     onError={(error) => console.log('Error loading image:', error)}
-    //                 />
-    //             ) : (
-    //                 <View>
-    //                     <Text>help la</Text>
-    //                 </View>
-    //             )}
-                
-    //         </View>
-    //     );
-    // }
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* <View style={{backgroundColor: 'lightpink', padding: 15, paddingBottom: 20, borderRadius: 10, flexDirection: 'row'}}>
-                <View >
-                    <Avatar 
-                        size={130}
-                        url={avatarUrl}
-                        onUpload={(url:string) => {
-                            setAvatarUrl(url)
-                            updateProfile({ name, email, avatar_url: url})
-                        }}
-                    />
-                </View>
-                <View style={{paddingHorizontal: 20, paddingTop: 70}}>
-                    <View style={{flexDirection: 'row', paddingTop: 25}}>
-                        <View style={{paddingRight: 15}}>
-                            <View>
-                                <Text style={{fontSize: 10}}>NAME</Text>
-                                <Text style={{fontWeight:500, fontSize:14}}>{name}</Text>
-                            </View>
-                            <View>
-                                <Text style={{fontSize: 10}}>SCHOOL</Text>
-                                <Text style={{fontWeight:500, fontSize:14}}>insert school</Text>
-                            </View>
-                        </View>
-                        <View>
-                            <View>
-                                <Text style={{fontSize: 10}}>DATE OF BIRTH</Text>
-                                <Text style={{fontWeight:500, fontSize:14}}>insert dob</Text>
-                            </View>
-                            <View>
-                                <Text style={{fontSize: 10}}>IDK</Text>
-                                <Text style={{fontWeight:500, fontSize:14}}>insert idk</Text>
-                            </View>
-                        </View>
-                    </View>
-                    
-                    
-                </View>
-                
-            </View> */}
             <LinearGradient 
                 colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
                 style={styles.background}
@@ -297,11 +170,6 @@ export default function Account (){
                     </View>
                 </View>
             </View>
-            {/* <View style={{paddingTop: 20}}>
-                <Text style={styles.header}>This Week's Progress: </Text>
-                <View style ={{backgroundColor: '#A6F511', padding: 20, borderWidth: 1, borderRadius: 10}}>
-                </View>
-            </View> */}
         </SafeAreaView>
     );
 }

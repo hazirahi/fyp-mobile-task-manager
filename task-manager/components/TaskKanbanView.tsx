@@ -1,6 +1,6 @@
 import { FlatList, Text, View, StyleSheet } from "react-native";
-import { ReactNode, useEffect, useState } from "react";
-import { Category, Task } from "@/types/types";
+import { ReactNode } from "react";
+import { Task } from "@/types/types";
 import { useTaskList } from "@/provider/TaskListProvider";
 import TaskListItem from "./TaskListItem";
 import DraggableFlatList from "react-native-draggable-flatlist";
@@ -19,7 +19,7 @@ interface Props {
 
 
 const TaskKanbanView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPressed, onEdit, getPrioritySymbol} : Props) => {
-    const { categories, updateCategory } = useTaskList();
+    const { categories } = useTaskList();
 
     const categoryNames: {[id: number]: string} = {};
     categories.forEach((category) => {
@@ -32,16 +32,10 @@ const TaskKanbanView = ({tasksByCategory, onCheckPressed, onDelete, onTaskPresse
             data: tasks
         }
     })
-
-    const updateTasksByCat = (newTasksByCategory: Category) => {
-        updateCategory(newTasksByCategory);
-    }
     
     return (
         <View style={styles.container}>
             <FlatList
-                // horizontal
-                // showsHorizontalScrollIndicator={false}
                 numColumns={2}
                 data={groupedTasks}
                 renderItem={({item}) => (

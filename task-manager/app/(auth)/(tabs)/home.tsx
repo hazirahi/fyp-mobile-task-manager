@@ -7,39 +7,22 @@ import ModuleList from '@/components/ModuleList';
 import CircleProgress from '@/components/CircleProgress';
 import TaskListItem from '@/components/TaskListItem';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Alert, StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList } from "react-native";
+import { Circle, Svg, Symbol, Use } from "react-native-svg";
+import { Text as SvgText } from "react-native-svg";
 import 'react-native-url-polyfill/auto';
 
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { router, useSegments } from 'expo-router';
-
-import BottomSheet from '@gorhom/bottom-sheet';
-//import AddTaskBottomSheet, { AddTask } from "@/components/AddTaskBottomSheet";
-
-import { Circle, Svg, Symbol, Use } from "react-native-svg";
-import { Text as SvgText } from "react-native-svg";
-import defaultTheme from '@/styles/defaultTheme';
+import { router } from 'expo-router';
 
 export default function Home (){
     const { user } = useAuth();
-
     const { tasks, getPriority, getModule, getCategory, getTasks, onCheckPressed, onDelete, onTaskPressed } = useTaskList();
 
     const [loading, setLoading] = useState(true);
-
     const [name, setName] = useState('');
-
-    // const bottomSheetRef = useRef<BottomSheet>(null);
-    // const handleOpenPress = () => bottomSheetRef.current?.expand();
-
-    // let taskIdCounter = 0;
-
-    // const generateTaskId = () => {
-    //     return ++taskIdCounter;
-    // }
 
     useEffect(() => {
         if (!user) return;
@@ -156,84 +139,59 @@ export default function Home (){
         router.navigate({pathname: '/editTask', params: {taskId: task.id}});
     }
 
-    // const segments = useSegments();
-    // console.log(segments);
-
     return (
         <>
-        <SafeAreaView style={styles.container}>
-            <LinearGradient 
-                colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
-                style={styles.background}
-            />
-            <FlatList
-                //style={{paddingHorizontal: 20}}
-                scrollEnabled={true}
-                data={tasks}
-                keyExtractor={(item) => `${item.id}`}
-                //contentContainerStyle={{gap:10}}
-                ListHeaderComponent={
-                    <View style={{paddingHorizontal: 20}}>
-                        <View>
-                            <Text style={styles.greeting}>Hello, {name}</Text>
-                            <CircleProgress/>
-                            <ModuleList/> 
-                        </View>
-                        <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={styles.header}>Tasks</Text>
-                                {/* <Text>priority</Text> */}
+            <SafeAreaView style={styles.container}>
+                <LinearGradient 
+                    colors={['#0084FF','#16B4F8', '#8CDCF9', '#FFFFFF']}
+                    style={styles.background}
+                />
+                <FlatList
+                    scrollEnabled={true}
+                    data={tasks}
+                    keyExtractor={(item) => `${item.id}`}
+                    ListHeaderComponent={
+                        <View style={{paddingHorizontal: 20}}>
+                            <View>
+                                <Text style={styles.greeting}>Hello, {name}</Text>
+                                <CircleProgress/>
+                                <ModuleList/> 
                             </View>
-                            <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
-                                <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-                                    <Ionicons name="add" size={20} color="black" />
-                                    <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text>
+                            <View style={{flexDirection: 'row', paddingTop: 20, justifyContent: 'space-between'}}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text style={styles.header}>Tasks</Text>
                                 </View>
-                            </TouchableOpacity>
+                                <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
+                                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                                        <Ionicons name="add" size={20} color="black" />
+                                        <Text style={{fontWeight: '600', fontSize: 13}}>Add Task</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                }
-                renderItem={({ item: task }) => (
-                    <TaskListItem 
-                        task={task}
-                        onCheckPressed={() => onCheckPressed(task)}
-                        onDelete={() => onDelete(task)}
-                        onEdit={() => onEditTask(task)}
-                        onTaskPressed={() => onTaskPressed(task)}
-                        prioritySymbol={getPrioritySymbol(task)}
-                    />
-                    
-                )}
-                ListEmptyComponent={
-                    <View style={{padding: 20}}>
-                        <View style={{ borderWidth: 1, borderRadius: 20, padding: 40, height: '60%'}}>
-                            <Text style={{textAlign: 'center', top: '30%', fontSize: 16, fontWeight: '500'}}>
-                                You haven't created any tasks yet! Tap the + Add Task button to create a new task.
-                            </Text>
+                    }
+                    renderItem={({ item: task }) => (
+                        <TaskListItem 
+                            task={task}
+                            onCheckPressed={() => onCheckPressed(task)}
+                            onDelete={() => onDelete(task)}
+                            onEdit={() => onEditTask(task)}
+                            onTaskPressed={() => onTaskPressed(task)}
+                            prioritySymbol={getPrioritySymbol(task)}
+                        />
+                        
+                    )}
+                    ListEmptyComponent={
+                        <View style={{padding: 20}}>
+                            <View style={{ borderWidth: 1, borderRadius: 20, padding: 40, height: '60%'}}>
+                                <Text style={{textAlign: 'center', top: '30%', fontSize: 16, fontWeight: '500'}}>
+                                    You haven't created any tasks yet! Tap the + Add Task button to create a new task.
+                                </Text>
+                            </View>
                         </View>
-                    </View>
-                    
-                }
-            />
-        </SafeAreaView>
-        {/* <Ionicons name='add-circle' size={80} color='#00CC44' onPress={handleOpenPress} style={styles.addTaskBTN}/>
-            <AddTaskBottomSheet
-                ref={bottomSheetRef}
-                onAdd={(newTask) => 
-                    // setTaskList(tasks => [...tasks, newTask])
-                    setTaskList(tasks => [...tasks, {
-                        id: generateTaskId(),
-                        user_id: user!.id,
-                        task_name: newTask.task_name,
-                        task_description: newTask.task_description,
-                        isCompleted: false,
-                        created_at: new Date(),
-                        module_id: newTask.module_id,
-                        category_id: newTask.category_id
-                    }])
-                }
-            /> */}
-            
+                    }
+                />
+            </SafeAreaView>
         </>
     );
 }

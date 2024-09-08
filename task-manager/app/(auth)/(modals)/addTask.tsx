@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, ScrollView } from "react-native";
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -17,7 +17,6 @@ import dayjs from "dayjs";
 
 export default function addTaskScreen () {
     const { modules, categories, priorities, addTask } = useTaskList();
-    const { user } = useAuth();
 
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
@@ -45,7 +44,6 @@ export default function addTaskScreen () {
     const handleOpenPress = () => bottomSheetRef.current?.present();
 
     useEffect(() => {
-        // console.log('addTask priorities: ', priorities)
     }, [taskList]);
 
     const addNewTask = () => {
@@ -84,71 +82,6 @@ export default function addTaskScreen () {
                     <Ionicons name="chevron-back" size={24} color="black" />
                 </TouchableOpacity>
             </View>
-            {/* <View>
-                <TextInput
-                    style={[styles.input, styles.title]}
-                    placeholder="add a task"
-                    onChangeText={(text) => setNewTaskTitle(text)}
-                    value={newTaskTitle}
-                    multiline={true}
-                    onEndEditing={() => Keyboard.dismiss()}
-                />
-                <TextInput
-                    style={[styles.input, styles.desc]}
-                    placeholder="add description"
-                    onChangeText={(text) => setNewTaskDesc(text)}
-                    value={newTaskDesc}
-                    multiline={true}
-                    onEndEditing={() => Keyboard.dismiss()}
-                />
-            </View>
-            <View style={{paddingHorizontal: 20, flexDirection:'row', gap: 10, paddingTop:60}}>
-                <Dropdown
-                    style={styles.dropdown}
-                    data={modules}
-                    labelField='module_title'
-                    valueField='id'
-                    placeholder='Module'
-                    onChange={item => {
-                        setTaskModule(item.id);
-                    }}
-                />
-                <Dropdown
-                    style={styles.dropdown}
-                    data={categories}
-                    labelField='category_name'
-                    valueField='id'
-                    placeholder='Category'
-                    onChange={item => {
-                        setTaskCategory(item.id);
-                    }}
-                />
-            </View>
-            <View style={{paddingHorizontal: 20, paddingTop: 10, flexDirection: 'row'}}>
-                <TouchableOpacity
-                    style={[styles.dropdown, {width: '36%'}]}
-                    onPress={handleOpenPress}
-                >
-                    <Text style={{textAlign: 'center', fontSize: 15}}>{dueDate}</Text>
-                </TouchableOpacity>
-                <AddDateTimePicker
-                    ref={bottomSheetRef}
-                    onAdd={(startDate) => {
-                        handleDueDateChange(startDate);
-                        bottomSheetRef.current?.close();
-                    }}
-                />
-                <Dropdown
-                    style={styles.dropdown}
-                    data={priorities}
-                    labelField={'priority'}
-                    valueField={'id'}
-                    placeholder="Priority"
-                    onChange={item=> {
-                        setTaskPriority(item.id);
-                    }}
-                />
-            </View> */}
             <ScrollView style={{paddingHorizontal: 20}} keyboardShouldPersistTaps='handled'>
             <View style={{paddingTop: 10}}>
                 <View style={{paddingVertical: 10}}>
@@ -160,7 +93,6 @@ export default function addTaskScreen () {
                         onChangeText={(text) => setNewTaskTitle(text)}
                         onEndEditing={() => Keyboard.dismiss()}
                     />
-                    
                 </View>
                 <Text style={{fontWeight: '600', fontSize: 20, paddingBottom: 10}}>Optional:</Text>
                 <View style={{paddingHorizontal: 15, paddingVertical: 10, borderRadius: 20, borderWidth: 1}}>
@@ -237,15 +169,6 @@ export default function addTaskScreen () {
                             setTaskCategory(item.id);
                         }}
                     />
-                    {/* <MultiSelect
-                        data={categories}
-                        labelField='category_name'
-                        valueField='id'
-                        placeholder='Category'
-                        onChange={item => {
-                            setTaskCategory(item.id);
-                        }}
-                    /> */}
                 </View>
             </View>
             </View>

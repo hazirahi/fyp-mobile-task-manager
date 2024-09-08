@@ -93,65 +93,56 @@ const TaskListItem = ({task, onCheckPressed, onDelete, onEdit, onTaskPressed, pr
 
     return (
         <>
-        <Swipeable
-            renderRightActions={() => (
-                <RightActions onDelete={onDelete} onEdit={onEdit}/>
-            )}
-        >
-            <View style={{paddingHorizontal: 20, paddingTop: 20}}>
-        <LinearGradient
-            //colors={getGradientColours()}
-            // colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
-            // colors={['#FFFFFF', '#FF83F7', '#CB59F8', '#B03AFF']}
-            colors={['#FFFFFF', '#8CDCF9']}
-            style={[styles.taskContainer, ]}
-        >
-        
-        {/* <View style={{paddingHorizontal: 20, paddingTop: 20}}> */}
+            <Swipeable
+                renderRightActions={() => (
+                    <RightActions onDelete={onDelete} onEdit={onEdit}/>
+                )}
+            >
+                <View style={{paddingHorizontal: 20, paddingTop: 20}}>
+                    <LinearGradient
+                        //colors={getGradientColours()}
+                        // colors={['#FFFFFF', '#F6FF78', '#D5FF61', '#A6F511']}
+                        // colors={['#FFFFFF', '#FF83F7', '#CB59F8', '#B03AFF']}
+                        colors={['#FFFFFF', '#8CDCF9']}
+                        style={[styles.taskContainer, ]}
+                    >
             
-        
-            {/* <View style={[{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'white', borderColor: getBorderColour()}, styles.taskContainer]}>
-             */}
-             <View style={{ borderColor: '#0084FF', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text
-                    onPress={onTaskPressed}
-                    style={[styles.taskTitle, {
-                        textDecorationLine: task.isCompleted
-                        ? 'line-through'
-                        : 'none',
-                        color: task.isCompleted
-                        ? '#0084FF'
-                        : 'black',
-                        // color: 'black'
-                    }]}
-                >
-                    {task.task_name}
-                </Text>
-                <MaterialCommunityIcons
-                    onPress={onCheckPressed}
-                    name={
-                        task.isCompleted
-                        ? "checkbox-marked-circle"
-                        : "checkbox-blank-circle-outline"
-                    }
-                    size={24}
-                    color={
-                        // task.isCompleted
-                        // ? '#00CC44'
-                        // : 'black'
-                        '#0084FF'
-                    }
-                    
-                />
-            </View>
-            {/* </View> */}
-                    
-            {/* </View>   */}
-            </LinearGradient>
-            {prioritySymbol}
-            </View>
-        </Swipeable>
-        
+                        <View style={{ borderColor: '#0084FF', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text
+                                onPress={onTaskPressed}
+                                style={[styles.taskTitle, {
+                                    textDecorationLine: task.isCompleted
+                                    ? 'line-through'
+                                    : 'none',
+                                    color: task.isCompleted
+                                    ? '#0084FF'
+                                    : 'black',
+                                    // color: 'black'
+                                }]}
+                            >
+                                {task.task_name}
+                            </Text>
+                            <MaterialCommunityIcons
+                                onPress={onCheckPressed}
+                                name={
+                                    task.isCompleted
+                                    ? "checkbox-marked-circle"
+                                    : "checkbox-blank-circle-outline"
+                                }
+                                size={24}
+                                color={
+                                    // task.isCompleted
+                                    // ? '#00CC44'
+                                    // : 'black'
+                                    '#0084FF'
+                                }
+                                
+                            />
+                        </View>
+                    </LinearGradient>
+                    {prioritySymbol}
+                </View>
+            </Swipeable>
         </>
     );
 };

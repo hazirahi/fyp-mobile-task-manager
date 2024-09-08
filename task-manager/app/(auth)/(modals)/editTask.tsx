@@ -1,17 +1,19 @@
+import { useEffect, useState, useRef } from "react"
 import { SafeAreaView, View, TouchableOpacity, StyleSheet, ScrollView, Text, TextInput, Keyboard } from "react-native"
+import { Dropdown } from "react-native-element-dropdown"
+
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
 import { router, useLocalSearchParams } from "expo-router"
-import { useEffect, useState, useRef } from "react"
+
 import { supabase } from "@/config/initSupabase"
-import { useTaskList } from "@/provider/TaskListProvider"
 import { Priority } from "@/types/types"
-import { Dropdown } from "react-native-element-dropdown"
+import { useTaskList } from "@/provider/TaskListProvider"
+import { useAuth } from "@/provider/AuthProvider"
 import AddDateTimePicker from "@/components/AddDateTimePicker"
+
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import { useAuth } from "@/provider/AuthProvider"
-
 
 const EditTask = () => {
     const { taskId } = useLocalSearchParams();
@@ -60,18 +62,12 @@ const EditTask = () => {
             setSelectedPriority(selectedPriority);
             setTaskModule(tasks.module_id);
             setTaskCategory(tasks.category_id);
+
             if (tasks.due_date) {
                 const dueDateValue = dayjs(tasks.due_date).format('DD-MM-YYYY');
                 setDueDate(dueDateValue);
                 setDate(new Date(tasks.due_date));
             }
-            
-            // if (tasks.modules && tasks.modules.module_categories && tasks.modules.module_categories.length > 0) {
-            //     const category = tasks.modules.module_categories[0].categories;
-            //     if (category) {
-            //         setTaskCategory(category.id)
-            //     }
-            // }
         }
     }
 
@@ -288,7 +284,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#8CDCF9',
         padding: 15,
         borderRadius: 30,
-        //width: '40%',
         paddingLeft: 15,
         borderWidth: 1
     },

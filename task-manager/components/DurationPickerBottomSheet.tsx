@@ -1,7 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useMemo, useCallback } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { View } from "react-native";
 import { TimerPicker } from "react-native-timer-picker";
+
+import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
+
 import { LinearGradient } from "expo-linear-gradient";
 
 type Ref = BottomSheetModal;

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { SafeAreaView, Text, StyleSheet, View, Modal, Keyboard, ScrollView } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
@@ -6,12 +6,10 @@ import ColorPicker, { colorKit, HueCircular, InputWidget, Panel1, returnedResult
 import { LinearGradient } from "expo-linear-gradient";
 
 import { router } from "expo-router";
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useTaskList } from "@/provider/TaskListProvider";
 import { Circle, Svg } from "react-native-svg";
-import AddCategory from "@/components/AddCategory";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function AddModule() {
 
@@ -41,9 +39,6 @@ export default function AddModule() {
         console.log(newModuleTitle, newModuleDesc, colour);
         
     }
-
-    const bottomSheetRef = useRef<BottomSheetModal>(null);
-    const handleOpenPress = () => bottomSheetRef.current?.present();
     
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -123,25 +118,9 @@ export default function AddModule() {
                         placeholderTextColor={'lightgray'}
                         onChangeText={(text) => setNewModuleDesc(text)}
                         value={newModuleDesc}
-                        //onEndEditing={() => Keyboard.dismiss()}
                         multiline
                     />
                 </View>
-                {/* <View style={{paddingTop: 10}}>
-                    <TouchableOpacity 
-                        onPress={handleOpenPress}
-                        style={{backgroundColor: '#A6F511', borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
-                    >
-                        <Text style={{fontWeight: '500'}}>Add Category</Text>
-                    </TouchableOpacity>
-                    <AddCategory
-                        ref={bottomSheetRef}
-                        moduleId={}
-                        onAdd={(newCategory) => {
-                            bottomSheetRef.current?.close();
-                        }}
-                    />
-                </View> */}
             </View>
             </ScrollView>
             <View style={{padding: 20, position: 'absolute', bottom: 20}}>
@@ -159,24 +138,6 @@ export default function AddModule() {
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
-
-    
-        //         </View>
-        //         <View>
-        //             <TouchableOpacity 
-        //                 onPress={()=>{
-        //                     addNewModule();
-        //                     setNewModuleTitle('');
-        //                     setNewModuleDesc('');
-        //                     setColour('');
-        //                     router.navigate('/home')
-                            
-        //                 }} style={{backgroundColor: 'lightgreen', borderRadius: 20, padding: 10, alignItems: 'center'}}>
-        //                 <Text>add module</Text>
-        //             </TouchableOpacity>
-        //         </View>
-        //     </View> 
-        // </SafeAreaView>
     );
 };
 

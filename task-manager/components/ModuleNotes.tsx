@@ -1,13 +1,14 @@
-import { useAuth } from "@/provider/AuthProvider";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 
-import { NoteMod, Note } from "@/types/types";
-import { useTaskList } from "@/provider/TaskListProvider";
-import { supabase } from "@/config/initSupabase";
-import NoteListItem from "./NoteListItem";
-import { useRoute } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
+
+import { NoteMod, Note } from "@/types/types";
+import { supabase } from "@/config/initSupabase";
+import { useAuth } from "@/provider/AuthProvider";
+
+import NoteListItem from "./NoteListItem";
+
 
 export default function ModuleNotes() {
     const { user } = useAuth();

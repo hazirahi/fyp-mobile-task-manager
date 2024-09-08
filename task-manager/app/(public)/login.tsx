@@ -1,9 +1,10 @@
-import { Alert, View, Button, TextInput, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useState } from 'react';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { supabase } from '@/config/initSupabase';
+import { Alert, View, Button, TextInput, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+
+import { supabase } from '@/config/initSupabase';
 import defaultTheme from '@/styles/defaultTheme';
 
 

@@ -96,7 +96,6 @@ const TabLayout = () => {
           tabBarShowLabel: false,
           headerShown: false,
         }}
-        //look into this: https://reactnavigation.org/docs/bottom-tab-navigator/#options im so sleepy
       />
     </Tabs>
     

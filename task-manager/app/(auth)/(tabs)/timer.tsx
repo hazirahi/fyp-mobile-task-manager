@@ -1,15 +1,16 @@
+import { useState, useRef } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { LinearGradient } from "expo-linear-gradient";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { useState, useRef } from "react";
 
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import FocusTaskBottomSheet from "@/components/FocusTaskBottomSheet";
+import { LinearGradient } from "expo-linear-gradient";
+
 import { useTaskList } from "@/provider/TaskListProvider";
+import FocusTaskBottomSheet from "@/components/FocusTaskBottomSheet";
 import DurationPicker from "@/components/DurationPickerBottomSheet";
+
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function Timer() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -25,8 +26,6 @@ export default function Timer() {
 
     const durationBottomSheetRef = useRef<BottomSheetModal>(null);
     const handleDurationOpen = () => durationBottomSheetRef.current?.present();
-    const [showTimePicker, setShowTimePicker] = useState(false);
-    const [durationString, setDurationString] = useState<string | null>(null);
 
     const { tasks, onCheckPressed } = useTaskList();
 
@@ -198,8 +197,7 @@ const styles = StyleSheet.create({
     header: {
         fontFamily: 'EBGaramond',
         fontSize: 50,
-        fontWeight: '600',
-        //paddingTop: 10
+        fontWeight: '600'
     },
     navBTN: {
         borderWidth: 1,

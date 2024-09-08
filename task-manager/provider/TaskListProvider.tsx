@@ -1,35 +1,23 @@
-import { supabase } from "@/config/initSupabase";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
+
+import { supabase } from "@/config/initSupabase";
 import { useAuth } from '@/provider/AuthProvider';
 import { useBadgeList } from "./BadgeProvider";
 
 import { Task, Module, Category, Note, NoteMod, Priority } from "@/types/types";
 
-// export type TaskSection = {
-//     task_id: number
-//     task_name: string
-//     task_description: string
-//     section_id: number
-//     section_name: string
-// }
-
 type TaskListItem = {
     tasks: Task[];
-    //catTasks: TaskCat[];
     priorities: Priority[];
     modules: Module[];
     categories: Category[];
     notes: NoteMod[];
-    // moduleCat: ModuleCat[];
-    // taskSections: Task[];
     getPriority: () => void;
     getModule: () => void;
     getCategory: () => void;
-    // getModuleCat: () => void;
     getTasks: () => void;
     getTasksByCategory: () => void;
     getNotes: () => void;
-    // getTaskSection: () => void;
     addModule: (
         module_title: Module['module_title'],
         module_description: Module['module_description'],
@@ -39,10 +27,6 @@ type TaskListItem = {
         category_name: Category['category_name'],
         module_id: Module['id']
     ) => void;
-    // addCategoryToModule: (
-    //     module_id: ModuleCat['module_id'],
-    //     category_id: ModuleCat['category_id']
-    // ) => void;
     addTask: (
         task_name: Task['task_name'],
         task_description: Task['task_description'],
@@ -64,22 +48,18 @@ type TaskListItem = {
 
 const TaskListContext = createContext<TaskListItem>({
     tasks: [],
-    //catTasks: [],
     priorities: [],
     modules: [],
     categories: [],
     notes: [],
-    // moduleCat: [],
     getPriority: () => {},
     getModule: () => {},
     getCategory: () => {},
-    // getModuleCat: () => {},
     getTasks: () => {},
     getTasksByCategory: () => {},
     getNotes: () => {},
     addModule: () => {},
     addCategory: () => {},
-    //addCategoryToModule: () => {},
     addTask: () => {},
     addNote: () => {},
     onCheckPressed: () => {},
@@ -99,6 +79,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     const [categoryList, setCategoryList] = useState<Category[]>([]);
     const [noteList, setNoteList] = useState<NoteMod[]>([]);
 
+    // get priorities
     const getPriority = async () => {
         const { data: priorityList, error } = await supabase
             .from('priorities')
@@ -109,6 +90,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setPriorityList(priorityList!);
     }
 
+    // get all modules
     const getModule = async () => {
         const { data: moduleList } = await supabase
             .from('modules')
@@ -118,6 +100,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setModuleList(moduleList!);
     }
 
+    // get all categories
     const getCategory = async () => {
         const {data: categoryList} = await supabase
             .from('categories')
@@ -127,15 +110,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setCategoryList(categoryList!);
     }
 
-    // const getModuleCat = async () => {
-    //     const {data: moduleCatList} = await supabase
-    //         .from('module_categories')
-    //         .select('*')
-    //         .eq('module_id', 'module.id')
-    //     if (moduleCatList)
-    //         setModuleCatList(moduleCatList!);
-    // }
-
+    
+    // get all tasks
     const getTasks = async () => {
         const {data: taskList} = await supabase
             .from('tasks')
@@ -169,6 +145,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         setCatTaskList(tasksByCategory);
     }
 
+    //get all notes
     const getNotes = async () => {
         const { data: noteList, error } = await supabase
             .from('notes')
@@ -179,28 +156,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             setNoteList(noteList!);
     }
 
-    
-    // task with section
-    // const getTaskSection = async () => {
-    //     const { data: taskSectionList } = await supabase
-    //         .from('tasks')
-    //         .select(`
-    //             *,
-    //             modules(
-    //                 module_title
-    //             ),
-    //             sections(
-    //                 section_name
-    //             )
-    //         `)
-    //         .eq('section_id', 3)
-    //         .order('created_at', {ascending:false})
-    //     if (taskSectionList) {
-    //         setTaskSectionList(taskSectionList!);
-    //         // console.log('section: ', taskSectionList);
-    //     }
-    // }
-
+    //add module
     const addModule = async (
         module_title: Module['module_title'],
         module_description: Module['module_description'],
@@ -228,7 +184,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             console.log('module count ', count);
             
             // award first module badge
-
             if (count === 1) {
                 const hasEarned = await hasEarnedBadge(2);
                 if (!hasEarned) {
@@ -244,6 +199,7 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
+    // add category
     const addCategory = async (
         category_name: Category['category_name'],
         module_id: Module['id']
@@ -285,89 +241,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
         }
            
     }
-
-    // const addCategoryToModule = async (
-    //     module_id: ModuleCat['module_id'],
-    //     category_id: ModuleCat['category_id']
-    // ) => {
-    //     const { data: moduleCatList, error } = await supabase
-    //         .from('module_categories')
-    //         .insert({
-    //             module_id: module_id,
-    //             category_id: category_id,
-    //             user_id: user!.id
-    //         });
-    //     if (error) {
-    //         console.log(error.message)
-    //     } else {
-    //         console.log('cat added to module!', moduleCatList)
-    //     }
-    // }
-
-    // const addTask = async (
-    //     // task_name: Task['task_name'],
-    //     // task_description: Task['task_description'],
-    //     // module_id: Task['module_id']
-    //     task_name: string, task_description: string, moduleId: number, categoryId: number
-    // ) => {
-    //     // if (task) {
-    //         const { data: tasklist, error } = await supabase
-    //             .from('tasks')
-    //             .insert({ 
-    //                 task_name: task_name,
-    //                 task_description: task_description,
-    //                 user_id: user!.id,
-    //                 module_id: moduleId,
-    //             })
-    //             .select('*')
-    //             .single()
-    //         if(error)
-    //             console.log(error.message)
-    //         else {
-    //             //get category_id associated w module_id
-    //             const { data: module, error: moduleError } = await supabase
-    //                 .from('module_categories')
-    //                 .select('category_id')
-    //                 .eq('module_id', moduleId)
-    //                 .single()
-    //             if(moduleError)
-    //                 console.log(moduleError.message)
-    //             else{
-    //                 //insert into table
-    //                 await supabase
-    //                     .from('module_categories')
-    //                     .insert({
-    //                         module_id: moduleId,
-    //                         category_id: categoryId,
-    //                         task_id: tasklist!.id
-    //                     })
-    //                     .select('*')
-    //                     .single()
-                        
-    //                 setTaskList([tasklist!, ...taskList])
-    //             }
-                
-    //         }
-    //     //}
-    // }
-
-    // onPress, complete task
-    // async function onCheckPressed({id, isCompleted}: {id: number, isCompleted: boolean}){
-    //     console.log(id);
-    //     const { data, error } = await supabase
-    //         .from('tasks')
-    //         .update({ isCompleted: !isCompleted })
-    //         .eq('id', id)
-    //         .select ('*')
-    //         .single()
-        
-    //     setTaskList(taskList.map((task) => (task.id === id ? data! : task)))
-
-    //     if (error) {
-    //         throw error;
-    //     }
-    // }
-
 
     const addTask = async (
         task_name: Task['task_name'],
@@ -417,23 +290,8 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
                     }
                 }
 
-                // const { data: taskcat, error: taskcatError } = await supabase
-                //     .from('module_categories')
-                //     .insert({
-                //         category_id: categoryId,
-                //         module_id: moduleId,
-                //         user_id: user!.id
-                //     })
-                //     .select('*')
-                //     .single()
-                // if(taskcatError)
-                //     console.log(taskcatError.message)
-                // else{
-                    console.log('taskcat: ', tasklist.task_name);
-                    setTaskList([tasklist, ...taskList]);
-                    
-                //}
-            
+                console.log('taskcat: ', tasklist.task_name);
+                setTaskList([tasklist, ...taskList]);
             }
         } catch (error: any) {
             console.log(error.message)
@@ -468,7 +326,6 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
             console.log('note count: ', count);
 
             //award first note badge
-
             if (count === 1) {
                 const hasEarned = await hasEarnedBadge(5);
                 if (!hasEarned) {
@@ -570,23 +427,18 @@ const TaskListProvider = ({ children }: PropsWithChildren) => {
     return (
         <TaskListContext.Provider value={{
             tasks: taskList,
-            //atTasks: catTaskList,
             priorities: priorityList,
             modules: moduleList,
             categories: categoryList,
             notes: noteList,
-            // moduleCat: moduleCatList,
             getPriority,
             getModule,
             getCategory,
-            // getModuleCat,
             getTasks,
             getTasksByCategory,
             getNotes,
-            // getTaskSection,
             addModule,
             addCategory,
-            //addCategoryToModule,
             addTask,
             addNote,
             onCheckPressed,

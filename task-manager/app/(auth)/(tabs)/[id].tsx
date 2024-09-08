@@ -4,11 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { router, useLocalSearchParams } from "expo-router";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { supabase } from "@/config/initSupabase";
-import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import { useTaskList } from "@/provider/TaskListProvider";
 import { useAuth } from "@/provider/AuthProvider";
@@ -19,25 +19,7 @@ import { Text as SvgText } from "react-native-svg";
 import AddCategory from "@/components/AddCategory";
 import TaskListView from "@/components/TaskListView";
 import TaskKanbanView from "@/components/TaskKanbanView";
-import NoteList from "@/components/NoteList";
 import ModuleNotes from "@/components/ModuleNotes";
-
-
-const getCatNames = async (categoryIds: number[]) => {
-    const {data: categories, error} = await supabase
-        .from('categories')
-        .select('id, category_name')
-        .in('id', categoryIds)
-    if (error)
-        throw error
-    if (!categories)
-        return {};
-
-    return categories.reduce((acc: { [id: number]: string}, category) => {
-        acc[category.id] = category.category_name;
-        return acc;
-    }, {});
-}
 
 const ModuleDetail = () => {
     const { id } = useLocalSearchParams();
@@ -47,11 +29,6 @@ const ModuleDetail = () => {
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handleOpenPress = () => bottomSheetRef.current?.present();
-    const [taskList, setTaskList] = useState<Task[]>([]);
-
-    const handleTaskAdded = (newTask: Task) => {
-        setTaskList([...taskList, newTask]);
-    };
 
     const [ moduleTitle, setModuleTitle ] = useState('');
     const [ moduleDesc, setModuleDesc ] = useState('');
@@ -62,111 +39,10 @@ const ModuleDetail = () => {
         setView(newView);
     };
 
-    let taskIdCounter = 0;
-
-    const generateTaskId = () => {
-        return ++taskIdCounter;
-    }
-    
     useEffect(() => {
         console.log(id);
         id&&getModuleInfo();
-        //getModuleCat();
-        //getModuleTasks();
     }, [id]);
-
-
-    // const getCatTasks = async () => {
-    //     const { data: modCat, error } = await supabase
-    //         .from('tasks')
-    //         .select('*')
-    //         .eq
-    // }
-
-    // useEffect(() => {
-    //     const catNamesObj = categories.reduce((acc: any, category) => {
-    //         acc[category.id] = category.category_name;
-    //         return acc;
-    //     }, {});
-    //     setCatNames(catNamesObj);
-    //     getCategory();
-    // }, []);
-
-    // useEffect(() => {
-    //     const categorizedTasksObj = tasks.reduce((acc: any, task) => {
-    //         const categoryId = task.category_id;
-    //         if (categoryId !== null && categoryId !== undefined) {
-    //             if (!acc[categoryId]) {
-    //                 acc[categoryId] = [];
-    //             }
-    //             acc[categoryId].push(task);
-    //         }
-            
-    //         return acc;
-    //     }, {});
-    //     setCategorizedTasks(categorizedTasksObj);
-    //     getTasks();
-    // }, [])
-
-    // useEffect(() => {
-    //     const categoryIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.category_id))).filter((id) => id !== null);
-    //     getCatNames(categoryIds).then((catNames) => setCatNames(catNames));
-
-    //     const taskIds = Array.from(new Set(moduleCatList.map((moduleCat) => moduleCat.task_id)));
-    //     // getModuleTasks(taskIds).then((taskNames) => setTaskNames(taskNames));
-    // },[moduleCatList]);
-
-    // const getModuleCat = async () => {
-    //     const {data: moduleCatList} = await supabase
-    //         .from('module_categories')
-    //         .select(`*, categories(*), tasks(*)`)
-    //         .eq('module_id', id)
-    //     if (moduleCatList)
-    //         setModuleCatList(moduleCatList!);
-    // }
-
-    // const sections: SectionListData<ModuleCat>[] = Object.entries(catNames).map(([categoryId, catName]) => ({
-    //     title: catName,
-    //     data: moduleCatList.filter((moduleCat) => moduleCat.category_id === parseInt(categoryId, 10)),
-    // }));
-
-
-    // const renderItem: SectionListRenderItem<ModuleCat> = ({ item }) => {
-    //     const task = tasks.find((t) => t.id === item.task_id);
-    //     if (!task)
-    //         return null;
-
-    //     const taskwithModuleId: TaskCat = { ...task, module_id: item.module_id};
-    //     return (
-    //         <TaskListItem 
-    //             task={taskwithModuleId} 
-    //             onCheckPressed={() => onCheckPressed(taskwithModuleId)}
-    //             onDelete={() => onDelete(taskwithModuleId)}
-    //             onTaskPressed={()=> onTaskPressed(taskwithModuleId)}
-    //         />
-    //     );
-    // };
-
-
-    // const getModuleDetail = async () => {
-    //     const { data: modules, error } = await supabase
-    //         .from('modules')
-    //         .select('*')
-    //         .eq('id', id)
-    //     if (modules){
-            
-    //         const { data: categories } = await supabase.from('categories').select('*');
-    //         const { data: tasks } = await supabase.from('tasks').select('*').eq('module_id', id);
-
-           
-    //         const catGrouped: any = categories?.map((category: any) => {
-    //             const items = tasks?.filter((task: Task) => category.id === task.category_id);
-    //             return {...category, data: items}
-    //         })
-    //         setTaskCategoryList(catGrouped);
-    //         console.log(taskCategoryList);
-    //     }
-    // }
 
     const getModuleInfo = async () => {
         const { data: modules, error } = await supabase
@@ -180,22 +56,6 @@ const ModuleDetail = () => {
             setModuleColour(modules.colour);
         }
     }
-
-    // const getModuleTasks = async () => {
-    //     const { data: modTasks, error } = await supabase
-    //         .from('tasks')
-    //         .select('*, categories(*)')
-    //         .eq('module_id', id)
-    //     if (error) {
-    //         console.log(error.message)
-    //     } else {
-    //         console.log(modTasks)
-    //         setTaskList(modTasks!);
-            
-    //     }
-    // }
-
-    
 
     const modTasks = tasks.filter((task) => task.module_id === Number(id));
 
@@ -252,6 +112,7 @@ const ModuleDetail = () => {
         }
     }
 
+    // load priority symbols
     const getPrioritySymbol = (task: Task) => {
         switch (task.priority_id) {
             //low
@@ -340,6 +201,7 @@ const ModuleDetail = () => {
                 />
                 <View style={{paddingHorizontal: 20}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {/* edit module details */}
                         <View style={{width: '70%'}}>
                             <TextInput 
                                 placeholder="module title" 
@@ -374,175 +236,89 @@ const ModuleDetail = () => {
                         </View>
                     </View>
                 </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between',  paddingHorizontal: 20, alignItems: 'center'}}>
-                        <View style={{flexDirection: 'row', gap: 10}}>
-                            <TouchableOpacity 
-                                style={[styles.navBTN, view === 'list' ? {backgroundColor: moduleColour} : {}]}
-                                onPress={() => handleViewChange('list')}
-                            >
-                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>List View</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.navBTN, view === 'kanban' ? {backgroundColor: moduleColour} : {}]}
-                                onPress={() => handleViewChange('kanban')}
-                            >
-                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Board View</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.navBTN, view === 'notes' ? {backgroundColor: moduleColour} : {}]}
-                                onPress={() => handleViewChange('notes')}
-                            >
-                                <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Notes</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View>
-                            <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
-                                <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-                                    <Ionicons name="add" size={20} color="black" />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={{height: '75%'}}>
-                        {view === 'list' ? (
-                            <TaskListView
-                                tasksByCategory={tasksByCategory}
-                                onCheckPressed={onCheckPressed}
-                                onDelete={onDelete}
-                                onTaskPressed={onTaskPressed}
-                                onEdit={onEditPressed}
-                                getPrioritySymbol={getPrioritySymbol}
-                            />
-                        ) : view === 'kanban' ? (
-                            <TaskKanbanView
-                                tasksByCategory={tasksByCategory}
-                                onCheckPressed={onCheckPressed}
-                                onDelete={onDelete}
-                                onTaskPressed={onTaskPressed}
-                                onEdit={onEditPressed}
-                                getPrioritySymbol={getPrioritySymbol}
-                            />
-                        ) : (
-                            <ModuleNotes/>
-                        )}
-                    </View>
-                    <View style={{paddingTop: 5, justifyContent: 'center', width: 300, alignSelf: 'center'}}>
+                {/* list, board, notes views nav bar */}
+                <View style={{flexDirection: 'row', justifyContent: 'space-between',  paddingHorizontal: 20, alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', gap: 10}}>
                         <TouchableOpacity 
-                            onPress={handleOpenPress}
-                            style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
+                            style={[styles.navBTN, view === 'list' ? {backgroundColor: moduleColour} : {}]}
+                            onPress={() => handleViewChange('list')}
                         >
-                            <Text style={{fontWeight: '500'}}>Add Category</Text>
+                            <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>List View</Text>
                         </TouchableOpacity>
-                        <AddCategory
-                            ref={bottomSheetRef}
-                            moduleId={Number(id)}
-                            onAdd={(newCategory, id) => {
-                                console.log(newCategory, id)
-                                bottomSheetRef.current?.close();
-                            }}
-                        />
+                        <TouchableOpacity
+                            style={[styles.navBTN, view === 'kanban' ? {backgroundColor: moduleColour} : {}]}
+                            onPress={() => handleViewChange('kanban')}
+                        >
+                            <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Board View</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.navBTN, view === 'notes' ? {backgroundColor: moduleColour} : {}]}
+                            onPress={() => handleViewChange('notes')}
+                        >
+                            <Text style={{textAlign: 'center', fontWeight: '600', fontSize: 13}}>Notes</Text>
+                        </TouchableOpacity>
                     </View>
-                </SafeAreaView>
-            </>    
-
-            //     {/* <FlatList
-            //         //style={{paddingHorizontal: 20}}
-            //         data={data}
-            //         renderItem={renderItem}
-            //         keyExtractor={(item) => item.id.toString()}
-            //         //contentContainerStyle={{gap:15}}
-            //         ListHeaderComponent={
-            //             <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20}}>
-            //                 <View>
-            //                     <TextInput 
-            //                         placeholder="module title" 
-            //                         value={moduleTitle || ''}
-            //                         onChangeText={(text) => setModuleTitle(text)}
-            //                         style={[styles.header, {paddingBottom: 5}]}
-            //                         onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})}
-            //                     />
-            //                     <TextInput 
-            //                         placeholder="module desc"
-            //                         value={moduleDesc || ''} 
-            //                         onChangeText={(text) => setModuleDesc(text)} 
-            //                         style={styles.description} 
-            //                         onEndEditing={() => updateModule({moduleTitle, moduleDesc, moduleColour})} 
-            //                         multiline
-            //                     />
-            //                 </View>
-            //                 <View style={{paddingTop: 10}}>
-            //                     <TouchableOpacity style={[styles.moduleColour, {backgroundColor: moduleColour}]}/>
-            //                 </View>
-            //             </View>
-            //         }
-            //         ListFooterComponent={
-            //             <View style={{paddingTop:10, paddingHorizontal: 20}}>
-            //                 <TouchableOpacity 
-            //                     onPress={handleOpenPress}
-            //                     style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
-            //                 >
-            //                     <Text>add category</Text>
-            //                 </TouchableOpacity>
-            //                 <AddCategory
-            //                     ref={bottomSheetRef}
-            //                     moduleId={Number(id)}
-            //                     onAdd={(newCategory, id) => {
-            //                         console.log(newCategory, id)
-            //                         //addNewCat(newCategory, id)
-            //                         bottomSheetRef.current?.close();
-            //                     }}
-            //                 />
-            //             </View>
-            //         }
-                    
-            //     />
-            
-            //     <View style={{paddingVertical: 5}}> 
-            //         {/* <TouchableOpacity onPress={handleLayoutChange}>
-            //             <Text>horizontal</Text>
-            //         </TouchableOpacity> 
-            //         <TouchableOpacity style={styles.navBTN}>
-            //             <Text>Notes</Text>
-            //         </TouchableOpacity>
-            //     </View>
-            //     <View>
-            //         <SectionList
-            //             contentContainerStyle={{gap: 15}}
-            //             sections={sections}
-            //             renderItem={renderItem}
-            //             renderSectionHeader={({section: category}) => (
-            //                 <Text style={styles.header}>{category.title}</Text>
-            //             )}
-            //             stickySectionHeadersEnabled={false}
-            //         />
-            //     </View>
-                
-            
-            // <Ionicons name='add-circle' size={80} color={moduleColour} onPress={handleOpenPress} style={styles.addTaskBTN}/>
-            // <AddTaskBottomSheet
-            //     ref={bottomSheetRef}
-            //     onAdd={(newTask) => 
-            //         handleTaskAdded({
-            //             id: generateTaskId(),
-            //             user_id: user!.id,
-            //             task_name: newTask.task_name,
-            //             task_description: newTask.task_description,
-            //             isCompleted: false,
-            //             created_at: new Date(),
-            //             module_id: newTask.module_id,
-            //             category_id: newTask.category_id
-            //         })
-            //     }
-            // /> */}
-        
+                    <View>
+                        {/* add task btn */}
+                        <TouchableOpacity style={styles.addTaskBTN} onPress={()=> router.navigate('/(auth)/(modals)/addTask')}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                                <Ionicons name="add" size={20} color="black" />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{height: '75%'}}>
+                    {/* if list view btn pressed: */}
+                    {view === 'list' ? (
+                        <TaskListView
+                            tasksByCategory={tasksByCategory}
+                            onCheckPressed={onCheckPressed}
+                            onDelete={onDelete}
+                            onTaskPressed={onTaskPressed}
+                            onEdit={onEditPressed}
+                            getPrioritySymbol={getPrioritySymbol}
+                        />
+                    // if board view btn pressed:
+                    ) : view === 'kanban' ? (
+                        <TaskKanbanView
+                            tasksByCategory={tasksByCategory}
+                            onCheckPressed={onCheckPressed}
+                            onDelete={onDelete}
+                            onTaskPressed={onTaskPressed}
+                            onEdit={onEditPressed}
+                            getPrioritySymbol={getPrioritySymbol}
+                        />
+                    // if note view btn pressed:
+                    ) : (
+                        <ModuleNotes/>
+                    )}
+                </View>
+                {/* add category btn */}
+                <View style={{paddingTop: 5, justifyContent: 'center', width: 300, alignSelf: 'center'}}>
+                    <TouchableOpacity 
+                        onPress={handleOpenPress}
+                        style={{backgroundColor: moduleColour, borderRadius: 20, padding: 10, alignItems: 'center', borderWidth: 1}}
+                    >
+                        <Text style={{fontWeight: '500'}}>Add Category</Text>
+                    </TouchableOpacity>
+                    <AddCategory
+                        ref={bottomSheetRef}
+                        moduleId={Number(id)}
+                        onAdd={(newCategory, id) => {
+                            console.log(newCategory, id)
+                            bottomSheetRef.current?.close();
+                        }}
+                    />
+                </View>
+            </SafeAreaView>
+        </>            
     )
 }
 
 const styles = StyleSheet.create ({
     container: {
         flex:1,
-        backgroundColor: 'white',
-        //paddingHorizontal: 20
+        backgroundColor: 'white'
     },
     background: {
         position: 'absolute',
@@ -555,7 +331,6 @@ const styles = StyleSheet.create ({
         fontWeight: 'bold',
         fontSize: 30,
         paddingTop: 15,
-        //paddingBottom: 10
     },
     description: {
         fontSize: 20,
@@ -565,13 +340,6 @@ const styles = StyleSheet.create ({
         borderWidth: 1,
         borderRadius: 20,
         padding: 10
-    },
-    moduleColour: {
-        // paddingTop: 20,
-        // borderRadius: 200/2,
-        // height: 70,
-        // width: 70,
-        // borderWidth: 1
     },
     addTaskBTN: {
         alignSelf: 'center',

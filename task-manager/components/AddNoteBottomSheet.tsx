@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { forwardRef, useRef, useMemo, useCallback, useImperativeHandle, useState, useEffect } from 'react';
+import { Dropdown } from 'react-native-element-dropdown';
 
-import BottomSheet, { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, TouchableOpacity } from '@gorhom/bottom-sheet';
+
 import { Note } from '@/types/types';
 import { useTaskList } from '@/provider/TaskListProvider';
-import { Dropdown } from 'react-native-element-dropdown';
+
 
 type Ref = BottomSheetModal;
 
@@ -112,8 +114,6 @@ const AddNoteBottomSheet = forwardRef<Ref, AddNote>(({onAdd}: AddNote, ref) => {
                     style={styles.addButton}
                     onPress={() => {
                         addNewNote();
-                        
-
                     }}
                 >
                     <Text style={{padding: 10, paddingHorizontal: 25, color: 'white'}}>Add Note</Text>

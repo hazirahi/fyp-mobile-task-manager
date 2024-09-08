@@ -1,15 +1,12 @@
-import { supabase } from "@/config/initSupabase";
-import { useAuth } from "@/provider/AuthProvider";
-import { useTaskList } from "@/provider/TaskListProvider";
-import { NoteMod } from "@/types/types";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
-
-
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { supabase } from "@/config/initSupabase";
+import { useAuth } from "@/provider/AuthProvider";
 
 
 const EditNote = () => {
@@ -17,11 +14,9 @@ const EditNote = () => {
     const [loading, setLoading] = useState(true);
 
     const { user } = useAuth();
-    const { notes } = useTaskList();
     
     const [noteTitle, setNoteTitle] = useState('');
     const [noteText, setNoteText] = useState('');
-    const [noteList, setNoteList] = useState<NoteMod[]>([]);
 
     useEffect(() => {
         noteId&&getNoteInfo();
@@ -93,7 +88,6 @@ const EditNote = () => {
                             value={noteTitle || ''}
                             onChangeText={(text) => setNoteTitle(text)}
                             multiline={true}
-                            // onEndEditing={() => updateNote({noteTitle, noteText})}
                         />
                         <TextInput
                             style={styles.content}
@@ -101,7 +95,6 @@ const EditNote = () => {
                             onChangeText={(text) => setNoteText(text)}
                             multiline={true}
                             placeholder="add something here..."
-                            // onEndEditing={() => updateNote({noteTitle, noteText})}
                         />
                     </View>
                 </View>

@@ -2,8 +2,6 @@ import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { supabase } from "@/config/initSupabase";
 import { useAuth } from '@/provider/AuthProvider';
 import { Badge, UserBadge } from "@/types/types";
-//import { showModalCallback } from "@/app/(auth)/(modals)/newBadge";
-
 
 type BadgeListItem = {
     badges: Badge[];
@@ -14,7 +12,6 @@ type BadgeListItem = {
     hasEarnedBadge: (badgeId: UserBadge['badge_id']) => Promise<boolean>;
     handleShowModal: () => void,
     handleHideModal: () => void
-    //firstTask: () => void;
 };
 
 const BadgeListContext = createContext<BadgeListItem>({
@@ -25,8 +22,7 @@ const BadgeListContext = createContext<BadgeListItem>({
     handleHideModal: () => {},
     getBadges: () => {},
     awardBadge: () => {},
-    hasEarnedBadge: () => Promise.resolve(false),
-    //firstTask: () => {}
+    hasEarnedBadge: () => Promise.resolve(false)
 });
 
 const BadgeListProvider = ({ children }: PropsWithChildren) => {
@@ -54,24 +50,6 @@ const BadgeListProvider = ({ children }: PropsWithChildren) => {
     }
 
     //award badge
-    // async function awardBadge(userId: string, badgeId: number) {
-    //     console.log('awarding badge: ', badgeId, userId)
-    //     const { data, error } = await supabase
-    //         .from('user_badges')
-    //         .insert([{
-    //             user_id: userId,
-    //             badge_id: badgeId,
-    //             earned_at: new Date()
-    //         }])
-    //         .select('*')
-    //         .single()
-    //     if (error) {
-    //         console.log(error.message)
-    //     } else {
-    //         console.log(data);
-    //     }
-    // }
-
     const awardBadge = async (
         userId: string,
         badgeId: number

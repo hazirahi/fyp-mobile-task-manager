@@ -1,5 +1,5 @@
-import { Badge, UserBadge } from "@/types/types";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Badge } from "@/types/types";
+import { View, TouchableOpacity } from "react-native";
 import { SvgUri } from "react-native-svg";
 
 type BadgeListItem = {
